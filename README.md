@@ -3,7 +3,7 @@
 # Description
 
 This tool is intended to be used to report on the state of Chef Server objects that can be tidied up.
-It can also help by applying some tidiness if desired.
+It can also help by applying some general good ol' fashioned tidiness if desired.
 
 # Requirements
 
@@ -24,10 +24,11 @@ The following options are supported across all subcommands:
     Only apply to objects in the named organization (default: all orgs)
 
   * `--repo-path /path/to/chef-repo`:
-    The Chef Repo (such as one created from a [knife-ec-backup](https://github.com/chef/knife-ec-backup)  (Optional)
+    The Chef Repo to report on or change (such as one created from a
+    [knife-ec-backup](https://github.com/chef/knife-ec-backup)  (Optional)
     If this option is not specified, then `chef_server_url` is used from Chef::Config pointing to Chef Server.
 
-## knife tidy report (options)
+## knife tidy `report` (options)
 
   * `--cookbooks-only`:
     Only report on cookbooks issues and/or usage.
@@ -37,7 +38,7 @@ The following options are supported across all subcommands:
     Only report on user and group membership issues.
     Applies only if --repo-path is specified
 
-## knife tidy apply (options)
+## knife tidy `apply` (options)
 
   * `--dry-run`:
     Report on all fixes that would be applied.
