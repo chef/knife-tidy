@@ -1,6 +1,5 @@
-source :rubygems
+source "https://rubygems.org"
 
-gem 'veil', git: 'https://github.com/chef/chef_secrets'
 gemspec
 
 if vsn = ENV['TRAVIS_CHEF_VERSION']
@@ -16,6 +15,12 @@ group :development do
   gem 'rake'
   gem 'simplecov'
   gem 'fakefs'
+  gem "chefstyle", git: "https://github.com/chef/chefstyle.git"
+  gem "chef-zero"
+end
+
+group :changelog do
+  gem "github_changelog_generator", git: "https://github.com/chef/github-changelog-generator"
 end
 
 # This is here instead of gemspec so that we can

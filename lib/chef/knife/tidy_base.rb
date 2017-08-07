@@ -16,44 +16,36 @@
 #
 
 require 'chef/knife'
+require 'chef/server_api'
 
 class Chef
   class Knife
     module TidyBase
+
       def self.included(includer)
         includer.class_eval do
 
           deps do
-            require 'readline'
-            require 'chef/json_compat'
+            require 'chef/tidy_server'
           end
 
-          option :org,
-            :long => "--only-org ORG",
-            :description => "Only apply to objects in the named organization (default: all orgs)"
+          option :org_list,
+            :long => "--orgs ORG1,ORG2",
+            :description => "Only apply to objects in the named organizations"
           end
-
-        attr_accessor :dest_dir
-
       end
 
       def server
         @server ||= if Chef::Config.chef_server_root.nil?
                       ui.warn("chef_server_root not found in knife configuration; using chef_server_url")
-                      Chef::Server.from_chef_server_url(Chef::Config.chef_server_url)
+                      Chef::TidyServer.from_chef_server_url(Chef::Config.chef_server_url)
                     else
-                      Chef::Server.new(Chef::Config.chef_server_root)
+                      Chef::TidyServer.new(Chef::Config.chef_server_root)
                     end
       end
 
       def rest
         @rest ||= Chef::ServerAPI.new(server.root_url, {:api_version => "0"})
-      end
-
-      def set_client_config!
-        Chef::Config.custom_http_headers = (Chef::Config.custom_http_headers || {}).merge({'x-ops-request-source' => 'web'})
-        Chef::Config.node_name = 'pivotal'
-        # Chef::Config.client_key = webui_key
       end
     end
   end

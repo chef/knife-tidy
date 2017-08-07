@@ -1,23 +1,69 @@
-require 'bundler'
-require 'rubygems'
-require 'rubygems/package_task'
-require 'rdoc/task'
-require 'rspec/core/rake_task'
+#!/usr/bin/env rake
 
-Bundler::GemHelper.install_tasks
+require_relative 'tasks/maintainers'
 
-task :default => :spec
+# Style tests. cookstyle (rubocop) and Foodcritic
+namespace :style do
+  begin
+    require 'cookstyle'
+    require 'rubocop/rake_task'
 
-desc "Run specs"
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = 'spec/**/*_spec.rb'
+    desc 'Run Ruby style checks'
+    RuboCop::RakeTask.new(:ruby)
+  rescue LoadError => e
+    puts ">>> Gem load error: #{e}, omitting style:ruby" unless ENV['CI']
+  end
+
+  begin
+    require 'foodcritic'
+
+    desc 'Run Chef style checks'
+    FoodCritic::Rake::LintTask.new(:chef) do |t|
+      t.options = {
+        fail_tags: ['any'],
+        progress: true,
+      }
+    end
+  rescue LoadError
+    puts ">>> Gem load error: #{e}, omitting style:chef" unless ENV['CI']
+  end
 end
 
-gem_spec = eval(File.read("knife-ec-backup.gemspec"))
+desc 'Run all style checks'
+task style: ['style:chef', 'style:ruby']
 
-RDoc::Task.new do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "chef_fs #{gem_spec.version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+# ChefSpec
+begin
+  require 'rspec/core/rake_task'
+
+  desc 'Run ChefSpec examples'
+  RSpec::Core::RakeTask.new(:spec)
+rescue LoadError => e
+  puts ">>> Gem load error: #{e}, omitting spec" unless ENV['CI']
 end
+
+# Integration tests. Kitchen.ci
+namespace :integration do
+  begin
+    require 'kitchen/rake_tasks'
+
+    desc 'Run kitchen integration tests'
+    Kitchen::RakeTasks.new
+  rescue StandardError => e
+    puts ">>> Kitchen error: #{e}, omitting #{task.name}" unless ENV['CI']
+  end
+end
+
+namespace :supermarket do
+  begin
+    require 'stove/rake_task'
+
+    desc 'Publish cookbook to Supermarket with Stove'
+    Stove::RakeTask.new
+  rescue LoadError => e
+    puts ">>> Gem load error: #{e}, omitting #{task.name}" unless ENV['CI']
+  end
+end
+
+# Default
+task default: %w(style spec)
