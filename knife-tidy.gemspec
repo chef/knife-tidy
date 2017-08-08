@@ -14,8 +14,6 @@ Gem::Specification.new do |s|
   s.license          = "Apache License, v2.0"
   s.files            = `git ls-files`.split("\n")
   s.require_paths    = ["lib"]
-  #s.bindir           = "bin"
-  #s.executables      = %w{ knife-tidy }
 
   s.required_ruby_version = ">= 2.2.0"
 
