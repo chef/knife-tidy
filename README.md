@@ -20,15 +20,29 @@ gem install knife-tidy
 
 The following options are supported across all subcommands:
 
-  * `--only-org ORG`:
-    Only apply to objects in the named organization (default: all orgs)
+  * `--orgs ORG1,ORG2`:
+    Only apply to objects in the named organizations (default: all orgs)
+
+## knife tidy `server report` (options)
+
+### Options
+
+  * `--node-threshold NUM_DAYS`
+    Maximum number of days since last checkin before node is considered stale (default: 30)
+
+### `server report` Description
+
+## knife tidy `backup report` (options)
+
+### Options
 
   * `--repo-path /path/to/chef-repo`:
     The Chef Repo to report on or change (such as one created from a
-    [knife-ec-backup](https://github.com/chef/knife-ec-backup)  (Optional)
-    If this option is not specified, then `chef_server_url` is used from Chef::Config pointing to Chef Server.
+    [knife-ec-backup](https://github.com/chef/knife-ec-backup)
 
-## knife tidy `report` (options)
+### `backup report` Description
+
+## knife tidy `backup clean` (options)
 
   * `--cookbooks-only`:
     Only report on cookbooks issues and/or usage.
@@ -37,11 +51,3 @@ The following options are supported across all subcommands:
   * `--user-groups-only`:
     Only report on user and group membership issues.
     Applies only if --repo-path is specified
-
-## knife tidy `apply` (options)
-
-  * `--dry-run`:
-    Report on all fixes that would be applied.
-
-  * `--restore-default-acls`
-    Restore defaults as specified by [knife-acl](https://github.com/chef/knife-acl#default-permissions-for-containers)

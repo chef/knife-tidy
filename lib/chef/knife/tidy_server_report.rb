@@ -15,7 +15,7 @@ class Chef
       option :node_threshold,
         :long => '--node-threshold NUM_DAYS',
         :default => 30,
-        :description => 'Maximum number of days since last checkin before node is marked stale (default: 30)'
+        :description => 'Maximum number of days since last checkin before node is considered stale (default: 30)'
 
       def run
         ensure_reports_dir!
@@ -28,36 +28,36 @@ class Chef
                  all_orgs
                end
 
-				stale_orgs = []
+        stale_orgs = []
         node_threshold = config[:node_threshold]
 
-				orgs.each do |org|
+        orgs.each do |org|
           ui.info "  Organization: #{org}"
-					cb_list = cookbook_list(org)
-					version_count = cookbook_count(cb_list).sort_by(&:last).reverse.to_h
-					used_cookbooks = {}
-          nodes = nodes_list(org)
+          cb_list = cookbook_list(org)
+          version_count = cookbook_count(cb_list).sort_by(&:last).reverse.to_h
+          used_cookbooks = {}
+          nodes = nodes_list(org)[0]
 
-					nodes[0].select{|node| !node['cookbooks'].nil?}.each do |node|
-						node['cookbooks'].each do |name, version_hash|
-							version = Gem::Version.new(version_hash['version']).to_s
-							if used_cookbooks[name] && !used_cookbooks[name].include?(version)
-								used_cookbooks[name].push(version)
-							else
-								used_cookbooks[name] = [version]
-							end
-						end
-					end
+          nodes.select{|node| !node['cookbooks'].nil?}.each do |node|
+            node['cookbooks'].each do |name, version_hash|
+              version = Gem::Version.new(version_hash['version']).to_s
+              if used_cookbooks[name] && !used_cookbooks[name].include?(version)
+                used_cookbooks[name].push(version)
+              else
+                used_cookbooks[name] = [version]
+              end
+            end
+          end
 
-					stale_nodes = []
-					nodes[0].each do |n|
-						if (Time.now.to_i - n['ohai_time'].to_i) >= node_threshold * 86400
-							stale_nodes.push(n['name'])
-						end
-					end
+          stale_nodes = []
+          nodes.each do |n|
+            if (Time.now.to_i - n['ohai_time'].to_i) >= node_threshold * 86400
+              stale_nodes.push(n['name'])
+            end
+          end
 
-					stale_nodes_hash = {'threshold_days': node_threshold, 'count': stale_nodes.count, 'list': stale_nodes}
-					stale_orgs.push(org) if stale_nodes.count == nodes[0].count
+          stale_nodes_hash = {'threshold_days': node_threshold, 'count': stale_nodes.count, 'list': stale_nodes}
+          stale_orgs.push(org) if stale_nodes.count == nodes.count
 
           report("#{org}_unused_cookbooks.json", unused_cookbooks(used_cookbooks, cb_list))
           report("#{org}_unused_cookbooks.json", unused_cookbooks(used_cookbooks, cb_list))
