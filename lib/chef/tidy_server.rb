@@ -1,7 +1,7 @@
 class Chef
   class TidyServer
-
     attr_accessor :root_url
+
     def initialize(root_url)
       @root_url = root_url
     end

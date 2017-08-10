@@ -47,6 +47,47 @@ class Chef
       def rest
         @rest ||= Chef::ServerAPI.new(server.root_url, {:api_version => "0"})
       end
+
+      def backup_path_expanded
+        ::File.expand_path(config[:backup_path])
+      end
+
+      def cookbook_name_from_path(path)
+        ::File.basename(path, '-*')
+      end
+
+      def cookbooks_path_expanded(org)
+        ::File.expand_path(::File.join(backup_path_expanded, 'organizations', org, 'cookbooks'))
+      end
+
+      def substitutions_file
+        ::File.expand_path(config[:gsub_file])
+      end
+
+      def orgs
+        if config[:org_list]
+          config[:org_list].split(',')
+        else
+          Dir[::File.join(backup_path_expanded, 'organizations', '*')].map { |dir| ::File.basename(dir) }
+        end
+      end
+
+      def for_each_cookbook_basename(org)
+        cookbooks_seen = []
+        Dir[::File.join(cookbooks_path_expanded(org), '**-**')].each do |cookbook|
+          name = cookbook_name_from_path(cookbook)
+          unless cookbooks_seen.include?(name)
+            cookbooks_seen.push(name)
+            yield name
+          end
+        end
+      end
+
+      def for_each_cookbook_path(org)
+        Dir[::File.join(cookbooks_path_expanded(org), '**')].each do |cookbook|
+          yield cookbook
+        end
+      end
     end
   end
 end

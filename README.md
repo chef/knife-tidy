@@ -7,7 +7,7 @@ It can also help by applying some general good ol' fashioned tidiness if desired
 
 # Requirements
 
-Chef Client - any modern version.  Can easily be installed via [Chef DK](https://github.com/chef/chef-dk#installation)
+Chef Client 13. Can easily be installed via latest [Chef DK](https://github.com/chef/chef-dk#installation)
 
 # Installation
 

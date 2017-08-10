@@ -1,0 +1,14 @@
+{
+  "chef-sugar":{
+    "organizations/*/cookbooks/chef-sugar*/metadata.rb":[
+      {
+        "pattern":"require +File.expand_path('../lib/chef/sugar/version', __FILE__)",
+        "replace":"# require          File.expand_path('../lib/chef/sugar/version', __FILE__)"
+      },
+      {
+        "pattern":"version *Chef::Sugar::VERSION",
+        "replace":"# version          !COOKBOOK_VERSION!"
+      }
+    ]
+  }
+}
