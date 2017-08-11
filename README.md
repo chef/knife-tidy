@@ -59,8 +59,6 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
 
 ## Notes
 
-  * Items addressed and remaining [To Do](TODO_LIST.md)
-
   Global file substitutions can be performed when `--gsub-file` option is used. Several known issues are corrected
   and others can be added with search/replace pairings:
 
