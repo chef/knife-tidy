@@ -43,9 +43,9 @@ The following options are supported across all subcommands:
 
 File Name | Contents
 --- | ---
-<org>_<threshold_num>d_stale_nodes.json | Nodes in that org that have not checked in for the number of days specified.
-<org>_cookbook_count.json | Number of cookbook versions for each cookbook that that org.
-<org>_unused_cookbooks.json | List of cookbooks and versions that do not appear to be in-use for that org. This is determined by checking the versioned run list of each of the nodes in the org.
+org_threshold_numdays_stale_nodes.json | Nodes in that org that have not checked in for the number of days specified.
+org_cookbook_count.json | Number of cookbook versions for each cookbook that that org.
+org_unused_cookbooks.json | List of cookbooks and versions that do not appear to be in-use for that org. This is determined by checking the versioned run list of each of the nodes in the org.
 
 # knife tidy backup clean (options)
 
@@ -59,9 +59,38 @@ File Name | Contents
 
 ## Notes
 
-  * Items [Addressed](ITEMS_CLEANED.md)
-  * [To Do](TODO_LIST.md)
+  * Items addressed and remaining [To Do](TODO_LIST.md)
 
-# Credits
+  Global file substitutions can be performed when `--gsub-file` option is used. Several known issues are corrected
+  and others can be added with search/replace pairings:
+
+  * global file gbus (:DONE)
+
+```json
+{
+  "chef-sugar":{
+    "organizations/*/cookbooks/chef-sugar*/metadata.rb":[
+      {
+        "pattern":"require +File.expand_path('../lib/chef/sugar/version', __FILE__)",
+        "replace":"# require          File.expand_path('../lib/chef/sugar/version', __FILE__)"
+      },
+      {
+        "pattern":"version *Chef::Sugar::VERSION",
+        "replace":"# version          !COOKBOOK_VERSION!"
+      }
+    ]
+  }
+}
+```
+
+  * DONE: metadata validation with `Chef::CookbookLoader`
+  * DONE: metadata.rb and metadata.json inconsistencies correction
+  * DONE: metadata self-dependency correction
+  * TODO: ambiguous actors (acl actor exists as client and user)
+  * TODO: user email validation
+  * TODO: users/clients referenced as actors in acls that do not exist in users/clients
+  * TODO: nonexistent groups referenced in acls
+
+## Summary and Credits
 
   * Server Report was ported from Nolan Davidson's [chef-cleanup](https://github.com/nsdavidson/chef-cleanup)
