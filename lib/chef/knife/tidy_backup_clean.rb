@@ -10,6 +10,7 @@ class Chef
         require 'chef/cookbook_loader'
         require 'chef/cookbook/metadata'
         require 'chef/tidy_substitutions'
+        require 'ffi_yajl'
       end
 
       option :backup_path,
@@ -26,9 +27,7 @@ class Chef
           exit 1
         end
 
-        global_users.each do |user|
-          validate_user(user)
-        end
+        validate_user_emails!
 
         if config[:gsub_file]
           unless ::File.exist?(config[:gsub_file])
@@ -43,6 +42,45 @@ class Chef
           fix_self_dependencies(org)
           load_cookbooks(org)
           generate_new_metadata(org)
+        end
+      end
+
+      def validate_user_emails!
+        emails_seen = []
+        global_users.each do |user|
+          email = ''
+          ui.info "Validating #{user}"
+          the_user = FFI_Yajl::Parser.parse(::File.read(::File.join(global_users_path_expanded, "#{user}.json")), symbolize_names: false)
+          if the_user['email'].match(/\A[^@\s]+@[^@\s]+\z/)
+            if emails_seen.include?(the_user['email'])
+              ui.info "Already saw #{user}'s email, creating a unique one."
+              email = unique_email
+              new_user = the_user.dup
+              new_user['email'] = email
+              save_user(new_user)
+              emails_seen.push(email)
+            else
+              emails_seen.push(the_user['email'])
+            end
+          else
+            ui.info "User #{user} does not have a valid email, creating a unique one."
+            email = unique_email
+            new_user = the_user.dup
+            new_user['email'] = email
+            save_user(new_user)
+            emails_seen.push(email)
+          end
+        end
+      end
+
+      def unique_email
+        (0...8).map { (65 + rand(26)).chr }.join.downcase +
+        '@' + (0...8).map { (65 + rand(26)).chr }.join.downcase + '.com'
+      end
+
+      def save_user(user)
+        ::File.open(::File.join(global_users_path_expanded, "#{user['username']}.json"), 'w+') do |f|
+          f.write(FFI_Yajl::Encoder.encode(user, pretty: true))
         end
       end
 
@@ -88,7 +126,7 @@ class Chef
           ui.warn "No metadata.rb in #{path} - skipping"
           return
         end
-        ui.info "   Generating new metadata.json for #{path}"
+        ui.info "Generating new metadata.json for #{path}"
         md = Chef::Cookbook::Metadata.new
         md.name(cookbook)
         md.from_file(md_path)

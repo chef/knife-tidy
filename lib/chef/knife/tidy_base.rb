@@ -60,6 +60,10 @@ class Chef
         ::File.expand_path(::File.join(backup_path_expanded, 'organizations', org, 'cookbooks'))
       end
 
+      def global_users_path_expanded
+        ::File.expand_path(::File.join(backup_path_expanded, 'users'))
+      end
+
       def substitutions_file
         ::File.expand_path(config[:gsub_file])
       end
