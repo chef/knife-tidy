@@ -18,7 +18,7 @@ class Chef
 
       option :gsub_file,
         :long => '--gsub-file path/to/gsub/file',
-        :description => 'The path to the file used for substitutions'
+        :description => 'The path to the file used for substitutions. If non-existant, a boiler plate one will be created.'
 
       def run
         unless config[:backup_path]
@@ -26,9 +26,14 @@ class Chef
           exit 1
         end
 
+        global_users.each do |user|
+          validate_user(user)
+        end
+
         if config[:gsub_file]
-          if config[:gen_gsub_template]
+          unless ::File.exist?(config[:gsub_file])
             Chef::TidySubstitutions.new(substitutions_file).boiler_plate
+            exit
           else
             Chef::TidySubstitutions.new(substitutions_file, backup_path_expanded).run_substitutions
           end
@@ -97,6 +102,10 @@ class Chef
         ui.stderr.puts
         ui.stderr.puts e.message
         exit 1
+      end
+
+      def validate_user(user)
+        ui.info "Validating user #{user}"
       end
     end
   end

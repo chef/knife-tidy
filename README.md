@@ -1,19 +1,27 @@
 # knife tidy
 
-# Description
+# Summary
 
-This tool is intended to be used to report on the state of Chef Server objects that can be tidied up.
-It can also help by applying some general good ol' fashioned tidiness if desired.
+This Chef Knife plugin has two primary purposes:
+ * Report on the state of Chef Server objects that can be tidied up (Future: clean up objects)
+ * Clean up data integrity issues from a object backup created by [knife-ec-backup](https://github.com/chef/knife-ec-backup)
 
 # Requirements
 
-Chef Client 13. Can easily be installed via latest [Chef DK](https://github.com/chef/chef-dk#installation)
+A current Chef Client. Can easily be installed via [Chef DK](https://github.com/chef/chef-dk#installation)
 
 # Installation
 
 Via Gem
 ```bash
 gem install knife-tidy
+```
+
+Via Source
+```bash
+git clone https://github.com/jeremymv2/knife-tidy.git
+cd knife-tidy
+gem build knife-tidy.gemspec && gem install knife-tidy-*.gem --no-ri --no-rdoc
 ```
 
 ## Common Options
@@ -23,31 +31,37 @@ The following options are supported across all subcommands:
   * `--orgs ORG1,ORG2`:
     Only apply to objects in the named organizations (default: all orgs)
 
-## knife tidy `server report` (options)
+# knife tidy server report (options)
 
-### Options
+## Options
 
   * `--node-threshold NUM_DAYS`
     Maximum number of days since last checkin before node is considered stale (default: 30)
 
-### `server report` Description
+## Notes
+  Generates json reports as such:
 
-## knife tidy `backup report` (options)
+File Name | Contents
+--- | ---
+<org>_<threshold_num>d_stale_nodes.json | Nodes in that org that have not checked in for the number of days specified.
+<org>_cookbook_count.json | Number of cookbook versions for each cookbook that that org.
+<org>_unused_cookbooks.json | List of cookbooks and versions that do not appear to be in-use for that org. This is determined by checking the versioned run list of each of the nodes in the org.
 
-### Options
+# knife tidy backup clean (options)
+
+## Options
 
   * `--repo-path /path/to/chef-repo`:
-    The Chef Repo to report on or change (such as one created from a
-    [knife-ec-backup](https://github.com/chef/knife-ec-backup)
+    The Chef Repo to tidy up (such as one created from a [knife-ec-backup](https://github.com/chef/knife-ec-backup)
 
-### `backup report` Description
+  * `--gsub-file path/to/gsub/file`:
+    The path to the file used for substitutions. If non-existant, a boiler plate one will be created.
 
-## knife tidy `backup clean` (options)
+## Notes
 
-  * `--cookbooks-only`:
-    Only report on cookbooks issues and/or usage.
-    If --repo-path is not specified, a cookbook usage report from Chef Server is generated.
+  * Items [Addressed](ITEMS_CLEANED.md)
+  * [To Do](TODO_LIST.md)
 
-  * `--user-groups-only`:
-    Only report on user and group membership issues.
-    Applies only if --repo-path is specified
+# Credits
+
+  * Server Report was ported from Nolan Davidson's [chef-cleanup](https://github.com/nsdavidson/chef-cleanup)

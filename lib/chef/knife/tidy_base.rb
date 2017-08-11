@@ -64,6 +64,10 @@ class Chef
         ::File.expand_path(config[:gsub_file])
       end
 
+      def global_users
+        Dir[::File.join(backup_path_expanded, 'users', '*')].map { |dir| ::File.basename(dir, '.json') }
+      end
+
       def orgs
         if config[:org_list]
           config[:org_list].split(',')
