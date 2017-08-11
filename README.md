@@ -33,6 +33,10 @@ The following options are supported across all subcommands:
 
 # knife tidy server report (options)
 
+Cookbooks and nodes account for the largest objects in your Chef Server.
+If you want to keep it lean and mean and easy to port the object data, you must
+clean any of these unused objects up!
+
 ## Options
 
   * `--node-threshold NUM_DAYS`
