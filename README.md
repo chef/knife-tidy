@@ -64,7 +64,7 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
   Global file substitutions can be performed when `--gsub-file` option is used. Several known issues are corrected
   and others can be added with search/replace pairings:
 
-  * global file gbus (:DONE)
+  * DONE: global glob'd file gsub definitions
 
 ```json
 {
