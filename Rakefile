@@ -1,6 +1,6 @@
 #!/usr/bin/env rake
 
-require_relative 'tasks/maintainers'
+# require_relative 'tasks/maintainers'
 
 # Style tests. cookstyle (rubocop) and Foodcritic
 namespace :style do
@@ -62,6 +62,18 @@ namespace :supermarket do
     Stove::RakeTask.new
   rescue LoadError => e
     puts ">>> Gem load error: #{e}, omitting #{task.name}" unless ENV['CI']
+  end
+end
+
+# Changelog
+namespace :changelog do
+  begin
+    require 'github_changelog_generator/task'
+
+    GitHubChangelogGenerator::RakeTask.new :changelog do |config|
+      config.since_tag = '0.1.1'
+      config.future_release = '0.1.1'
+    end
   end
 end
 
