@@ -49,7 +49,7 @@ class Chef
       end
 
       def backup_path_expanded
-        ::File.expand_path(config[:backup_path])
+        @backup_path_expanded ||= ::File.expand_path(config[:backup_path])
       end
 
       def cookbook_name_from_path(path)
@@ -61,23 +61,23 @@ class Chef
       end
 
       def global_users_path_expanded
-        ::File.expand_path(::File.join(backup_path_expanded, 'users'))
+        @global_users_path_expanded ||= ::File.expand_path(::File.join(backup_path_expanded, 'users'))
       end
 
       def substitutions_file
-        ::File.expand_path(config[:gsub_file])
+        @substitutions_file ||= ::File.expand_path(config[:gsub_file])
       end
 
       def global_users
-        Dir[::File.join(backup_path_expanded, 'users', '*')].map { |dir| ::File.basename(dir, '.json') }
+        @global_users ||= Dir[::File.join(backup_path_expanded, 'users', '*')].map { |dir| ::File.basename(dir, '.json') }
       end
 
       def orgs
-        if config[:org_list]
-          config[:org_list].split(',')
-        else
-          Dir[::File.join(backup_path_expanded, 'organizations', '*')].map { |dir| ::File.basename(dir) }
-        end
+        @orgs ||= if config[:org_list]
+                    config[:org_list].split(',')
+                  else
+                    Dir[::File.join(backup_path_expanded, 'organizations', '*')].map { |dir| ::File.basename(dir) }
+                  end
       end
 
       def for_each_cookbook_basename(org)

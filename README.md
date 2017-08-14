@@ -31,7 +31,7 @@ The following options are supported across all subcommands:
   * `--orgs ORG1,ORG2`:
     Only apply to objects in the named organizations (default: all orgs)
 
-# knife tidy server report (options)
+## $ knife tidy server report (options)
 
 Cookbooks and nodes account for the largest objects in your Chef Server.
 If you want to keep it lean and mean and easy to port the object data, you must
@@ -51,7 +51,7 @@ org_threshold_numdays_stale_nodes.json | Nodes in that org that have not checked
 org_cookbook_count.json | Number of cookbook versions for each cookbook that that org.
 org_unused_cookbooks.json | List of cookbooks and versions that do not appear to be in-use for that org. This is determined by checking the versioned run list of each of the nodes in the org.
 
-# knife tidy backup clean (options)
+## $ knife tidy backup clean (options)
 
 ## Options
 
