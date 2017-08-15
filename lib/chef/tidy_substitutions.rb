@@ -53,7 +53,7 @@ class Chef
           end
         end
         temp_file.close
-        FileUtils.mv(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
+        FileUtils.cp(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
         FileUtils.mv(temp_file.path, path)
       ensure
         temp_file.close
