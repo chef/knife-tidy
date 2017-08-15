@@ -90,9 +90,9 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
   * DONE: metadata self-dependency correction
   * DONE: user email validation
   * DONE: ensure user emails do not cause primary key violation
-  * TODO: ambiguous actors (acl actor exists as client and user)
-  * TODO: users/clients referenced as actors in acls that do not exist in users/clients
-  * TODO: nonexistent groups referenced in acls
+  * DONE: ambiguous actors (acl actor exists as client and user)
+  * DONE: users/clients referenced as actors in acls that do not exist in users/clients
+  * DONE: nonexistent groups referenced in acls
 
 ## Summary and Credits
 

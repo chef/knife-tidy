@@ -187,10 +187,3 @@ class Chef
     end
   end
 end
-
-acl = Chef::TidyOrgAcls.new('/Users/jmiller/Downloads/backup', 'gtms')
-acl.validate_acls
-
-#require 'pry';binding.pry
-
-puts "foo"
