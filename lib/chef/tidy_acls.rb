@@ -106,7 +106,7 @@ class Chef
     end
 
     def ambiguous_actor?(actor)
-      valid_global_user?(actor) && valid_org_client?(actor)
+      valid_org_member?(actor) && valid_org_client?(actor)
     end
 
     def missing_from_members?(actor)
@@ -123,10 +123,12 @@ class Chef
     end
 
     def fix_ambiguous_actor(actor)
-      Chef::Log.warn "Ambiguous actor! #{actor}"
+      Chef::Log.warn "Ambiguous actor! #{actor} removing from #{members_path}"
+      remove_user_from_org(actor)
     end
 
     def add_client_to_org(actor)
+      # TODO
       Chef::Log.warn "Client referenced in acl non-existant: #{actor}"
     end
 
@@ -135,15 +137,31 @@ class Chef
       user = { 'user' => { 'username' => actor } }
       temp_members = @members.dup
       temp_members.push(user)
-      FileUtils.cp(members_path, "#{members_path}.orig") unless ::File.exist?("#{members_path}.orig")
-      ::File.open(members_path, 'w+') do |f|
-         f.write(FFI_Yajl::Encoder.encode(temp_members, pretty: true))
-      end
-      load_members
+      write_new_file(temp_members, members_path)
+      @members = temp_members
     end
 
-    def fix_missing_group(group)
-      Chef::Log.warn "Fixing invalid group: #{group}"
+    def write_new_file(contents, path)
+      FileUtils.cp(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
+      ::File.open(path, 'w+') do |f|
+         f.write(FFI_Yajl::Encoder.encode(contents, pretty: true))
+      end
+    end
+
+    def remove_user_from_org(actor)
+      temp_members = @members.dup
+      temp_members.reject! { |user| user[:user][:username] == actor }
+      write_new_file(temp_members, members_path)
+      @members = temp_members
+    end
+
+    def remove_group_from_acl(group, acl_file)
+      Chef::Log.warn "Removing invalid group: #{group} from #{acl_file}"
+      acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
+      acl_ops.each do |op|
+        acl[op]['groups'].reject! { |the_group| the_group == group }
+      end
+      write_new_file(acl, acl_file)
     end
 
     def validate_acls
@@ -162,7 +180,7 @@ class Chef
         end
         actor_groups[:groups].each do |group|
           if invalid_group?(group)
-            fix_missing_group(group)
+            remove_group_from_acl(group, acl_file)
           end
         end
       end
