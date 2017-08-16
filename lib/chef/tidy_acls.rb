@@ -1,5 +1,4 @@
 require 'ffi_yajl'
-require 'tempfile'
 require 'fileutils'
 require 'chef/log'
 
@@ -7,8 +6,9 @@ class Chef
   class TidyOrgAcls
     attr_accessor :members, :clients, :groups, :users
 
-    def initialize(backup_path, org)
-      @backup_path = backup_path
+    def initialize(tidy, org)
+      @tidy = tidy
+      @backup_path = @tidy.backup_path
       @org = org
       @clients = []
       @members = []
@@ -17,48 +17,28 @@ class Chef
       load_actors
     end
 
-    def users_path
-      @users_path ||= ::File.expand_path(::File.join(@backup_path, 'users'))
-    end
-
-    def members_path
-      @members_path ||= ::File.expand_path(::File.join(@backup_path, 'organizations', @org, 'members.json'))
-    end
-
-    def clients_path
-      @clients_path ||= ::File.expand_path(::File.join(@backup_path, 'organizations', @org, 'clients'))
-    end
-
-    def groups_path
-      @groups_path ||= ::File.expand_path(::File.join(@backup_path, 'organizations', @org, 'groups'))
-    end
-
-    def acls_path
-      @acls_path ||= ::File.expand_path(::File.join(@backup_path, 'organizations', @org, 'acls'))
-    end
-
     def load_users
-      Chef::Log.info "Loading users"
-      Dir[::File.join(users_path, '*.json')].each do |user|
+      Chef::Log.warn "Loading users"
+      Dir[::File.join(@tidy.users_path, '*.json')].each do |user|
         @users.push(FFI_Yajl::Parser.parse(::File.read(user), symbolize_names: true))
       end
     end
 
     def load_members
       Chef::Log.info "Loading members for #{@org}"
-      @members = FFI_Yajl::Parser.parse(::File.read(members_path), symbolize_names: true)
+      @members = FFI_Yajl::Parser.parse(::File.read(@tidy.members_path(@org)), symbolize_names: true)
     end
 
     def load_clients
       Chef::Log.info "Loading clients for #{@org}"
-      Dir[::File.join(clients_path, '*.json')].each do |client|
+      Dir[::File.join(@tidy.clients_path(@org), '*.json')].each do |client|
         @clients.push(FFI_Yajl::Parser.parse(::File.read(client), symbolize_names: true))
       end
     end
 
     def load_groups
       Chef::Log.info "Loading groups for #{@org}"
-      Dir[::File.join(groups_path, '*.json')].each do |group|
+      Dir[::File.join(@tidy.groups_path(@org), '*.json')].each do |group|
         @groups.push(FFI_Yajl::Parser.parse(::File.read(group), symbolize_names: true))
       end
     end
@@ -102,7 +82,9 @@ class Chef
     end
 
     def invalid_group?(actor)
-      @groups.select { |group| group[:name] == actor }.empty?
+      @groups.select { |group| group[:name] == actor }.empty? &&
+        actor != '::server-admins' &&
+        actor != "::#{@org}_read_access_group"
     end
 
     def ambiguous_actor?(actor)
@@ -118,12 +100,12 @@ class Chef
     end
 
     def org_acls
-      @org_acls ||= Dir[::File.join(acls_path, '**.json')] +
-                      Dir[::File.join(acls_path, '**', '*.json')]
+      @org_acls ||= Dir[::File.join(@tidy.org_acls_path(@org), '**.json')] +
+        Dir[::File.join(@tidy.org_acls_path(@org), '**', '*.json')]
     end
 
     def fix_ambiguous_actor(actor)
-      Chef::Log.warn "Ambiguous actor! #{actor} removing from #{members_path}"
+      Chef::Log.warn "Ambiguous actor! #{actor} removing from #{@tidy.members_path(@org)}"
       remove_user_from_org(actor)
     end
 
@@ -133,12 +115,10 @@ class Chef
     end
 
     def add_actor_to_members(actor)
-      Chef::Log.warn "Invalid actor: #{actor} adding to #{members_path}"
-      user = { 'user' => { 'username' => actor } }
-      temp_members = @members.dup
-      temp_members.push(user)
-      write_new_file(temp_members, members_path)
-      @members = temp_members
+      Chef::Log.warn "Invalid actor: #{actor} adding to #{@tidy.members_path(@org)}"
+      user = { user: { username: actor } }
+      @members.push(user)
+      write_new_file(@members, @tidy.members_path(@org))
     end
 
     def write_new_file(contents, path)
@@ -149,10 +129,8 @@ class Chef
     end
 
     def remove_user_from_org(actor)
-      temp_members = @members.dup
-      temp_members.reject! { |user| user[:user][:username] == actor }
-      write_new_file(temp_members, members_path)
-      @members = temp_members
+      @members.reject! { |user| user[:user][:username] == actor }
+      write_new_file(@members, @tidy.members_path(@org))
     end
 
     def remove_group_from_acl(group, acl_file)
@@ -167,8 +145,8 @@ class Chef
     def validate_acls
       org_acls.each do |acl_file|
         acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
-        actor_groups = acl_actors_groups(acl)
-        actor_groups[:actors].each do |actor|
+        actors_groups = acl_actors_groups(acl)
+        actors_groups[:actors].each do |actor|
           next if actor == 'pivotal'
           if ambiguous_actor?(actor)
             fix_ambiguous_actor(actor)
@@ -178,9 +156,22 @@ class Chef
             add_client_to_org(actor)
           end
         end
-        actor_groups[:groups].each do |group|
+        actors_groups[:groups].each do |group|
           if invalid_group?(group)
             remove_group_from_acl(group, acl_file)
+          end
+        end
+      end
+    end
+
+    def validate_user_acls
+      @members.each do |member|
+        user_acl_path = ::File.join(@tidy.user_acls_path, "#{member[:user][:username]}.json")
+        user_acl = FFI_Yajl::Parser.parse(::File.read(user_acl_path), symbolize_names: false)
+        actors_groups = acl_actors_groups(user_acl)
+        actors_groups[:groups].each do |group|
+          if invalid_group?(group)
+            remove_group_from_acl(group, user_acl_path)
           end
         end
       end

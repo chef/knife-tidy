@@ -9,15 +9,11 @@ class Chef
 
     attr_accessor :file_path, :backup_path, :data
 
-    def initialize(file_path = nil, backup_path = nil)
+    def initialize(file_path = nil, tidy_common = nil)
       @file_path = file_path
-      @backup_path = backup_path
+      @backup_path = tidy_common.backup_path if tidy_common
     end
 
-    # Load the substitutions from disk
-    #
-    # @return [Hash]
-    #
     def load_data
       Chef::Log.info "Loading substitutions from #{file_path}"
       @data = FFI_Yajl::Parser.parse(::File.read(@file_path), symbolize_names: false)
@@ -66,7 +62,7 @@ class Chef
       @data.keys.each do |entry|
         @data[entry].keys.each do |glob|
           Chef::Log.info "Running substitutions for #{entry} -> #{glob}"
-          Dir[::File.join(backup_path, glob)].each do |file|
+          Dir[::File.join(@backup_path, glob)].each do |file|
             @data[entry][glob].each do |substitution|
               search = Regexp.new(substitution['pattern'])
               replace = substitution['replace'].dup
