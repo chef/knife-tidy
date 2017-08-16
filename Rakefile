@@ -72,7 +72,7 @@ namespace :changelog do
 
     GitHubChangelogGenerator::RakeTask.new :changelog do |config|
       config.since_tag = '0.1.1'
-      config.future_release = '0.2.0'
+      config.future_release = '0.1.0'
     end
   end
 end

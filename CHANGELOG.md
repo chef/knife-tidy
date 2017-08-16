@@ -1,7 +1,7 @@
 # Change Log
 
-## [0.2.0](https://github.com/jeremymv2/knife-tidy/tree/0.2.0) (2017-08-15)
-[Full Changelog](https://github.com/jeremymv2/knife-tidy/compare/0.2.0...0.2.0)
+## [0.1.0](https://github.com/jeremymv2/knife-tidy/tree/0.1.0) (2017-08-15)
+[Full Changelog](https://github.com/jeremymv2/knife-tidy/compare/0.2.0...0.1.0)
 
 **Merged pull requests:**
 
