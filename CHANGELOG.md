@@ -1,10 +1,20 @@
 # Change Log
 
-## [0.1.1](https://github.com/jeremymv2/knife-tidy/tree/0.1.1) (2017-08-11)
-[Full Changelog](https://github.com/jeremymv2/knife-tidy/compare/0.1.1...0.1.1)
+## [0.2.0](https://github.com/jeremymv2/knife-tidy/tree/0.2.0) (2017-08-15)
+[Full Changelog](https://github.com/jeremymv2/knife-tidy/compare/0.2.0...0.2.0)
 
 **Merged pull requests:**
 
+- bump version to 0.2.0 [\#6](https://github.com/jeremymv2/knife-tidy/pull/6) ([jeremymv2](https://github.com/jeremymv2))
+
+## [0.2.0](https://github.com/jeremymv2/knife-tidy/tree/0.2.0) (2017-08-16)
+[Full Changelog](https://github.com/jeremymv2/knife-tidy/compare/0.1.1...0.2.0)
+
+**Merged pull requests:**
+
+- moved all common functions to tidy\_common.rb [\#5](https://github.com/jeremymv2/knife-tidy/pull/5) ([jeremymv2](https://github.com/jeremymv2))
+- Jeremymv2/acl items [\#4](https://github.com/jeremymv2/knife-tidy/pull/4) ([jeremymv2](https://github.com/jeremymv2))
+- updated changelog [\#3](https://github.com/jeremymv2/knife-tidy/pull/3) ([jeremymv2](https://github.com/jeremymv2))
 - bump version to 0.1.1 [\#2](https://github.com/jeremymv2/knife-tidy/pull/2) ([jeremymv2](https://github.com/jeremymv2))
 
 
