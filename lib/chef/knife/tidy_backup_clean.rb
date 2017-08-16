@@ -4,14 +4,16 @@ class Chef
   class Knife
     class TidyBackupClean < Knife
 
-      include Knife::TidyBase
-
       deps do
         require 'chef/cookbook_loader'
         require 'chef/cookbook/metadata'
         require 'chef/tidy_substitutions'
+        require 'chef/tidy_acls'
+        require 'chef/tidy_common'
         require 'ffi_yajl'
       end
+
+      include Knife::TidyBase
 
       option :backup_path,
         :long => '--backup-path path/to/backup',
@@ -22,75 +24,72 @@ class Chef
         :description => 'The path to the file used for substitutions. If non-existant, a boiler plate one will be created.'
 
       def run
-        unless config[:backup_path]
-          ui.error 'Must specify --backup-path'
+        unless config[:backup_path] && ::File.directory?(config[:backup_path])
+          ui.error 'Must specify valid --backup-path'
           exit 1
         end
 
-        validate_user_emails!
+        validate_user_emails
 
         if config[:gsub_file]
           unless ::File.exist?(config[:gsub_file])
             Chef::TidySubstitutions.new(substitutions_file).boiler_plate
             exit
           else
-            Chef::TidySubstitutions.new(substitutions_file, backup_path_expanded).run_substitutions
+            Chef::TidySubstitutions.new(substitutions_file, tidy).run_substitutions
           end
         end
 
         orgs.each do |org|
+          org_acls = Chef::TidyOrgAcls.new(tidy, org)
+          org_acls.validate_acls
+          org_acls.validate_user_acls
           fix_self_dependencies(org)
           load_cookbooks(org)
           generate_new_metadata(org)
         end
       end
 
-      def validate_user_emails!
+      def tidy
+        @tidy ||= Chef::TidyCommon.new(config[:backup_path])
+      end
+
+      def validate_user_emails
         emails_seen = []
-        global_users.each do |user|
+        tidy.global_user_names.each do |user|
           email = ''
           ui.info "Validating #{user}"
-          the_user = FFI_Yajl::Parser.parse(::File.read(::File.join(global_users_path_expanded, "#{user}.json")), symbolize_names: false)
+          the_user = FFI_Yajl::Parser.parse(::File.read(::File.join(tidy.users_path, "#{user}.json")), symbolize_names: false)
           if the_user['email'].match(/\A[^@\s]+@[^@\s]+\z/)
             if emails_seen.include?(the_user['email'])
               ui.info "Already saw #{user}'s email, creating a unique one."
-              email = unique_email
+              email = tidy.unique_email
               new_user = the_user.dup
               new_user['email'] = email
-              save_user(new_user)
+              tidy.save_user(new_user)
               emails_seen.push(email)
             else
               emails_seen.push(the_user['email'])
             end
           else
             ui.info "User #{user} does not have a valid email, creating a unique one."
-            email = unique_email
+            email = tidy.unique_email
             new_user = the_user.dup
             new_user['email'] = email
-            save_user(new_user)
+            tidy.save_user(new_user)
             emails_seen.push(email)
           end
         end
       end
 
-      def unique_email
-        (0...8).map { (65 + rand(26)).chr }.join.downcase +
-        '@' + (0...8).map { (65 + rand(26)).chr }.join.downcase + '.com'
-      end
-
-      def save_user(user)
-        ::File.open(::File.join(global_users_path_expanded, "#{user['username']}.json"), 'w+') do |f|
-          f.write(FFI_Yajl::Encoder.encode(user, pretty: true))
-        end
-      end
-
       def load_cookbooks(org)
-        cl = Chef::CookbookLoader.new(cookbooks_path_expanded(org))
+        cl = Chef::CookbookLoader.new(tidy.cookbooks_path(org))
         for_each_cookbook_basename(org) do |cookbook|
           ui.info "Loading #{cookbook}"
           ret = cl.load_cookbook(cookbook)
           if ret.nil?
-            ui.error "Something's wrong with the #{cookbook} cookbook - cannot load it!"
+            ui.warn "Something's wrong with the #{cookbook} cookbook - cannot load it! Moving to cookbooks.broken folder."
+            broken_cookooks_add(org, cookbook)
           end
         end
       rescue LoadError => e
@@ -99,15 +98,23 @@ class Chef
         exit 1
       end
 
+      def broken_cookooks_add(org, cookbook)
+        broken_path = ::File.join(tidy.org_path(org), 'cookbooks.broken')
+        FileUtils.mkdir(broken_path) unless ::File.directory?(broken_path)
+        Dir[::File.join(tidy.cookbooks_path(org), "#{cookbook}*")].each do |cb|
+          FileUtils.mv(cb, broken_path, :verbose => true, :force => true)
+        end
+      end
+
       def generate_new_metadata(org)
         for_each_cookbook_path(org) do |cookbook_path|
-          generate_metadata_from_file(cookbook_name_from_path(cookbook_path), cookbook_path)
+          generate_metadata_from_file(tidy.cookbook_name_from_path(cookbook_path), cookbook_path)
         end
       end
 
       def fix_self_dependencies(org)
         for_each_cookbook_path(org) do |cookbook_path|
-          name = cookbook_name_from_path(cookbook_path)
+          name = tidy.cookbook_name_from_path(cookbook_path)
           md_path = ::File.join(cookbook_path, 'metadata.rb')
           unless ::File.exist?(md_path)
             ui.warn "No metadata.rb in #{cookbook_path} - skipping"
@@ -142,8 +149,33 @@ class Chef
         exit 1
       end
 
-      def validate_user(user)
-        ui.info "Validating user #{user}"
+      def substitutions_file
+        @substitutions_file ||= ::File.expand_path(config[:gsub_file])
+      end
+
+      def orgs
+        @orgs ||= if config[:org_list]
+                    config[:org_list].split(',')
+                  else
+                    Dir[::File.join(tidy.backup_path, 'organizations', '*')].map { |dir| ::File.basename(dir) }
+                  end
+      end
+
+      def for_each_cookbook_basename(org)
+        cookbooks_seen = []
+        Dir[::File.join(tidy.cookbooks_path(org), '**-**')].each do |cookbook|
+          name = tidy.cookbook_name_from_path(cookbook)
+          unless cookbooks_seen.include?(name)
+            cookbooks_seen.push(name)
+            yield name
+          end
+        end
+      end
+
+      def for_each_cookbook_path(org)
+        Dir[::File.join(tidy.cookbooks_path(org), '**')].each do |cookbook|
+          yield cookbook
+        end
       end
     end
   end
