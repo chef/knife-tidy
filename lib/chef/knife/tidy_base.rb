@@ -27,6 +27,7 @@ class Chef
 
           deps do
             require 'chef/tidy_server'
+            require 'chef/tidy_common'
           end
 
           option :org_list,
@@ -45,7 +46,19 @@ class Chef
       end
 
       def rest
-        @rest ||= Chef::ServerAPI.new(server.root_url, {:api_version => "0"})
+        @rest ||= Chef::ServerAPI.new(server.root_url, keepalives: true)
+      end
+
+      def tidy
+        @tidy ||= if config[:backup_path].nil?
+                    Chef::TidyCommon.new
+                  else
+                    Chef::TidyCommon.new(config[:backup_path])
+                  end
+      end
+
+      def completion_message
+        puts "** Finished **"
       end
     end
   end

@@ -5,7 +5,7 @@ class Chef
   class TidyCommon
     attr_accessor :backup_path
 
-    def initialize(backup_path)
+    def initialize(backup_path = Dir.pwd)
       @backup_path = ::File.expand_path(backup_path)
     end
 
@@ -53,7 +53,9 @@ class Chef
     end
 
     def write_new_file(contents, path)
-      FileUtils.cp(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
+      if ::File.exist?(path)
+        FileUtils.cp(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
+      end
       ::File.open(path, 'w+') do |f|
          f.write(FFI_Yajl::Encoder.encode(contents, pretty: true))
       end
@@ -65,6 +67,10 @@ class Chef
 
     def global_user_names
       @global_user_names ||= Dir[::File.join(@backup_path, 'users', '*')].map { |dir| ::File.basename(dir, '.json') }
+    end
+
+    def reports_dir
+      @reports_dir ||= ::File.join(Dir.pwd, 'reports')
     end
   end
 end
