@@ -10,7 +10,7 @@ class Chef
         require 'ffi_yajl'
       end
 
-      banner "knife tidy server_report (options)"
+      banner "knife tidy server report (options)"
 
       option :node_threshold,
         :long => '--node-threshold NUM_DAYS',
