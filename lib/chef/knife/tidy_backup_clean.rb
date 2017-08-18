@@ -13,6 +13,8 @@ class Chef
         require 'ffi_yajl'
       end
 
+      banner "knife tidy backup clean (OPTIONS)"
+
       include Knife::TidyBase
 
       option :backup_path,

@@ -45,7 +45,11 @@ class Chef
       end
 
       def rest
-        @rest ||= Chef::ServerAPI.new(server.root_url, {:api_version => "0"})
+        @rest ||= Chef::ServerAPI.new(server.root_url, keepalives: true)
+      end
+
+      def completion_message
+        puts "** Finished **"
       end
     end
   end

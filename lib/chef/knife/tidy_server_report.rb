@@ -10,7 +10,7 @@ class Chef
         require 'ffi_yajl'
       end
 
-      banner "knife tidy server report (OPTIONS)"
+      banner "knife tidy server_report (options)"
 
       option :node_threshold,
         :long => '--node-threshold NUM_DAYS',
@@ -21,6 +21,7 @@ class Chef
         ensure_reports_dir!
 
         ui.warn "Writing to #{reports_dir} directory"
+        delete_existing_reports
 
         orgs = if config[:org_list]
                  config[:org_list].split(',')
@@ -76,6 +77,14 @@ class Chef
 
       def ensure_reports_dir!
         Dir.mkdir(reports_dir) unless Dir.exist?(reports_dir)
+      end
+
+      def delete_existing_reports
+        files = Dir[::File.join(reports_dir, '*.json')]
+        unless files.empty?
+          ui.confirm("You have existing reports in #{reports_dir}. Remove")
+          FileUtils.rm(files, :force => true)
+        end
       end
 
       def nodes_list(org)
