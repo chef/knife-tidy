@@ -20,7 +20,7 @@ class Chef
       def run
         ensure_reports_dir!
 
-        ui.warn "Writing to #{reports_dir} directory"
+        ui.warn "Writing to #{tidy.reports_dir} directory"
         delete_existing_reports
 
         orgs = if config[:org_list]
@@ -60,29 +60,21 @@ class Chef
           stale_nodes_hash = {'threshold_days': node_threshold, 'count': stale_nodes.count, 'list': stale_nodes}
           stale_orgs.push(org) if stale_nodes.count == nodes.count
 
-          report("#{org}_unused_cookbooks.json", unused_cookbooks(used_cookbooks, cb_list))
-          report("#{org}_unused_cookbooks.json", unused_cookbooks(used_cookbooks, cb_list))
-          report("#{org}_cookbook_count.json", version_count)
-          report("#{org}_#{node_threshold}d_stale_nodes.json", stale_nodes_hash)
+          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"))
+          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"))
+          tidy.write_new_file(version_count, ::File.join(tidy.reports_dir, "#{org}_cookbook_count.json"))
+          tidy.write_new_file(stale_nodes_hash, ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json"))
         end
       end
 
-      def report(file_name, content)
-        ::File.write(::File.join(reports_dir, file_name), FFI_Yajl::Encoder.encode(content, pretty: true))
-      end
-
-      def reports_dir
-        ::File.join(Dir.pwd, 'reports')
-      end
-
       def ensure_reports_dir!
-        Dir.mkdir(reports_dir) unless Dir.exist?(reports_dir)
+        Dir.mkdir(tidy.reports_dir) unless Dir.exist?(tidy.reports_dir)
       end
 
       def delete_existing_reports
-        files = Dir[::File.join(reports_dir, '*.json')]
+        files = Dir[::File.join(tidy.reports_dir, '*.json')]
         unless files.empty?
-          ui.confirm("You have existing reports in #{reports_dir}. Remove")
+          ui.confirm("You have existing reports in #{tidy.reports_dir}. Remove")
           FileUtils.rm(files, :force => true)
         end
       end

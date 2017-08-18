@@ -9,7 +9,6 @@ class Chef
         require 'chef/cookbook/metadata'
         require 'chef/tidy_substitutions'
         require 'chef/tidy_acls'
-        require 'chef/tidy_common'
         require 'ffi_yajl'
       end
 
@@ -50,10 +49,6 @@ class Chef
           load_cookbooks(org)
           generate_new_metadata(org)
         end
-      end
-
-      def tidy
-        @tidy ||= Chef::TidyCommon.new(config[:backup_path])
       end
 
       def validate_user_emails
