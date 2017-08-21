@@ -1,3 +1,6 @@
+# not enabled
+return
+
 require 'chef/knife/tidy_base'
 
 class Chef
