@@ -50,6 +50,11 @@ class Chef
             end
           end
 
+          Chef::Log.debug("Used cookbook list before checking environments: #{used_cookbooks}")
+          pins = environment_constraints(org)
+          used_cookbooks = check_environment_pins(used_cookbooks, pins, cb_list)
+          Chef::Log.debug("Used cookbook list after checking environments: #{used_cookbooks}")
+
           stale_nodes = []
           nodes.each do |n|
             if (Time.now.to_i - n['ohai_time'].to_i) >= node_threshold * 86400
@@ -127,6 +132,62 @@ class Chef
 
       def all_orgs
         rest.get('organizations').keys
+      end
+
+      def all_environments(org)
+        rest.get("/organizations/#{org}/environments").values
+      end
+
+      def environment_constraints(org)
+        constraints = {}
+        all_environments(org).each do |env|
+          e = rest.get(env)
+          e['cookbook_versions'].each do |cb, version|
+            if constraints[cb]
+              constraints[cb].push(version) unless constraints[cb].include?(version)
+            else
+              constraints[cb] = [version]
+            end
+          end
+        end
+        constraints
+      end
+
+      def check_cookbook_list(cb_list, cb, version)
+        cb_list[cb].each do |v|
+          if Gem::Dependency.new('', version).match?('', v)
+            Chef::Log.debug("Pin of #{cb} can be satisfied by #{v}, adding to used list")
+            return [v]
+          else
+            Chef::Log.debug("Pin of #{cb} version #{version} not satisfied by #{v}")
+          end
+        end
+        return nil
+      end
+
+      def check_environment_pins(used_cookbooks, pins, cb_list)
+        pins.each do |cb, versions|
+          versions.each do |version|
+            if used_cookbooks[cb]
+              # This pinned cookbook is in the used list, now check for a matching version.
+              used_cookbooks[cb].each do |v|
+                if Gem::Dependency.new('', version).match?('', v)
+                  # This version in used_cookbooks satisfies the pin
+                  Chef::Log.debug("Pin of #{cb}: #{version} is satisfied by #{v}")
+                  break
+                end
+              end
+              result = check_cookbook_list(cb_list, cb, version)
+              used_cookbooks[cb].push(result[0]) if result
+            else
+              # No cookbook version for that pin, look through the full cookbook list for a match
+              Chef::Log.debug("No used cookbook #{cb}, checking the full cookbook list")
+              result = check_cookbook_list(cb_list, cb, version)
+              used_cookbooks[cb] = result if result
+            end
+          end
+        end
+        used_cookbooks
       end
     end
   end
