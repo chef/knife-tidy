@@ -58,7 +58,7 @@ class Chef
       end
 
       def completion_message
-        puts "** Finished **"
+        puts "#{ui.color("** Finished **", :magenta)}"
       end
     end
   end
