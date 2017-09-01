@@ -55,7 +55,7 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
 
 ## Options
 
-  * `--repo-path /path/to/chef-repo`:
+  * `--backup-path /path/to/an-ec-backup`:
     The Chef Repo to tidy up (such as one created from a [knife-ec-backup](https://github.com/chef/knife-ec-backup)
 
   * `--gsub-file path/to/gsub/file`:
@@ -78,7 +78,7 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
       },
       {
         "pattern":"version *Chef::Sugar::VERSION",
-        "replace":"# version          !COOKBOOK_VERSION!"
+        "replace":"version          !COOKBOOK_VERSION!"
       }
     ]
   }
