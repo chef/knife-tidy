@@ -70,6 +70,8 @@ class Chef
           tidy.write_new_file(version_count, ::File.join(tidy.reports_dir, "#{org}_cookbook_count.json"))
           tidy.write_new_file(stale_nodes_hash, ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json"))
         end
+
+        completion_message
       end
 
       def ensure_reports_dir!

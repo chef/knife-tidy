@@ -49,6 +49,8 @@ class Chef
           load_cookbooks(org)
           generate_new_metadata(org)
         end
+
+        completion_message
       end
 
       def validate_user_emails
