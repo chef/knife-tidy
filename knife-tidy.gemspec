@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email            = ["jmiller@chef.io"]
   s.summary          = "Report on stale Chef Server nodes and cookbooks and clean up data integrity issues in a knife-ec-backup object based backup"
   s.description      = s.summary
-  s.homepage         = "https://github.com/jeremymv2/knife-tidy"
+  s.homepage         = "https://github.com/chef-customers/knife-tidy"
   s.license          = "Apache License, v2.0"
   s.files            = `git ls-files`.split("\n")
   s.require_paths    = ["lib"]
