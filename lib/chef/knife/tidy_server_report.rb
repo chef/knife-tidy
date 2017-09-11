@@ -30,7 +30,7 @@ class Chef
                end
 
         stale_orgs = []
-        node_threshold = config[:node_threshold]
+        node_threshold = config[:node_threshold].to_i
 
         orgs.each do |org|
           ui.info "  Organization: #{org}"
