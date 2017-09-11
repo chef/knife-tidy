@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.2.3](https://github.com/chef-customers/knife-tidy/tree/0.2.3) (2017-09-11)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.2.2...0.2.3)
+
+**Merged pull requests:**
+
+- setting required ruby to \>= 2.0.0 [\#14](https://github.com/chef-customers/knife-tidy/pull/14) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.2.2](https://github.com/chef-customers/knife-tidy/tree/0.2.2) (2017-09-11)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.2.1...0.2.2)
 
