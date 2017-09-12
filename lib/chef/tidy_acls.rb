@@ -18,26 +18,26 @@ class Chef
     end
 
     def load_users
-      Chef::Log.warn "Loading users"
+      puts "INFO: Loading users"
       Dir[::File.join(@tidy.users_path, '*.json')].each do |user|
         @users.push(FFI_Yajl::Parser.parse(::File.read(user), symbolize_names: true))
       end
     end
 
     def load_members
-      Chef::Log.info "Loading members for #{@org}"
+      puts "INFO: Loading members for #{@org}"
       @members = FFI_Yajl::Parser.parse(::File.read(@tidy.members_path(@org)), symbolize_names: true)
     end
 
     def load_clients
-      Chef::Log.info "Loading clients for #{@org}"
+      puts "INFO: Loading clients for #{@org}"
       Dir[::File.join(@tidy.clients_path(@org), '*.json')].each do |client|
         @clients.push(FFI_Yajl::Parser.parse(::File.read(client), symbolize_names: true))
       end
     end
 
     def load_groups
-      Chef::Log.info "Loading groups for #{@org}"
+      puts "INFO: Loading groups for #{@org}"
       Dir[::File.join(@tidy.groups_path(@org), '*.json')].each do |group|
         @groups.push(FFI_Yajl::Parser.parse(::File.read(group), symbolize_names: true))
       end
@@ -48,7 +48,7 @@ class Chef
       load_members
       load_clients
       load_groups
-      Chef::Log.info "#{@org} Actors loaded!"
+      puts "INFO: #{@org} Actors loaded!"
     end
 
     def acl_ops
@@ -105,17 +105,17 @@ class Chef
     end
 
     def fix_ambiguous_actor(actor)
-      Chef::Log.warn "Ambiguous actor! #{actor} removing from #{@tidy.members_path(@org)}"
+      puts "REPAIRING: Ambiguous actor! #{actor} removing from #{@tidy.members_path(@org)}"
       remove_user_from_org(actor)
     end
 
     def add_client_to_org(actor)
       # TODO
-      Chef::Log.warn "Client referenced in acl non-existant: #{actor}"
+      puts "ACTION NEEDED: Client referenced in acl non-existant: #{actor}"
     end
 
     def add_actor_to_members(actor)
-      Chef::Log.warn "Invalid actor: #{actor} adding to #{@tidy.members_path(@org)}"
+      puts "REPAIRING: Invalid actor: #{actor} adding to #{@tidy.members_path(@org)}"
       user = { user: { username: actor } }
       @members.push(user)
       write_new_file(@members, @tidy.members_path(@org))
@@ -134,7 +134,7 @@ class Chef
     end
 
     def remove_group_from_acl(group, acl_file)
-      Chef::Log.warn "Removing invalid group: #{group} from #{acl_file}"
+      puts "REPAIRING: Removing invalid group: #{group} from #{acl_file}"
       acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
       acl_ops.each do |op|
         acl[op]['groups'].reject! { |the_group| the_group == group }
