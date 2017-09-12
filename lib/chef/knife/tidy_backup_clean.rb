@@ -46,6 +46,7 @@ class Chef
           org_acls.validate_acls
           org_acls.validate_user_acls
           fix_self_dependencies(org)
+          fix_cookbook_names(org)
           load_cookbooks(org)
           generate_new_metadata(org)
         end
@@ -57,11 +58,11 @@ class Chef
         emails_seen = []
         tidy.global_user_names.each do |user|
           email = ''
-          ui.info "Validating #{user}"
+          puts "INFO: Validating #{user}"
           the_user = FFI_Yajl::Parser.parse(::File.read(::File.join(tidy.users_path, "#{user}.json")), symbolize_names: false)
           if the_user['email'].match(/\A[^@\s]+@[^@\s]+\z/)
             if emails_seen.include?(the_user['email'])
-              ui.info "Already saw #{user}'s email, creating a unique one."
+              puts "REPAIRING: Already saw #{user}'s email, creating a unique one."
               email = tidy.unique_email
               new_user = the_user.dup
               new_user['email'] = email
@@ -71,7 +72,7 @@ class Chef
               emails_seen.push(the_user['email'])
             end
           else
-            ui.info "User #{user} does not have a valid email, creating a unique one."
+            puts "REPAIRING: User #{user} does not have a valid email, creating a unique one."
             email = tidy.unique_email
             new_user = the_user.dup
             new_user['email'] = email
@@ -81,19 +82,37 @@ class Chef
         end
       end
 
+      def add_cookbook_name_to_metadata(cookbook_name, rb_path)
+        puts "REPAIRING: Correcting `name` in #{rb_path}"
+        content = IO.readlines(rb_path)
+        new_content = content.select { |line| line !~ /^name.*['"]\S+['"]/ }
+        name_field = "name '#{cookbook_name}'\n"
+        IO.write rb_path, name_field + new_content.join('')
+      end
+
+      def fix_cookbook_names(org)
+        for_each_cookbook_path(org) do |cookbook_path|
+          rb_path = ::File.join(cookbook_path, 'metadata.rb')
+          next unless ::File.exist?(rb_path)
+          cookbook_name = tidy.cookbook_name_from_path(cookbook_path)
+          lines = ::File.readlines(rb_path).select { |line| line =~ /^name.*['"]#{cookbook_name}['"]/ }
+          add_cookbook_name_to_metadata(cookbook_name, rb_path) if lines.empty?
+        end
+      end
+
       def load_cookbooks(org)
         cl = Chef::CookbookLoader.new(tidy.cookbooks_path(org))
         for_each_cookbook_basename(org) do |cookbook|
-          ui.info "Loading #{cookbook}"
+          puts "INFO: Loading #{cookbook}"
           ret = cl.load_cookbook(cookbook)
           if ret.nil?
-            ui.warn "Something's wrong with the #{cookbook} cookbook - cannot load it! Moving to cookbooks.broken folder."
+            puts "ACTION NEEDED: Something's wrong with the #{cookbook} cookbook - cannot load it! Moving to cookbooks.broken folder."
             broken_cookooks_add(org, cookbook)
           end
         end
       rescue LoadError => e
         ui.error e
-        ui.error 'Look at the cookbook above and determine what in the metadata.rb is causing the exception and rectify manually'
+        puts 'ACTION NEEDED: Look at the cookbook above and determine what in the metadata.rb is causing the exception and rectify manually'
         exit 1
       end
 
@@ -116,7 +135,7 @@ class Chef
           name = tidy.cookbook_name_from_path(cookbook_path)
           md_path = ::File.join(cookbook_path, 'metadata.rb')
           unless ::File.exist?(md_path)
-            ui.warn "No metadata.rb in #{cookbook_path} - skipping"
+            puts "INFO: No metadata.rb in #{cookbook_path} - skipping"
             next
           end
           Chef::TidySubstitutions.new.sub_in_file(
@@ -129,10 +148,10 @@ class Chef
       def generate_metadata_from_file(cookbook, path)
         md_path = ::File.join(path, 'metadata.rb')
         unless ::File.exist?(md_path)
-          ui.warn "No metadata.rb in #{path} - skipping"
+          puts "INFO: No metadata.rb in #{path} - skipping"
           return
         end
-        ui.info "Generating new metadata.json for #{path}"
+        puts "INFO: Generating new metadata.json for #{path}"
         md = Chef::Cookbook::Metadata.new
         md.name(cookbook)
         md.from_file(md_path)
