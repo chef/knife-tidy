@@ -1,6 +1,3 @@
-# not enabled
-return
-
 require 'chef/knife/tidy_base'
 
 class Chef
@@ -30,6 +27,10 @@ class Chef
         :description => 'Only delete stale nodes from Chef Server.'
 
       def run
+        # not enabled
+        ui.warn "This feature is not enabled"
+        exit
+
         STDOUT.sync = true
 
         ensure_reports_dir
