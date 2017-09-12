@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.2.4](https://github.com/chef-customers/knife-tidy/tree/0.2.4) (2017-09-12)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.2.3...0.2.4)
+
+**Merged pull requests:**
+
+- disable server clean [\#17](https://github.com/chef-customers/knife-tidy/pull/17) ([jeremymv2](https://github.com/jeremymv2))
+- bump patch to 0.2.4 [\#16](https://github.com/chef-customers/knife-tidy/pull/16) ([jeremymv2](https://github.com/jeremymv2))
+- correct any cookbook metadata name issues [\#15](https://github.com/chef-customers/knife-tidy/pull/15) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.2.3](https://github.com/chef-customers/knife-tidy/tree/0.2.3) (2017-09-11)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.2.2...0.2.3)
 
