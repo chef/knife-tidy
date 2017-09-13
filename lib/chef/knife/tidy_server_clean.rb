@@ -33,7 +33,7 @@ class Chef
       def run
         # not enabled
         ui.warn "This feature is not enabled"
-        # exit
+        exit
 
         STDOUT.sync = true
 
