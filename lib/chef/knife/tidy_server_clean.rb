@@ -26,6 +26,10 @@ class Chef
         :long => '--only-nodes',
         :description => 'Only delete stale nodes from Chef Server.'
 
+      option :dry_run,
+        :long => '--dry-run',
+        :description => 'Do not perform any actual deletion, only report on what would have been deleted.'
+
       def run
         # not enabled
         ui.warn "This feature is not enabled"
@@ -34,9 +38,9 @@ class Chef
         STDOUT.sync = true
 
         ensure_reports_dir
-        ui.info "Reading from #{tidy.reports_dir} directory"
+        puts "INFO: Reading from #{tidy.reports_dir} directory"
 
-        ui.info "Using thread concurrency #{config[:concurrency]}"
+        puts "INFO: Using thread concurrency #{config[:concurrency]}"
         configure_chef
 
         if config[:only_cookbooks] && config[:only_nodes]
@@ -64,7 +68,7 @@ class Chef
         queue = Chef::Util::ThreadedJobQueue.new
         unused_cookbooks_file = ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json")
         return unless ::File.exist?(unused_cookbooks_file)
-        ui.info "Cleaning cookbooks for Org: #{org}, using #{unused_cookbooks_file}"
+        puts "INFO: Cleaning cookbooks for Org: #{org}, using #{unused_cookbooks_file}"
         unused_cookbooks = FFI_Yajl::Parser.parse(::File.read(unused_cookbooks_file), symbolize_names: true)
         unused_cookbooks.keys.each do |cookbook|
           versions = unused_cookbooks[cookbook]
@@ -77,11 +81,16 @@ class Chef
 
       def delete_cookbook_job(org, cookbook, version)
         path = "/organizations/#{org}/cookbooks/#{cookbook}/#{version}"
+        if config[:dry_run]
+          printf("INFO: Would have executed `rest.delete(#{path})`\n")
+          return
+        end
         rest.delete(path)
         response = '200'
       rescue Net::HTTPServerException
         response = $!.response.code
       ensure
+        return if config[:dry_run]
         formatted = response == '200' ?
           ui.color(' Deleting  %-20s %-10s %10s', :green) :
           ui.color(' Deleting  %-20s %-10s %10s', :red)
@@ -92,7 +101,7 @@ class Chef
         queue = Chef::Util::ThreadedJobQueue.new
         stale_nodes_file = ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json")
         return unless ::File.exist?(stale_nodes_file)
-        ui.info "Cleaning stale nodes for Org: #{org}, using #{stale_nodes_file}"
+        puts "INFO: Cleaning stale nodes for Org: #{org}, using #{stale_nodes_file}"
         stale_nodes = FFI_Yajl::Parser.parse(::File.read(stale_nodes_file), symbolize_names: true)
         stale_nodes[:list].each do |node|
           queue << lambda { delete_node_job(org, node) }
@@ -102,11 +111,16 @@ class Chef
 
       def delete_node_job(org, node)
         path = "/organizations/#{org}/nodes/#{node}"
+        if config[:dry_run]
+          printf("INFO: Would have executed `rest.delete(#{path})`\n")
+          return
+        end
         rest.delete(path)
         response = '200'
       rescue Net::HTTPServerException
         response = $!.response.code
       ensure
+        return if config[:dry_run]
         formatted = response == '200' ?
           ui.color(' Deleting  %-20s %10s', :green) :
           ui.color(' Deleting  %-20s %10s', :red)
