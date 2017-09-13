@@ -10,6 +10,7 @@ class Chef
         require 'chef/tidy_substitutions'
         require 'chef/tidy_acls'
         require 'ffi_yajl'
+        require 'fileutils'
       end
 
       banner "knife tidy backup clean (OPTIONS)"
@@ -25,6 +26,7 @@ class Chef
         :description => 'The path to the file used for substitutions. If non-existant, a boiler plate one will be created.'
 
       def run
+
         unless config[:backup_path] && ::File.directory?(config[:backup_path])
           ui.error 'Must specify valid --backup-path'
           exit 1
@@ -47,8 +49,8 @@ class Chef
           org_acls.validate_user_acls
           fix_self_dependencies(org)
           fix_cookbook_names(org)
-          load_cookbooks(org)
           generate_new_metadata(org)
+          load_cookbooks(org)
         end
 
         completion_message
@@ -106,13 +108,12 @@ class Chef
           puts "INFO: Loading #{cookbook}"
           ret = cl.load_cookbook(cookbook)
           if ret.nil?
-            puts "ACTION NEEDED: Something's wrong with the #{cookbook} cookbook - cannot load it! Moving to cookbooks.broken folder."
+            action_needed("ACTION NEEDED: Something's wrong with the #{cookbook} cookbook - cannot load it! Moving to cookbooks.broken folder.")
             broken_cookooks_add(org, cookbook)
           end
         end
       rescue LoadError => e
         ui.error e
-        puts 'ACTION NEEDED: Look at the cookbook above and determine what in the metadata.rb is causing the exception and rectify manually'
         exit 1
       end
 
@@ -168,7 +169,9 @@ class Chef
       end
 
       def substitutions_file
-        @substitutions_file ||= ::File.expand_path(config[:gsub_file])
+        sub_file_path = ::File.expand_path(config[:gsub_file])
+        ui.error "Subtitutions file #{sub_file_path} does not exist!" unless ::File.exist?(sub_file_path)
+        @substitutions_file ||= sub_file_path
       end
 
       def orgs
@@ -193,6 +196,16 @@ class Chef
       def for_each_cookbook_path(org)
         Dir[::File.join(tidy.cookbooks_path(org), '**')].each do |cookbook|
           yield cookbook
+        end
+      end
+
+      def action_needed_file_path
+        ::File.expand_path('knife-tidy-actions-needed.txt')
+      end
+
+      def action_needed(msg)
+        ::File.open(action_needed_file_path, 'a') do |f|
+          f.write(msg)
         end
       end
     end
