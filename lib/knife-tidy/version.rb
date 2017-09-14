@@ -1,4 +1,4 @@
 module KnifeTidy
-  VERSION = '0.2.4'
+  VERSION = '0.3.0'
   MAJOR, MINOR, TINY = VERSION.split('.')
 end
