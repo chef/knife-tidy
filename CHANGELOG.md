@@ -1,7 +1,15 @@
 # Change Log
 
-## [0.1.0](https://github.com/chef-customers/knife-tidy/tree/0.1.0) (2017-09-14)
-[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.2.4...0.1.0)
+## [0.3.1](https://github.com/chef-customers/knife-tidy/tree/0.3.1) (2017-09-14)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.0...0.3.1)
+
+**Merged pull requests:**
+
+- generate a metadata.rb if needed [\#21](https://github.com/chef-customers/knife-tidy/pull/21) ([jeremymv2](https://github.com/jeremymv2))
+- newline for action needed messages [\#20](https://github.com/chef-customers/knife-tidy/pull/20) ([jeremymv2](https://github.com/jeremymv2))
+
+## [0.3.0](https://github.com/chef-customers/knife-tidy/tree/0.3.0) (2017-09-14)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.2.4...0.3.0)
 
 **Closed issues:**
 
