@@ -108,7 +108,7 @@ class Chef
           puts "INFO: Loading #{cookbook}"
           ret = cl.load_cookbook(cookbook)
           if ret.nil?
-            action_needed("ACTION NEEDED: Something's wrong with the #{cookbook} cookbook - cannot load it! Moving to cookbooks.broken folder.")
+            action_needed("ACTION NEEDED: Something's wrong with the #{cookbook} cookbook in org #{org} - cannot load it! Moving to cookbooks.broken folder.")
             broken_cookooks_add(org, cookbook)
           end
         end
@@ -205,7 +205,7 @@ class Chef
 
       def action_needed(msg)
         ::File.open(action_needed_file_path, 'a') do |f|
-          f.write(msg)
+          f.write(msg + "\n")
         end
       end
     end
