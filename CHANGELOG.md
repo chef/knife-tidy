@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.3.2](https://github.com/chef-customers/knife-tidy/tree/0.3.2) (2017-09-14)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.1...0.3.2)
+
+**Merged pull requests:**
+
+- fixed name mismatch in metadata.json [\#22](https://github.com/chef-customers/knife-tidy/pull/22) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.3.1](https://github.com/chef-customers/knife-tidy/tree/0.3.1) (2017-09-14)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.0...0.3.1)
 
