@@ -148,6 +148,10 @@ class Chef
 
       def generate_metadata_from_file(cookbook, path)
         md_path = ::File.join(path, 'metadata.rb')
+        json_path = ::File.join(path, 'metadata.json')
+        if !::File.exist?(md_path) && !::File.exist?(json_path)
+          create_minimal_metadata(path)
+        end
         unless ::File.exist?(md_path)
           puts "INFO: No metadata.rb in #{path} - skipping"
           return
@@ -166,6 +170,27 @@ class Chef
         ui.stderr.puts
         ui.stderr.puts e.message
         exit 1
+      end
+
+      def create_minimal_metadata(cookbook_path)
+        name = tidy.cookbook_name_from_path(cookbook_path)
+        components = cookbook_path.split(File::SEPARATOR)
+        name_version = components[components.index('cookbooks')+1]
+        version = name_version.match(/\d+\.\d+\.\d+/).to_s
+        metadata = {}
+        metadata['name'] = name
+        metadata['version'] = version
+        metadata['description'] = 'the description'
+        metadata['long_description'] = 'the long description'
+        metadata['maintainer'] = 'the maintainer'
+        metadata['maintainer_email'] = 'the maintainer email'
+        rb_file = ::File.join(cookbook_path, 'metadata.rb')
+        puts "REPAIRING: no metadata files exist for #{cookbook_path}, creating #{rb_file}"
+        ::File.open(rb_file, 'w') do |f|
+          metadata.each_pair do |key, value|
+            f.write("#{key} '#{value}'\n")
+          end
+        end
       end
 
       def substitutions_file
