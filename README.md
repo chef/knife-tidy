@@ -4,7 +4,7 @@
 
 This Chef Knife plugin has two primary purposes:
  * Report on the state of Chef Server objects that can be tidied up (Future: clean up objects)
- * Clean up data integrity issues from a object backup created by [knife-ec-backup](https://github.com/chef/knife-ec-backup)
+ * A companion tool to [knife-ec-backup](https://github.com/chef/knife-ec-backup) that will clean up data integrity issues in an object backup
 
 # Requirements
 
@@ -12,7 +12,7 @@ A current Chef Client. Can easily be installed via [Chef DK](https://github.com/
 
 # Installation
 
-Via Gem
+Via Rubygems
 ```bash
 gem install knife-tidy
 ```
@@ -31,19 +31,24 @@ The following options are supported across all subcommands:
   * `--orgs ORG1,ORG2`:
     Only apply to objects in the named organizations (default: all orgs)
 
-## $ knife tidy server report (options)
+## $ knife tidy server report --help
 
 Cookbooks and nodes account for the largest objects in your Chef Server.
 If you want to keep it lean and mean and easy to port the object data, you must
-clean any of these unused objects up!
+tidy these unused objects up!
 
 ## Options
 
   * `--node-threshold NUM_DAYS`
     Maximum number of days since last checkin before node is considered stale (default: 30)
 
+Example:
+```bash
+knife tidy server report --orgs brewinc,acmeinc --node-threshold 50
+```
+
 ## Notes
-  Generates json reports as such:
+  `server report` generates json reports as such:
 
 File Name | Contents
 --- | ---
@@ -51,7 +56,7 @@ org_threshold_numdays_stale_nodes.json | Nodes in that org that have not checked
 org_cookbook_count.json | Number of cookbook versions for each cookbook that that org.
 org_unused_cookbooks.json | List of cookbooks and versions that do not appear to be in-use for that org. This is determined by checking the versioned run list of each of the nodes in the org.
 
-## $ knife tidy backup clean (options)
+## $ knife tidy backup clean --help
 
 ## Options
 
@@ -61,38 +66,45 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
   * `--gsub-file /path/to/gsub/file`:
     The path to the file used for substitutions. If non-existant, a boiler plate one will be created.
 
+Example:
+```bash
+knife tidy backup clean --gen-gsub
+knife tidy backup clean --backup-path backups/ --gsub-file substitutions.json
+```
+
 ## Notes
 
   Global file substitutions can be performed when `--gsub-file` option is used. Several known issues are corrected
   and others can be added with search/replace pairings:
-
-  * DONE: global glob'd file gsub definitions
 
 ```json
 {
   "chef-sugar":{
     "organizations/*/cookbooks/chef-sugar*/metadata.rb":[
       {
-        "pattern":"require +File.expand_path('../lib/chef/sugar/version', __FILE__)",
-        "replace":"# require          File.expand_path('../lib/chef/sugar/version', __FILE__)"
+        "pattern":"^require .*/lib/chef/sugar/version",
+        "replace":"# require          File.expand_path('../lib/chef/sugar/version', *__FILE__)"
       },
       {
         "pattern":"version *Chef::Sugar::VERSION",
         "replace":"version          !COOKBOOK_VERSION!"
       }
     ]
+  },
+  "io-read-version-and-readme.md":{
+    "organizations/*/cookbooks/*/metadata.rb":[
+      {
+        "pattern":"^version +IO.read.* 'VERSION'.*",
+        "replace":"version !COOKBOOK_VERSION!"
+      },
+      {
+        "pattern":"^long_description +IO.read.* 'README.md'.*",
+        "replace":"#long_description \"A Long Description..\""
+      }
+    ]
   }
 }
 ```
-
-  * DONE: metadata validation with `Chef::CookbookLoader`
-  * DONE: metadata.rb and metadata.json inconsistencies correction
-  * DONE: metadata self-dependency correction
-  * DONE: user email validation
-  * DONE: ensure user emails do not cause primary key violation
-  * DONE: ambiguous actors (acl actor exists as client and user)
-  * DONE: users/clients referenced as actors in acls that do not exist in users/clients
-  * DONE: nonexistent groups referenced in acls
 
 ## Summary and Credits
 

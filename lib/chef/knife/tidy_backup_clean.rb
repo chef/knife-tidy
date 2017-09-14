@@ -25,24 +25,26 @@ class Chef
         :long => '--gsub-file path/to/gsub/file',
         :description => 'The path to the file used for substitutions. If non-existant, a boiler plate one will be created.'
 
+      option :gen_gsub,
+        :long => '--gen-gsub',
+        :description => 'Generate a new boiler plate global substitutions file: \'substitutions.json\'.'
+
       def run
         FileUtils.rm_f(action_needed_file_path)
+
+        if config[:gen_gsub]
+          Chef::TidySubstitutions.new().boiler_plate
+          exit
+        end
 
         unless config[:backup_path] && ::File.directory?(config[:backup_path])
           ui.error 'Must specify valid --backup-path'
           exit 1
         end
 
-        validate_user_emails
+        Chef::TidySubstitutions.new(substitutions_file, tidy).run_substitutions if config[:gsub_file]
 
-        if config[:gsub_file]
-          unless ::File.exist?(config[:gsub_file])
-            Chef::TidySubstitutions.new(substitutions_file).boiler_plate
-            exit
-          else
-            Chef::TidySubstitutions.new(substitutions_file, tidy).run_substitutions
-          end
-        end
+        validate_user_emails
 
         orgs.each do |org|
           org_acls = Chef::TidyOrgAcls.new(tidy, org)

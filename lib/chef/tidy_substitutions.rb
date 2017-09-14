@@ -22,7 +22,6 @@ class Chef
     end
 
     def boiler_plate
-
     end
 
     def cookbook_version_from_path(path)
