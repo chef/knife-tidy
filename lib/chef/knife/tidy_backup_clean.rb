@@ -56,7 +56,7 @@ class Chef
 
         completion_message
 
-        puts "\nWARNING: ** Unrepairable Items **\nPlease see #{action_needed_file_path}\n" unless ::File.exist?(action_needed_file_path)
+        puts "\nWARNING: ** Unrepairable Items **\nPlease see #{action_needed_file_path}\n" if ::File.exist?(action_needed_file_path)
       end
 
       def validate_user_emails
