@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.1.0](https://github.com/chef-customers/knife-tidy/tree/0.1.0) (2017-09-14)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.2.4...0.1.0)
+
+**Closed issues:**
+
+- FATAL: Cannot find subcommand for: 'tidy backup clean' [\#12](https://github.com/chef-customers/knife-tidy/issues/12)
+
+**Merged pull requests:**
+
+- bump to 0.3.0 [\#19](https://github.com/chef-customers/knife-tidy/pull/19) ([jeremymv2](https://github.com/jeremymv2))
+- added dry-run to server clean [\#18](https://github.com/chef-customers/knife-tidy/pull/18) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.2.4](https://github.com/chef-customers/knife-tidy/tree/0.2.4) (2017-09-12)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.2.3...0.2.4)
 
