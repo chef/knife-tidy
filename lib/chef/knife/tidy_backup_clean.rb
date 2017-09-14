@@ -95,10 +95,24 @@ class Chef
       def fix_cookbook_names(org)
         for_each_cookbook_path(org) do |cookbook_path|
           rb_path = ::File.join(cookbook_path, 'metadata.rb')
-          next unless ::File.exist?(rb_path)
+          json_path = ::File.join(cookbook_path, 'metadata.json')
+          # next unless ::File.exist?(rb_path)
           cookbook_name = tidy.cookbook_name_from_path(cookbook_path)
-          lines = ::File.readlines(rb_path).select { |line| line =~ /^name.*['"]#{cookbook_name}['"]/ }
-          add_cookbook_name_to_metadata(cookbook_name, rb_path) if lines.empty?
+          if ::File.exist?(rb_path)
+            lines = ::File.readlines(rb_path).select { |line| line =~ /^name.*['"]#{cookbook_name}['"]/ }
+            add_cookbook_name_to_metadata(cookbook_name, rb_path) if lines.empty?
+          else
+            if ::File.exist?(json_path)
+              metadata = FFI_Yajl::Parser.parse(::File.read(json_path), symbolize_names: false)
+              if metadata['name'] != cookbook_name
+                metadata['name'] = cookbook_name
+                puts "REPAIRING: Correcting `name` in #{json_path}`"
+                ::File.open(json_path, 'w') do |f|
+                  f.write(Chef::JSONCompat.to_json_pretty(metadata))
+                end
+              end
+            end
+          end
         end
       end
 
