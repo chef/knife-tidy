@@ -26,6 +26,7 @@ class Chef
         :description => 'The path to the file used for substitutions. If non-existant, a boiler plate one will be created.'
 
       def run
+        FileUtils.rm_f(action_needed_file_path)
 
         unless config[:backup_path] && ::File.directory?(config[:backup_path])
           ui.error 'Must specify valid --backup-path'
@@ -54,6 +55,8 @@ class Chef
         end
 
         completion_message
+
+        puts "\nWARNING: ** Unrepairable Items **\nPlease see #{action_needed_file_path}\n" unless ::File.exist?(action_needed_file_path)
       end
 
       def validate_user_emails
