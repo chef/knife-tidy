@@ -19,7 +19,7 @@ gem install knife-tidy
 
 Via Source
 ```bash
-git clone https://github.com/jeremymv2/knife-tidy.git
+git clone https://github.com/chef-customers/knife-tidy.git
 cd knife-tidy
 gem build knife-tidy.gemspec && gem install knife-tidy-*.gem --no-ri --no-rdoc
 ```
