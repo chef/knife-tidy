@@ -13,7 +13,7 @@ class Chef
         require 'fileutils'
       end
 
-      banner "knife tidy backup clean (OPTIONS)"
+      banner "knife tidy backup clean (options)"
 
       include Knife::TidyBase
 

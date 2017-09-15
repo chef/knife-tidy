@@ -69,7 +69,7 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
 Run the following example before attempting the `knife ec backup restore` operation:
 ```bash
 knife tidy backup clean --gen-gsub
-NFO: Creating boiler plate gsub file: 'substitutions.json'
+INFO: Creating boiler plate gsub file: 'substitutions.json'
 knife tidy backup clean --backup-path backups/ --gsub-file substitutions.json
 ```
 
