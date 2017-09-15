@@ -147,6 +147,7 @@ class Chef
       def generate_new_metadata(org)
         for_each_cookbook_path(org) do |cookbook_path|
           generate_metadata_from_file(tidy.cookbook_name_from_path(cookbook_path), cookbook_path)
+          fix_metadata_fields(cookbook_path)
         end
       end
 
@@ -162,6 +163,27 @@ class Chef
             ::File.join(cookbook_path, 'metadata.rb'),
             Regexp.new("^depends +['\"]#{name}['\"]"),
             "# depends '#{name}' # knife-tidy was here")
+        end
+      end
+
+      def fix_metadata_fields(cookbook_path)
+        json_path = ::File.join(cookbook_path, 'metadata.json')
+        metadata = FFI_Yajl::Parser.parse(::File.read(json_path), symbolize_names: false)
+        md = metadata.dup
+        metadata.each_pair do |key, value|
+          if value.nil?
+            puts "REPAIRING: Fixing null value for key #{key} in #{json_path}"
+            md[key] = 'default value'
+          end
+        end
+        metadata['platforms'].each_pair do |key, value|
+          if value.kind_of?(Array) && value.empty?
+            puts "REPAIRING: Fixing empty platform key for for key #{key} in #{json_path}"
+            md['platforms'][key] = '>= 0.0.0'
+          end
+        end
+        ::File.open(json_path, 'w') do |f|
+          f.write(Chef::JSONCompat.to_json_pretty(md))
         end
       end
 
