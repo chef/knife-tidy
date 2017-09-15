@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.3.3](https://github.com/chef-customers/knife-tidy/tree/0.3.3) (2017-09-15)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.2...0.3.3)
+
+**Merged pull requests:**
+
+- boiler plate gsub file now works [\#25](https://github.com/chef-customers/knife-tidy/pull/25) ([jeremymv2](https://github.com/jeremymv2))
+- fixing null values and emtpy arrays in metadata.json [\#24](https://github.com/chef-customers/knife-tidy/pull/24) ([jeremymv2](https://github.com/jeremymv2))
+- Jeremyv2/action needed notification [\#23](https://github.com/chef-customers/knife-tidy/pull/23) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.3.2](https://github.com/chef-customers/knife-tidy/tree/0.3.2) (2017-09-14)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.1...0.3.2)
 
