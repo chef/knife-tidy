@@ -66,9 +66,10 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
   * `--gsub-file /path/to/gsub/file`:
     The path to the file used for substitutions. If non-existant, a boiler plate one will be created.
 
-Example:
+Run the following example before attempting the `knife ec backup restore` operation:
 ```bash
 knife tidy backup clean --gen-gsub
+NFO: Creating boiler plate gsub file: 'substitutions.json'
 knife tidy backup clean --backup-path backups/ --gsub-file substitutions.json
 ```
 
