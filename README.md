@@ -76,7 +76,7 @@ knife tidy backup clean --backup-path backups/ --gsub-file substitutions.json
 ## Notes
 
   Global file substitutions can be performed when `--gsub-file` option is used. Several known issues are corrected
-  and others can be added with search/replace pairings:
+  and others can be added with search/replace pairings. The following boiler plate file is created for you when `--gen-gsub` is used:
 
 ```json
 {
