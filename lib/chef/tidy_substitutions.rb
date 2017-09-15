@@ -22,6 +22,9 @@ class Chef
     end
 
     def boiler_plate
+      bp = ::File.join(File.dirname(__FILE__), '../../conf/substitutions.json.example')
+      puts "INFO: Creating boiler plate gsub file: 'substitutions.json'"
+      FileUtils.cp(bp, ::File.join(Dir.pwd, 'substitutions.json'))
     end
 
     def cookbook_version_from_path(path)

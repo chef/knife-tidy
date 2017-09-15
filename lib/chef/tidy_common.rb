@@ -10,7 +10,7 @@ class Chef
     end
 
     def users_path
-      @users_path ||= File.expand_path(::File.join(@backup_path, 'users'))
+      @users_path ||= ::File.expand_path(::File.join(@backup_path, 'users'))
     end
 
     def members_path(org)
