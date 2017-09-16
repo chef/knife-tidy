@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.3.4](https://github.com/chef-customers/knife-tidy/tree/0.3.4) (2017-09-16)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.3...0.3.4)
+
+**Merged pull requests:**
+
+- check if metadata.has\_key?\('platforms'\) [\#26](https://github.com/chef-customers/knife-tidy/pull/26) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.3.3](https://github.com/chef-customers/knife-tidy/tree/0.3.3) (2017-09-15)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.2...0.3.3)
 
