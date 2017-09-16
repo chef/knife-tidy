@@ -176,10 +176,12 @@ class Chef
             md[key] = 'default value'
           end
         end
-        metadata['platforms'].each_pair do |key, value|
-          if value.kind_of?(Array) && value.empty?
-            puts "REPAIRING: Fixing empty platform key for for key #{key} in #{json_path}"
-            md['platforms'][key] = '>= 0.0.0'
+        if metadata.has_key?('platforms')
+          metadata['platforms'].each_pair do |key, value|
+            if value.kind_of?(Array) && value.empty?
+              puts "REPAIRING: Fixing empty platform key for for key #{key} in #{json_path}"
+              md['platforms'][key] = '>= 0.0.0'
+            end
           end
         end
         ::File.open(json_path, 'w') do |f|
