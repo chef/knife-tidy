@@ -156,13 +156,17 @@ class Chef
       end
 
       def check_cookbook_list(cb_list, cb, version)
-        cb_list[cb].each do |v|
-          if Gem::Dependency.new('', version).match?('', v)
-            Chef::Log.debug("Pin of #{cb} can be satisfied by #{v}, adding to used list")
-            return [v]
-          else
-            Chef::Log.debug("Pin of #{cb} version #{version} not satisfied by #{v}")
+        if cb_list[cb]
+          cb_list[cb].each do |v|
+            if Gem::Dependency.new('', version).match?('', v)
+              Chef::Log.debug("Pin of #{cb} can be satisfied by #{v}, adding to used list")
+              return [v]
+            else
+              Chef::Log.debug("Pin of #{cb} version #{version} not satisfied by #{v}")
+            end
           end
+        else
+          Chef::Log.info("Cookbook #{cb} version #{version} is pinned in an environment, but does not exist on the server in this org.")
         end
         return nil
       end
