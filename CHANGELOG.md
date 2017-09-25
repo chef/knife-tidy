@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.3.5](https://github.com/chef-customers/knife-tidy/tree/0.3.5) (2017-09-20)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.4...0.3.5)
+
+**Merged pull requests:**
+
+- Catch pins with no cookbooks [\#27](https://github.com/chef-customers/knife-tidy/pull/27) ([nsdavidson](https://github.com/nsdavidson))
+
 ## [0.3.4](https://github.com/chef-customers/knife-tidy/tree/0.3.4) (2017-09-16)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.3...0.3.4)
 
