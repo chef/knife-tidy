@@ -49,6 +49,7 @@ class Chef
                     else
                       "cookbooks and nodes (and associated clients and ACLs)"
                     end
+        ui.confirm("This command will delete #{deletions} identified by the knife-tidy report from the Chef Server specified in your knife configuration file. \n\n The Chef server to be used is currently #{Chef::Config['chef_server_url']}.\n\n Please be sure this is the Chef server you wish to delete data from. \n\nWould you like to continue?") unless config[:unattended]
 
         orgs = if config[:org_list]
                  config[:org_list].split(',')
