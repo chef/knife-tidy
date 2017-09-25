@@ -67,7 +67,7 @@ class Chef
           email = ''
           puts "INFO: Validating #{user}"
           the_user = FFI_Yajl::Parser.parse(::File.read(::File.join(tidy.users_path, "#{user}.json")), symbolize_names: false)
-          if the_user['email'].match(/\A[^@\s]+@[^@\s]+\z/)
+          if the_user.has_key?('email') && the_user['email'].match(/\A[^@\s]+@[^@\s]+\z/)
             if emails_seen.include?(the_user['email'])
               puts "REPAIRING: Already saw #{user}'s email, creating a unique one."
               email = tidy.unique_email
