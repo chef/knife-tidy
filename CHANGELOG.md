@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.3.6](https://github.com/chef-customers/knife-tidy/tree/0.3.6) (2017-09-25)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.5...0.3.6)
+
+**Merged pull requests:**
+
+- first check if the\_user.has\_key?\('email'\) [\#29](https://github.com/chef-customers/knife-tidy/pull/29) ([jeremymv2](https://github.com/jeremymv2))
+- bump to 0.3.5 [\#28](https://github.com/chef-customers/knife-tidy/pull/28) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.3.5](https://github.com/chef-customers/knife-tidy/tree/0.3.5) (2017-09-20)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.4...0.3.5)
 
