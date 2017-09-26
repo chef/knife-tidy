@@ -13,6 +13,7 @@ class Chef
         require 'chef/tidy_acls'
         require 'ffi_yajl'
         require 'fileutils'
+        require 'securerandom'
       end
 
       banner "knife tidy backup clean (options)"
@@ -49,6 +50,7 @@ class Chef
         validate_user_emails
 
         orgs.each do |org|
+          fix_org_object(org)
           org_acls = Chef::TidyOrgAcls.new(tidy, org)
           org_acls.validate_acls
           org_acls.validate_user_acls
@@ -89,6 +91,36 @@ class Chef
             emails_seen.push(email)
           end
         end
+      end
+
+      # In Chef Server 12 an org object should have exactly 3 keys: name, full_name and guid
+      # The existence of anything else will cause a restore to fail
+      # EC11 backups will contain org objects with 6 extra fields including org_type, billing_plan, assigned_at, etc
+      def fix_org_object(org)
+        puts "INFO: Validating org object for #{org}"
+        org_object = load_org_object(org)
+
+        unless org_object.keys.count == 3  # cheapo, maybe expect the exact names?
+          puts "REPAIRING: org object for #{org} contains extra/missing fields. Fixing that for you"
+          # quick/dirty attempt at fixing any of the required fields in case they're nil
+          good_name = org_object['name'] || org
+          good_full_name = org_object['full_name'] || org
+          good_guid = org_object['guid'] || SecureRandom.uuid.gsub('-','')
+          fixed_org_object = { name: good_name, full_name: good_full_name, guid: good_guid }
+
+          write_org_object(org, fixed_org_object)
+        end
+      end
+
+      def load_org_object(org)
+        JSON.parse(File.read(File.join(tidy.org_path(org), 'org.json')))
+      rescue Errno::ENOENT, JSON::ParserError
+        puts "REPAIRING: org object for organization #{org} is missing or corrupt. Generating a new one"
+        return { name: org, full_name: org, guid: SecureRandom.uuid.gsub('-','') }
+      end
+
+      def write_org_object(org, org_object)
+        File.write(File.join(tidy.org_path(org), 'org.json') , JSON.pretty_generate(org_object))
       end
 
       def add_cookbook_name_to_metadata(cookbook_name, rb_path)
