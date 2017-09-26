@@ -51,6 +51,7 @@ class Chef
 
         orgs.each do |org|
           fix_org_object(org)
+          validate_roles(org)
           org_acls = Chef::TidyOrgAcls.new(tidy, org)
           org_acls.validate_acls
           org_acls.validate_user_acls
@@ -323,26 +324,33 @@ class Chef
         end
       end
 
-      # rubocop:disable MethodLength
       def repair_role_run_lists(role_path)
+        # rubocop:disable MethodLength
         the_role = FFI_Yajl::Parser.parse(::File.read(role_path), symbolize_names: false)
         new_role = the_role.clone
         rl = Chef::RunList.new
-        begin
-          rl << the_role['run_list'] if the_role.key?('run_list')
-        rescue ArgumentError
-          new_role['run_list'] = []
+        new_role['run_list'] = []
+        the_role['run_list'].each do |item|
+          begin
+            rl << item
+            new_role['run_list'].push(item)
+          rescue ArgumentError
+            puts "REPAIRING: Invalid Recipe Item: #{item} in run_list from #{role_path}"
+          end
         end
-        if the_role.key?('env_run_lists')
-          the_role['env_run_lists'].each_pair do |key, value|
+        the_role['env_run_lists'].each_pair do |key, value|
+          new_role['env_run_lists'][key] = []
+          value.each do |item|
             begin
-              rl << value
+              rl << item
+              new_role['env_run_lists'][key].push(item)
             rescue ArgumentError
-              new_role['env_run_lists'][key] = []
+              puts "REPAIRING: Invalid Recipe Item: #{item} in env_run_lists #{key} from #{role_path}"
             end
           end
         end
         write_role(role_path, new_role)
+        # rubocop:enable MethodLength
       end
 
       def validate_roles(org)
@@ -351,7 +359,6 @@ class Chef
           begin
             Chef::Role.from_hash(FFI_Yajl::Parser.parse(::File.read(role_path), symbolize_names: false))
           rescue ArgumentError
-            puts "REPAIRING: #{role_path} run_lists"
             repair_role_run_lists(role_path)
           end
         end
