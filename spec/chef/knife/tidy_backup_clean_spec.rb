@@ -5,7 +5,6 @@ require 'chef/config'
 require 'stringio'
 
 class Tester < Chef::Knife
-  include Chef::Knife::TidyBackupClean
 end
 
 describe Chef::Knife::TidyBackupClean do

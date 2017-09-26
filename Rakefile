@@ -49,7 +49,7 @@ namespace :integration do
 
     desc 'Run kitchen integration tests'
     Kitchen::RakeTasks.new
-  rescue StandardError => e
+  rescue LoadError => e
     puts ">>> Kitchen error: #{e}, omitting #{task.name}" unless ENV['CI']
   end
 end
