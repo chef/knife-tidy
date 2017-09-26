@@ -37,6 +37,10 @@ class Chef
       ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'cookbooks'))
     end
 
+    def roles_path(org)
+      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'roles'))
+    end
+
     def org_path(org)
       ::File.expand_path(::File.join(@backup_path, 'organizations', org))
     end
