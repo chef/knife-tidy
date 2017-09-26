@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.4.0](https://github.com/chef-customers/knife-tidy/tree/0.4.0) (2017-09-26)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.6...0.4.0)
+
+**Merged pull requests:**
+
+- fix NilClass on env\_run\_lists [\#35](https://github.com/chef-customers/knife-tidy/pull/35) ([jeremymv2](https://github.com/jeremymv2))
+- fix merge conflict from rebase [\#34](https://github.com/chef-customers/knife-tidy/pull/34) ([jeremymv2](https://github.com/jeremymv2))
+- Simple feature to clean up EC11 org objects which don't load into CS12 [\#33](https://github.com/chef-customers/knife-tidy/pull/33) ([irvingpop](https://github.com/irvingpop))
+- role run\_list clean up and metadata name regex simplification [\#32](https://github.com/chef-customers/knife-tidy/pull/32) ([jeremymv2](https://github.com/jeremymv2))
+- bump to 0.3.6 [\#30](https://github.com/chef-customers/knife-tidy/pull/30) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.3.6](https://github.com/chef-customers/knife-tidy/tree/0.3.6) (2017-09-25)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.5...0.3.6)
 
