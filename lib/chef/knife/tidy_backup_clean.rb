@@ -7,6 +7,8 @@ class Chef
       deps do
         require 'chef/cookbook_loader'
         require 'chef/cookbook/metadata'
+        require 'chef/role'
+        require 'chef/run_list'
         require 'chef/tidy_substitutions'
         require 'chef/tidy_acls'
         require 'ffi_yajl'
@@ -92,7 +94,7 @@ class Chef
       def add_cookbook_name_to_metadata(cookbook_name, rb_path)
         puts "REPAIRING: Correcting `name` in #{rb_path}"
         content = IO.readlines(rb_path)
-        new_content = content.select { |line| line !~ /^name.*['"]\S+['"]/ }
+        new_content = content.reject { |line| line =~ /^name .*/ }
         name_field = "name '#{cookbook_name}'\n"
         IO.write rb_path, name_field + new_content.join('')
       end
@@ -274,6 +276,52 @@ class Chef
       def action_needed(msg)
         ::File.open(action_needed_file_path, 'a') do |f|
           f.write(msg + "\n")
+        end
+      end
+
+      def write_role(path, role)
+        ::File.open(path, 'w') do |f|
+          f.write(Chef::JSONCompat.to_json_pretty(role))
+        end
+      end
+
+      def for_each_role(org)
+        Dir[::File.join(tidy.roles_path(org), '*.json')].each do |role|
+          yield role
+        end
+      end
+
+      # rubocop:disable MethodLength
+      def repair_role_run_lists(role_path)
+        the_role = FFI_Yajl::Parser.parse(::File.read(role_path), symbolize_names: false)
+        new_role = the_role.clone
+        rl = Chef::RunList.new
+        begin
+          rl << the_role['run_list'] if the_role.key?('run_list')
+        rescue ArgumentError
+          new_role['run_list'] = []
+        end
+        if the_role.key?('env_run_lists')
+          the_role['env_run_lists'].each_pair do |key, value|
+            begin
+              rl << value
+            rescue ArgumentError
+              new_role['env_run_lists'][key] = []
+            end
+          end
+        end
+        write_role(role_path, new_role)
+      end
+
+      def validate_roles(org)
+        for_each_role(org) do |role_path|
+          puts "INFO: Validating Role at #{role_path}"
+          begin
+            Chef::Role.from_hash(FFI_Yajl::Parser.parse(::File.read(role_path), symbolize_names: false))
+          rescue ArgumentError
+            puts "REPAIRING: #{role_path} run_lists"
+            repair_role_run_lists(role_path)
+          end
         end
       end
     end
