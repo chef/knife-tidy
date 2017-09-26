@@ -338,14 +338,16 @@ class Chef
             puts "REPAIRING: Invalid Recipe Item: #{item} in run_list from #{role_path}"
           end
         end
-        the_role['env_run_lists'].each_pair do |key, value|
-          new_role['env_run_lists'][key] = []
-          value.each do |item|
-            begin
-              rl << item
-              new_role['env_run_lists'][key].push(item)
-            rescue ArgumentError
-              puts "REPAIRING: Invalid Recipe Item: #{item} in env_run_lists #{key} from #{role_path}"
+        if the_role.has_key?('env_run_lists')
+          the_role['env_run_lists'].each_pair do |key, value|
+            new_role['env_run_lists'][key] = []
+            value.each do |item|
+              begin
+                rl << item
+                new_role['env_run_lists'][key].push(item)
+              rescue ArgumentError
+                puts "REPAIRING: Invalid Recipe Item: #{item} in env_run_lists #{key} from #{role_path}"
+              end
             end
           end
         end
