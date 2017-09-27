@@ -51,6 +51,7 @@ class Chef
 
         orgs.each do |org|
           fix_org_object(org)
+          validate_invitations(org)
           validate_roles(org)
           org_acls = Chef::TidyOrgAcls.new(tidy, org)
           org_acls.validate_acls
@@ -213,6 +214,8 @@ class Chef
         end
         if metadata.has_key?('platforms')
           metadata['platforms'].each_pair do |key, value|
+            # platform key cannot contain comma delimited values
+            md['platforms'].delete(key) if key =~ /,/
             if value.kind_of?(Array) && value.empty?
               puts "REPAIRING: Fixing empty platform key for for key #{key} in #{json_path}"
               md['platforms'][key] = '>= 0.0.0'
@@ -363,6 +366,26 @@ class Chef
           rescue ArgumentError
             repair_role_run_lists(role_path)
           end
+        end
+      end
+
+      def validate_invitations(org)
+        invite_file = tidy.invitations_path(org)
+        puts "INFO: validating org #{org} invites in #{invite_file}"
+        invitations = FFI_Yajl::Parser.parse(::File.read(invite_file), symbolize_names: false)
+        invitations_new = []
+        invitations.each do |invite|
+          if invite['username'].nil?
+            puts "REPAIRING: Dropping corrupt invitations for #{org} in file #{invite_file}"
+          else
+            invite_hash = {}
+            invite_hash['id'] = invite['id']
+            invite_hash['username'] = invite['username']
+            invitations_new.push(invite_hash)
+          end
+        end
+        ::File.open(invite_file, 'w') do |f|
+          f.write(Chef::JSONCompat.to_json_pretty(invitations_new))
         end
       end
     end
