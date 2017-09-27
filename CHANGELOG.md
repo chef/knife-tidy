@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.4.1](https://github.com/chef-customers/knife-tidy/tree/0.4.1) (2017-09-27)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.4.0...0.4.1)
+
+**Merged pull requests:**
+
+- fixing corrupt invitations and invalid platform names with commas in … [\#38](https://github.com/chef-customers/knife-tidy/pull/38) ([jeremymv2](https://github.com/jeremymv2))
+- bump to 0.4.0 [\#36](https://github.com/chef-customers/knife-tidy/pull/36) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.4.0](https://github.com/chef-customers/knife-tidy/tree/0.4.0) (2017-09-26)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.3.6...0.4.0)
 
