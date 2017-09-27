@@ -17,6 +17,10 @@ class Chef
       ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'members.json'))
     end
 
+    def invitations_path(org)
+      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'invitations.json'))
+    end
+
     def clients_path(org)
       ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'clients'))
     end
