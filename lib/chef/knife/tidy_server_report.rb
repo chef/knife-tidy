@@ -37,7 +37,7 @@ class Chef
           cb_list = cookbook_list(org)
           version_count = cookbook_count(cb_list).sort_by(&:last).reverse.to_h
           used_cookbooks = {}
-          nodes = nodes_list(org)[0]
+          nodes = nodes_list(org)
 
           nodes.select{|node| !node['cookbooks'].nil?}.each do |node|
             node['cookbooks'].each do |name, version_hash|
@@ -86,7 +86,10 @@ class Chef
         end
       end
 
+      # Need the block here to get the search method to invoke multiple searches and 
+      # aggregate results for result sets over 1k.
       def nodes_list(org)
+        node_results = []
         Chef::Search::Query.new("#{server.root_url}/organizations/#{org}").search(
           :node, '*:*',
           :filter_result => {
@@ -94,7 +97,10 @@ class Chef
             'cookbooks' => ['cookbooks'],
             'ohai_time' => ['ohai_time']
           }
-        )
+        ) do |node|
+          node_results << node
+        end
+        node_results
       end
 
       def cookbook_list(org)
