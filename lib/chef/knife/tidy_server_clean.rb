@@ -15,8 +15,8 @@ class Chef
 
       option :concurrency,
         :long => '--concurrency THREADS',
-        :default => 10,
-        :description => 'Maximum number of simultaneous requests to send (default: 10)'
+        :default => 1,
+        :description => 'Maximum number of simultaneous requests to send (default: 1)'
 
       option :only_cookbooks,
         :long => '--only-cookbooks',
@@ -38,9 +38,7 @@ class Chef
         STDOUT.sync = true
 
         ensure_reports_dir
-        puts "INFO: Reading from #{tidy.reports_dir} directory"
 
-        puts "INFO: Using thread concurrency #{config[:concurrency]}"
         configure_chef
 
         if config[:only_cookbooks] && config[:only_nodes]
@@ -48,13 +46,23 @@ class Chef
           exit 1
         end
 
-        ui.confirm('This operation will delete items on Chef Server, continue') unless config[:unattended]
+        deletions = if config[:only_cookbooks]
+                      "cookbooks"
+                    elsif config[:only_nodes]
+                      "nodes"
+                    else
+                      "cookbooks and nodes"
+                    end
 
         orgs = if config[:org_list]
                  config[:org_list].split(',')
                else
                  all_orgs
                end
+
+        ui.warn "This operation will affect the following Orgs on #{server.root_url}\n\n#{orgs}\n\n"
+
+        ui.confirm("About to delete #{deletions} from the Chef Server identified in the #{tidy.reports_dir} directory! Are you sure you wish to continue") unless config[:unattended]
 
         orgs.each do |org|
           clean_cookbooks(org) unless config[:only_nodes]
