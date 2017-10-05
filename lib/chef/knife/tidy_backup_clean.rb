@@ -45,6 +45,8 @@ class Chef
           exit 1
         end
 
+        fix_chef_sugar_metadata
+
         Chef::TidySubstitutions.new(substitutions_file, tidy).run_substitutions if config[:gsub_file]
 
         validate_user_emails
@@ -184,6 +186,27 @@ class Chef
         for_each_cookbook_path(org) do |cookbook_path|
           generate_metadata_from_file(tidy.cookbook_name_from_path(cookbook_path), cookbook_path)
           fix_metadata_fields(cookbook_path)
+        end
+      end
+
+      def fix_chef_sugar_metadata
+        Dir[::File.join(tidy.backup_path, 'organizations/*/cookbooks/chef-sugar*/metadata.rb')].each do |file|
+          puts 'INFO: Searching for known chef-sugar problems when uploading.'
+          s = Chef::TidySubstitutions.new
+          version = s.cookbook_version_from_path(file)
+          patterns = [
+            {
+              search: '^require .*/lib/chef/sugar/version',
+              replace: "# require          File.expand_path('../lib/chef/sugar/version', *__FILE__)"
+            },
+            {
+              search: '^version *Chef::Sugar::VERSION',
+              replace: "version '#{version}'"
+            }
+          ]
+          patterns.each do |p|
+            s.sub_in_file(file, Regexp.new(p[:search]), p[:replace])
+          end
         end
       end
 
