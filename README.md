@@ -80,18 +80,6 @@ knife tidy backup clean --backup-path backups/ --gsub-file substitutions.json
 
 ```json
 {
-  "chef-sugar":{
-    "organizations/*/cookbooks/chef-sugar*/metadata.rb":[
-      {
-        "pattern":"^require .*/lib/chef/sugar/version",
-        "replace":"# require          File.expand_path('../lib/chef/sugar/version', *__FILE__)"
-      },
-      {
-        "pattern":"version *Chef::Sugar::VERSION",
-        "replace":"version          !COOKBOOK_VERSION!"
-      }
-    ]
-  },
   "io-read-version-and-readme.md":{
     "organizations/*/cookbooks/*/metadata.rb":[
       {

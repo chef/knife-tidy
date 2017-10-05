@@ -1,25 +1,9 @@
 {
-  "chef-sugar":{
-    "organizations/*/cookbooks/chef-sugar*/metadata.rb":[
-      {
-        "pattern":"^require .*/lib/chef/sugar/version",
-        "replace":"# require          File.expand_path('../lib/chef/sugar/version', *__FILE__)"
-      },
-      {
-        "pattern":"version *Chef::Sugar::VERSION",
-        "replace":"version          !COOKBOOK_VERSION!"
-      }
-    ]
-  },
-  "io-read-version-and-readme.md":{
+  "your-problem-descriptor":{
     "organizations/*/cookbooks/*/metadata.rb":[
       {
-        "pattern":"^version +IO.read.* 'VERSION'.*",
+        "pattern":"^version .*GO_PIPELINE_LABEL",
         "replace":"version !COOKBOOK_VERSION!"
-      },
-      {
-        "pattern":"^long_description +IO.read.* 'README.md'.*",
-        "replace":"#long_description \"A Long Description..\""
       }
     ]
   }
