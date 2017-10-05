@@ -82,19 +82,12 @@ class Chef
       def delete_cookbook_job(org, cookbook, version)
         path = "/organizations/#{org}/cookbooks/#{cookbook}/#{version}"
         if config[:dry_run]
-          printf("INFO: Would have executed `rest.delete(#{path})`\n")
+          printf("DRYRUN: Would have executed `rest.delete(#{path})`\n")
           return
         end
+        printf("INFO: Deleting #{path}\n")
         rest.delete(path)
-        response = '200'
       rescue Net::HTTPServerException
-        response = $!.response.code
-      ensure
-        return if config[:dry_run]
-        formatted = response == '200' ?
-          ui.color(' Deleting  %-20s %-10s %10s', :green) :
-          ui.color(' Deleting  %-20s %-10s %10s', :red)
-        printf("#{formatted}\n", cookbook, version, response)
       end
 
       def clean_nodes(org)
@@ -110,21 +103,19 @@ class Chef
       end
 
       def delete_node_job(org, node)
-        path = "/organizations/#{org}/nodes/#{node}"
-        if config[:dry_run]
-          printf("INFO: Would have executed `rest.delete(#{path})`\n")
-          return
+        paths = ["/organizations/#{org}/nodes/#{node}", "/organizations/#{org}/clients/#{node}"]
+        paths.each do |path|
+          if config[:dry_run]
+            printf("DRYRUN: Would have executed `rest.delete(#{path})`\n")
+            next
+          else
+            begin
+              printf("INFO: Deleting #{path}\n")
+              rest.delete(path)
+            rescue Net::HTTPServerException
+            end
+          end
         end
-        rest.delete(path)
-        response = '200'
-      rescue Net::HTTPServerException
-        response = $!.response.code
-      ensure
-        return if config[:dry_run]
-        formatted = response == '200' ?
-          ui.color(' Deleting  %-20s %10s', :green) :
-          ui.color(' Deleting  %-20s %10s', :red)
-        printf("#{formatted}\n", node, response)
       end
 
       def ensure_reports_dir
