@@ -24,7 +24,7 @@ class Chef
 
       option :only_nodes,
         :long => '--only-nodes',
-        :description => 'Only delete stale nodes from Chef Server.'
+        :description => 'Only delete stale nodes (and associated clients and ACLs) from Chef Server.'
 
       option :dry_run,
         :long => '--dry-run',
@@ -45,9 +45,9 @@ class Chef
         deletions = if config[:only_cookbooks]
                       "cookbooks"
                     elsif config[:only_nodes]
-                      "nodes"
+                      "nodes (and associated clients and ACLs)"
                     else
-                      "cookbooks and nodes"
+                      "cookbooks and nodes (and associated clients and ACLs)"
                     end
 
         orgs = if config[:org_list]
