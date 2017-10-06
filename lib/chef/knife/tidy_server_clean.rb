@@ -24,17 +24,13 @@ class Chef
 
       option :only_nodes,
         :long => '--only-nodes',
-        :description => 'Only delete stale nodes from Chef Server.'
+        :description => 'Only delete stale nodes (and associated clients and ACLs) from Chef Server.'
 
       option :dry_run,
         :long => '--dry-run',
         :description => 'Do not perform any actual deletion, only report on what would have been deleted.'
 
       def run
-        # not enabled
-        ui.warn "This feature is not enabled"
-        exit
-
         STDOUT.sync = true
 
         ensure_reports_dir
@@ -49,9 +45,9 @@ class Chef
         deletions = if config[:only_cookbooks]
                       "cookbooks"
                     elsif config[:only_nodes]
-                      "nodes"
+                      "nodes (and associated clients and ACLs)"
                     else
-                      "cookbooks and nodes"
+                      "cookbooks and nodes (and associated clients and ACLs)"
                     end
 
         orgs = if config[:org_list]
@@ -73,6 +69,8 @@ class Chef
       end
 
       def clean_cookbooks(org)
+        ui.warn "Cleaning cookbooks is a feature not yet enabled."
+        return
         queue = Chef::Util::ThreadedJobQueue.new
         unused_cookbooks_file = ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json")
         return unless ::File.exist?(unused_cookbooks_file)
