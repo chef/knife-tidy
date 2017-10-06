@@ -31,10 +31,6 @@ class Chef
         :description => 'Do not perform any actual deletion, only report on what would have been deleted.'
 
       def run
-        # not enabled
-        ui.warn "This feature is not enabled"
-        exit
-
         STDOUT.sync = true
 
         ensure_reports_dir
@@ -73,6 +69,8 @@ class Chef
       end
 
       def clean_cookbooks(org)
+        ui.warn "Cleaning cookbooks is a feature not yet enabled."
+        return
         queue = Chef::Util::ThreadedJobQueue.new
         unused_cookbooks_file = ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json")
         return unless ::File.exist?(unused_cookbooks_file)
