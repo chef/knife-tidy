@@ -2,9 +2,10 @@
 
 # Summary
 
-This Chef Knife plugin has two primary purposes:
- * Report on the state of Chef Server objects that can be tidied up (Future: clean up objects)
- * A companion tool to [knife-ec-backup](https://github.com/chef/knife-ec-backup) that will clean up data integrity issues in an object backup
+This Chef Knife plugin provides:
+ * Reports on the state of Chef Server objects that can be tidied up
+ * Removal of stale nodes (and associated clients and ACLs) identified by the above Reports
+ * A [knife-ec-backup](https://github.com/chef/knife-ec-backup) companion tool that will clean up data integrity issues in an object backup
 
 # Requirements
 
@@ -55,6 +56,21 @@ File Name | Contents
 org_threshold_numdays_stale_nodes.json | Nodes in that org that have not checked in for the number of days specified.
 org_cookbook_count.json | Number of cookbook versions for each cookbook that that org.
 org_unused_cookbooks.json | List of cookbooks and versions that do not appear to be in-use for that org. This is determined by checking the versioned run list of each of the nodes in the org.
+
+## $ knife tidy server clean --help
+Remove stale nodes that haven't checked-in to the Chef Server as defined by the `--node-threshold NUM_DAYS` option when the reports were generated.. The associated client and ACLs are also removed.
+
+Future: remove unused cookbooks - currently this feature is disabled.
+
+## Options
+
+  * `--dry-run`
+    Do not perform any actual deletion, only report on what would have been deleted.
+
+Example:
+```bash
+knife tidy server clean --orgs brewinc,acmeinc
+```
 
 ## $ knife tidy backup clean --help
 
