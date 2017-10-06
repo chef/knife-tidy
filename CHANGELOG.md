@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.5.0](https://github.com/chef-customers/knife-tidy/tree/0.5.0) (2017-10-06)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.4.1...0.5.0)
+
+**Closed issues:**
+
+- Supermarket.chef.io [\#37](https://github.com/chef-customers/knife-tidy/issues/37)
+
+**Merged pull requests:**
+
+- enabling deletion of stale nodes [\#44](https://github.com/chef-customers/knife-tidy/pull/44) ([jeremymv2](https://github.com/jeremymv2))
+- better warning message before confirmation [\#43](https://github.com/chef-customers/knife-tidy/pull/43) ([jeremymv2](https://github.com/jeremymv2))
+- Jeremymv2/chef sugar fix default [\#42](https://github.com/chef-customers/knife-tidy/pull/42) ([jeremymv2](https://github.com/jeremymv2))
+- deleting nodes also deletes client [\#41](https://github.com/chef-customers/knife-tidy/pull/41) ([jeremymv2](https://github.com/jeremymv2))
+- Change nodes\_list method to get all nodes [\#40](https://github.com/chef-customers/knife-tidy/pull/40) ([nsdavidson](https://github.com/nsdavidson))
+- bump version to 0.4.1 [\#39](https://github.com/chef-customers/knife-tidy/pull/39) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.4.1](https://github.com/chef-customers/knife-tidy/tree/0.4.1) (2017-09-27)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.4.0...0.4.1)
 
