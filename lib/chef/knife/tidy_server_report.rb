@@ -62,7 +62,7 @@ class Chef
             end
           end
 
-          stale_nodes_hash = {'threshold_days': node_threshold, 'count': stale_nodes.count, 'list': stale_nodes}
+          stale_nodes_hash = {'threshold_days': node_threshold, 'node_count': node.count, 'count': stale_nodes.count, 'list': stale_nodes}
           stale_orgs.push(org) if stale_nodes.count == nodes.count
 
           tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"))
