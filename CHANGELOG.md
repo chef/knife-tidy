@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.5.1](https://github.com/chef-customers/knife-tidy/tree/0.5.1) (2017-10-19)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.5.0...0.5.1)
+
+**Merged pull requests:**
+
+- Add node\_count to stale node json output. [\#46](https://github.com/chef-customers/knife-tidy/pull/46) ([MarkGibbons](https://github.com/MarkGibbons))
+- bump to 0.5.0 [\#45](https://github.com/chef-customers/knife-tidy/pull/45) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.5.0](https://github.com/chef-customers/knife-tidy/tree/0.5.0) (2017-10-06)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.4.1...0.5.0)
 
