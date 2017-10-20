@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.5.2](https://github.com/chef-customers/knife-tidy/tree/0.5.2) (2017-10-20)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.5.1...0.5.2)
+
+**Merged pull requests:**
+
+- fixing regex for whitespace [\#48](https://github.com/chef-customers/knife-tidy/pull/48) ([jeremymv2](https://github.com/jeremymv2))
+- bump patch to 0.5.1 [\#47](https://github.com/chef-customers/knife-tidy/pull/47) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.5.1](https://github.com/chef-customers/knife-tidy/tree/0.5.1) (2017-10-19)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.5.0...0.5.1)
 
