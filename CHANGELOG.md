@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.6.0](https://github.com/chef-customers/knife-tidy/tree/0.6.0) (2017-10-23)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.5.2...0.6.0)
+
+**Merged pull requests:**
+
+- fix travis [\#51](https://github.com/chef-customers/knife-tidy/pull/51) ([jeremymv2](https://github.com/jeremymv2))
+- Add knife tidy notify command [\#50](https://github.com/chef-customers/knife-tidy/pull/50) ([jonlives](https://github.com/jonlives))
+- bump to 0.5.2 [\#49](https://github.com/chef-customers/knife-tidy/pull/49) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.5.2](https://github.com/chef-customers/knife-tidy/tree/0.5.2) (2017-10-20)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.5.1...0.5.2)
 
