@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.6.1](https://github.com/chef-customers/knife-tidy/tree/0.6.1) (2017-10-26)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.6.0...0.6.1)
+
+**Closed issues:**
+
+- knife tidy server clean - org names with \_ [\#53](https://github.com/chef-customers/knife-tidy/issues/53)
+
+**Merged pull requests:**
+
+- fixing orgs with underscores [\#54](https://github.com/chef-customers/knife-tidy/pull/54) ([jeremymv2](https://github.com/jeremymv2))
+- Jeremymv2/release 0 6 0 [\#52](https://github.com/chef-customers/knife-tidy/pull/52) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.6.0](https://github.com/chef-customers/knife-tidy/tree/0.6.0) (2017-10-23)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.5.2...0.6.0)
 
