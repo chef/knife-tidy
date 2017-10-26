@@ -132,13 +132,13 @@ class Chef
       end
 
       def report_files
-        Dir[::File.join(tidy.reports_dir, '**')]
+        Dir[::File.join(tidy.reports_dir, '**.json')]
       end
 
       def all_orgs
         orgs = []
         report_files.each do |file|
-          org = ::File.basename(file).match(/^(.*?)_/).captures[0]
+          org = ::File.basename(file).match(/^(.*?)_(cookbook_count|unused_cookbooks|stale_nodes)\.json/).captures[0]
           if org
             orgs.push(org) unless orgs.include?(org)
           end
