@@ -29,6 +29,7 @@ class Chef
                  all_orgs
                end
 
+        pre_12_3_nodes = []
         stale_orgs = []
         node_threshold = config[:node_threshold].to_i
 
@@ -38,6 +39,13 @@ class Chef
           version_count = cookbook_count(cb_list).sort_by(&:last).reverse.to_h
           used_cookbooks = {}
           nodes = nodes_list(org)
+
+          nodes.each do |node|
+            chef_version = Chef::VersionString.new(node['chef_packages']['chef']['version'])
+            if chef_version < "12.3"
+              pre_12_3_nodes << node['name']
+            end
+          end
 
           nodes.select{|node| !node['cookbooks'].nil?}.each do |node|
             node['cookbooks'].each do |name, version_hash|
@@ -66,9 +74,12 @@ class Chef
           stale_orgs.push(org) if stale_nodes.count == nodes.count
 
           tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"))
-          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"))
           tidy.write_new_file(version_count, ::File.join(tidy.reports_dir, "#{org}_cookbook_count.json"))
           tidy.write_new_file(stale_nodes_hash, ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json"))
+
+          if pre_12_3_nodes.length > 0
+            ui.warn "#{pre_12_3_nodes.length} nodes have been detected in the organization #{org} running chef-client versions prior to 12.3 - this means that the list of stale cookbooks for these nodes may not have been correctly calculated and your report may not be complete for this organization."
+          end
         end
 
         completion_message
@@ -95,7 +106,8 @@ class Chef
           :filter_result => {
             'name' => ['name'],
             'cookbooks' => ['cookbooks'],
-            'ohai_time' => ['ohai_time']
+            'ohai_time' => ['ohai_time'],
+            'chef_packages' => ['chef_packages']
           }
         ) do |node|
           node_results << node
