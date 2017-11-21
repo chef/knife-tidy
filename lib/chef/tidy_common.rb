@@ -6,6 +6,8 @@ class Chef
     attr_accessor :backup_path
 
     def initialize(backup_path = Dir.pwd)
+      Encoding.default_external = Encoding::UTF_8
+      Encoding.default_internal = Encoding::UTF_8
       @backup_path = ::File.expand_path(backup_path)
     end
 
