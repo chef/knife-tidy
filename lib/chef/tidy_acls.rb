@@ -158,6 +158,17 @@ class Chef
       write_new_file(acl, acl_file)
     end
 
+    def ensure_client_read_acls(acl_file)
+      acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
+      %w(users admins).each do | group |
+        unless acl['read']['groups'].include? group
+          puts "REPAIRING: Adding read acl for #{group} in #{acl_file}"
+          acl['read']['groups'].push(group)
+        end
+      end
+      write_new_file(acl, acl_file)
+    end
+
     def validate_acls
       org_acls.each do |acl_file|
         acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
@@ -191,6 +202,14 @@ class Chef
             remove_group_from_acl(group, user_acl_path)
           end
         end
+      end
+    end
+
+    def validate_client_acls
+      @clients.each do |client|
+        client_acl_path = ::File.join(@tidy.org_acls_path(@org), 'clients', "#{client[:name]}.json")
+        client_acl = FFI_Yajl::Parser.parse(::File.read(client_acl_path), symbolize_names: false)
+        ensure_client_read_acls(client_acl_path)
       end
     end
   end
