@@ -1,5 +1,22 @@
 # Change Log
 
+## [0.7.0](https://github.com/chef-customers/knife-tidy/tree/0.7.0) (2017-11-29)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.6.1...0.7.0)
+
+**Closed issues:**
+
+- Users/clients from backups older than CS 12.5 may be missing read acls on clients [\#63](https://github.com/chef-customers/knife-tidy/issues/63)
+- notify subcommand ignores --orgs option [\#59](https://github.com/chef-customers/knife-tidy/issues/59)
+
+**Merged pull requests:**
+
+- Add admins/users groups to the read acl for clients from \< CS 12.5 [\#64](https://github.com/chef-customers/knife-tidy/pull/64) ([itmustbejj](https://github.com/itmustbejj))
+- Restore acls for ::server-admins and org read access groups if they a… [\#61](https://github.com/chef-customers/knife-tidy/pull/61) ([itmustbejj](https://github.com/itmustbejj))
+- Filter email notifications on org\_list config option. [\#60](https://github.com/chef-customers/knife-tidy/pull/60) ([itmustbejj](https://github.com/itmustbejj))
+- Set default encoding to utf-8 to properly handle non-ascii in backups. [\#58](https://github.com/chef-customers/knife-tidy/pull/58) ([itmustbejj](https://github.com/itmustbejj))
+- Add check for pre-12.3 nodes to report generation… [\#57](https://github.com/chef-customers/knife-tidy/pull/57) ([jonlives](https://github.com/jonlives))
+- bump path to 0.6.1 [\#55](https://github.com/chef-customers/knife-tidy/pull/55) ([jeremymv2](https://github.com/jeremymv2))
+
 ## [0.6.1](https://github.com/chef-customers/knife-tidy/tree/0.6.1) (2017-10-26)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.6.0...0.6.1)
 
