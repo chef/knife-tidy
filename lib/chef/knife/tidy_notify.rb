@@ -65,6 +65,11 @@ class Chef
 
         # Fetch list of organisation names from reports directory
         org_names = reports_files.map{|r_file|r_file.split("/").last.split("_").first}.sort.uniq
+        if config[:org_list]
+          filter_orgs = config[:org_list].split(',')
+          # Take the intersection of org_names and filter_orgs
+          org_names &= filter_orgs
+        end
 
         reports = {}
 
