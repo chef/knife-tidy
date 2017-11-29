@@ -58,6 +58,7 @@ class Chef
           org_acls = Chef::TidyOrgAcls.new(tidy, org)
           org_acls.validate_acls
           org_acls.validate_user_acls
+          org_acls.validate_client_acls
           fix_self_dependencies(org)
           fix_cookbook_names(org)
           generate_new_metadata(org)
