@@ -68,7 +68,7 @@ class Chef
         if config[:org_list]
           filter_orgs = config[:org_list].split(',')
           # Take the intersection of org_names and filter_orgs
-          org_names = org_names & filter_orgs
+          org_names &= filter_orgs
         end
 
         reports = {}
