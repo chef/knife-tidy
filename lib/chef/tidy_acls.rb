@@ -142,6 +142,22 @@ class Chef
       write_new_file(acl, acl_file)
     end
 
+    # Appends the proper acls for ::server-admins and the org's read access group if they are missing.
+    def ensure_global_group_acls(acl_file)
+      acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
+      acl_ops.each do |op|
+        unless acl[op]['groups'].include? '::server-admins'
+          puts "REPAIRING: Adding #{op} acl for ::server-admins in #{acl_file}"
+          acl[op]['groups'].push('::server-admins')
+        end
+        if op == 'read' && !acl[op]['groups'].include?("::#{@org}_read_access_group")
+          puts "REPAIRING: Adding #{op} acl for ::#{@org}_read_access_group in #{acl_file}"
+          acl[op]['groups'].push("::#{@org}_read_access_group")
+        end
+      end
+      write_new_file(acl, acl_file)
+    end
+
     def validate_acls
       org_acls.each do |acl_file|
         acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
@@ -168,6 +184,7 @@ class Chef
       @members.each do |member|
         user_acl_path = ::File.join(@tidy.user_acls_path, "#{member[:user][:username]}.json")
         user_acl = FFI_Yajl::Parser.parse(::File.read(user_acl_path), symbolize_names: false)
+        ensure_global_group_acls(user_acl_path)
         actors_groups = acl_actors_groups(user_acl)
         actors_groups[:groups].each do |group|
           if invalid_group?(group)
