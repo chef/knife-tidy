@@ -41,7 +41,7 @@ class Chef
           nodes = nodes_list(org)
           db_nodes = rest.get("/organizations/#{org}/nodes")
           unless nodes.length == db_nodes.length
-            Chef::Log.error("Search index is out of data for organization #{org}. Skipping report.")
+            Chef::Log.error("Search index is out of date for organization #{org}. Skipping report.")
             next
           end
 
