@@ -72,10 +72,10 @@ class Chef
             end
           end
 
-          Chef::Log.debug("Used cookbook list before checking environments: #{used_cookbooks}")
+          ui.stdout.puts("Used cookbook list before checking environments: #{used_cookbooks}")
           pins = environment_constraints(org)
           used_cookbooks = check_environment_pins(used_cookbooks, pins, cb_list)
-          Chef::Log.debug("Used cookbook list after checking environments: #{used_cookbooks}")
+          ui.stdout.puts("Used cookbook list after checking environments: #{used_cookbooks}")
 
           stale_nodes = []
           nodes.each do |n|
@@ -194,14 +194,14 @@ class Chef
         if cb_list[cb]
           cb_list[cb].each do |v|
             if Gem::Dependency.new('', version).match?('', v)
-              Chef::Log.debug("Pin of #{cb} can be satisfied by #{v}, adding to used list")
+              ui.stdout.puts("Pin of #{cb} can be satisfied by #{v}, adding to used list")
               return [v]
             else
-              Chef::Log.debug("Pin of #{cb} version #{version} not satisfied by #{v}")
+              ui.stdout.puts("Pin of #{cb} version #{version} not satisfied by #{v}")
             end
           end
         else
-          Chef::Log.info("Cookbook #{cb} version #{version} is pinned in an environment, but does not exist on the server in this org.")
+          ui.stdout.puts("Cookbook #{cb} version #{version} is pinned in an environment, but does not exist on the server in this org.")
         end
         return nil
       end
@@ -214,7 +214,7 @@ class Chef
               used_cookbooks[cb].each do |v|
                 if Gem::Dependency.new('', version).match?('', v)
                   # This version in used_cookbooks satisfies the pin
-                  Chef::Log.debug("Pin of #{cb}: #{version} is satisfied by #{v}")
+                  ui.stdout.puts("Pin of #{cb}: #{version} is satisfied by #{v}")
                   break
                 end
               end
@@ -222,7 +222,7 @@ class Chef
               used_cookbooks[cb].push(result[0]) if result
             else
               # No cookbook version for that pin, look through the full cookbook list for a match
-              Chef::Log.debug("No used cookbook #{cb}, checking the full cookbook list")
+              ui.stdout.puts("No used cookbook #{cb}, checking the full cookbook list")
               result = check_cookbook_list(cb_list, cb, version)
               used_cookbooks[cb] = result if result
             end
