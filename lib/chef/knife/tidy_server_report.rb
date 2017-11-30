@@ -30,6 +30,7 @@ class Chef
                end
 
         pre_12_3_nodes = []
+        unconverged_recent_nodes = []
         stale_orgs = []
         node_threshold = config[:node_threshold].to_i
 
@@ -46,6 +47,14 @@ class Chef
           end
 
           nodes.each do |node|
+            # If the node hasn't checked in.
+            if !node['chef_packages']
+              # If the node is under an hour old.
+              if (Time.now.to_i - node['ohai_time'].to_i) < 3600
+                unconverged_recent_nodes << node['name']
+              end
+              next
+            end
             chef_version = Chef::VersionString.new(node['chef_packages']['chef']['version'])
             if chef_version < "12.3"
               pre_12_3_nodes << node['name']
@@ -84,6 +93,9 @@ class Chef
 
           if pre_12_3_nodes.length > 0
             ui.warn "#{pre_12_3_nodes.length} nodes have been detected in the organization #{org} running chef-client versions prior to 12.3 - this means that the list of stale cookbooks for these nodes may not have been correctly calculated and your report may not be complete for this organization."
+          end
+          if unconverged_recent_nodes.length > 0
+            ui.warn "#{unconverged_recent_nodes.length} recent nodes have been detected in the organization #{org} that haven't converged yet - this means that the list of stale cookbooks for these nodes may not have been correctly calculated and your report may not be complete for this organization."
           end
         end
 
