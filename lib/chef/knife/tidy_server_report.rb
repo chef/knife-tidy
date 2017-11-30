@@ -39,6 +39,11 @@ class Chef
           version_count = cookbook_count(cb_list).sort_by(&:last).reverse.to_h
           used_cookbooks = {}
           nodes = nodes_list(org)
+          db_nodes = rest.get("/organizations/#{org}/nodes")
+          unless nodes.length == db_nodes.length
+            ui.error("Search index is out of date for organization #{org}. Skipping report.")
+            next
+          end
 
           nodes.each do |node|
             chef_version = Chef::VersionString.new(node['chef_packages']['chef']['version'])
