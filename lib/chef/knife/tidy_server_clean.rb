@@ -45,8 +45,14 @@ class Chef
           exit 1
         end
 
-        unless config[:backup_path]
-          config[:backup_path] = ui.ask_question("It is not recommended to run this command without specifying a current backup directory.\nPlease set a backup directory.\n")
+        while config[:backup_path].nil?
+          user_value = ui.ask_question("It is not recommended to run this command without specifying a current backup directory.\nPlease set a backup directory.\n")
+          config[:backup_path] = user_value == '' ? nil : user_value
+        end
+
+        unless ::File.directory?(config[:backup_path])
+          ui.error 'Must specify valid --backup-path'
+          exit 1
         end
 
         deletions = if config[:only_cookbooks]
