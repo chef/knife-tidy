@@ -56,9 +56,10 @@ class Chef
                  all_orgs
                end
 
-        ui.warn "This operation will affect the following Orgs on #{server.root_url}\n\n#{orgs}\n\n"
+        ui.confirm("This command will delete #{deletions} identified by the knife-tidy reports in #{tidy.reports_dir} from the Chef Server specified in your knife configuration file. \n\n The Chef server to be used is currently #{server.root_url}.\n\n Please be sure this is the Chef server you wish to delete data from. \n\nWould you like to continue?") unless config[:unattended]
 
-        ui.confirm("About to delete #{deletions} from the Chef Server identified in the #{tidy.reports_dir} directory! Are you sure you wish to continue") unless config[:unattended]
+        ui.warn "This operation will affect the following Orgs on #{}\n\n#{orgs}\n\n"
+
 
         orgs.each do |org|
           clean_cookbooks(org) unless config[:only_nodes]
@@ -69,8 +70,6 @@ class Chef
       end
 
       def clean_cookbooks(org)
-        ui.warn "Cleaning cookbooks is a feature not yet enabled."
-        return
         queue = Chef::Util::ThreadedJobQueue.new
         unused_cookbooks_file = ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json")
         return unless ::File.exist?(unused_cookbooks_file)
