@@ -63,16 +63,13 @@ Remove stale nodes that haven't checked-in to the Chef Server as defined by the 
 ## Options
 
   * `--backup-path /path/to/an-ec-backup`
-    The location to the last backup of the Chef Server. It is not recommend to run the clean commnand without first taking a current backup using [knife-ec-backup](https://github.com/chef/knife-ec-backup)
-
-  * `--concurrency`
-    Number of simultaneous request being sent to the target Chef Server
+    The location to the last backup of the target Chef Server. It is not recommended to run the clean command without first taking a current backup using [knife-ec-backup](https://github.com/chef/knife-ec-backup)
 
   * `--only-cookbooks`
-    Only deletes the unused cookbooks from the target Chef Server. NOTE: Cannot be speciefied if `--only-nodes` is already specified
+    Only deletes the unused cookbooks from the target Chef Server. NOTE: Cannot be specified if `--only-nodes` is already specified
 
   * `--only-nodes`
-    Only deltes the stale nodes, associated clients, and ACLs from the target Chef Server. NOTE: Cannot be speciefied if `--only-cookbooks` is already specified
+    Only deltes the stale nodes, associated clients, and ACLs from the target Chef Server. NOTE: Cannot be specified if `--only-cookbooks` is already specified
 
   * `--dry-run`
     Do not perform any actual deletion, only report on what would have been deleted.
