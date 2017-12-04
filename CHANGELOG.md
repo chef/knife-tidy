@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.1.0](https://github.com/chef-customers/knife-tidy/tree/0.1.0) (2017-12-04)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.7.0...0.1.0)
+
+**Merged pull requests:**
+
+- Add option for backup path to server clean [\#70](https://github.com/chef-customers/knife-tidy/pull/70) ([TheLunaticScripter](https://github.com/TheLunaticScripter))
+- Warn the user if there are nodes created in the last hour that haven'… [\#67](https://github.com/chef-customers/knife-tidy/pull/67) ([itmustbejj](https://github.com/itmustbejj))
+- Add guard to skip generating org reports if the search index is not u… [\#66](https://github.com/chef-customers/knife-tidy/pull/66) ([itmustbejj](https://github.com/itmustbejj))
+- Enable server clean command and clarify confirmation dialogue [\#31](https://github.com/chef-customers/knife-tidy/pull/31) ([jonlives](https://github.com/jonlives))
+
 ## [0.7.0](https://github.com/chef-customers/knife-tidy/tree/0.7.0) (2017-11-29)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.6.1...0.7.0)
 
@@ -10,6 +20,7 @@
 
 **Merged pull requests:**
 
+- release 0.7.0 [\#65](https://github.com/chef-customers/knife-tidy/pull/65) ([jeremymv2](https://github.com/jeremymv2))
 - Add admins/users groups to the read acl for clients from \< CS 12.5 [\#64](https://github.com/chef-customers/knife-tidy/pull/64) ([itmustbejj](https://github.com/itmustbejj))
 - Restore acls for ::server-admins and org read access groups if they a… [\#61](https://github.com/chef-customers/knife-tidy/pull/61) ([itmustbejj](https://github.com/itmustbejj))
 - Filter email notifications on org\_list config option. [\#60](https://github.com/chef-customers/knife-tidy/pull/60) ([itmustbejj](https://github.com/itmustbejj))
