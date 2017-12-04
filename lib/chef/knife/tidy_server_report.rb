@@ -164,10 +164,11 @@ class Chef
       def unused_cookbooks(used_list, cb_list)
         unused_list = {}
         cb_list.each do |name, versions|
+          versions.sort! {| a, b | Gem::Version.new(a) <=> Gem::Version.new(b) }
           if used_list[name].nil? # Not in the used list at all (Remove all versions)
             unused_list[name] = versions
           elsif used_list[name].sort != versions  # Is in the used cookbook list, but version arrays do not match (Find unused versions)
-            unused_list[name] = versions - used_list[name]
+            unused_list[name] = versions - used_list[name] - [versions.last]  # Don't delete the most recent version as it might not be in a run_list yet.
           end
         end
         unused_list
@@ -218,6 +219,7 @@ class Chef
       def check_environment_pins(used_cookbooks, pins, cb_list)
         pins.each do |cb, versions|
           versions.each do |version|
+            next if version == "<= 0.0.0"
             if used_cookbooks[cb]
               # This pinned cookbook is in the used list, now check for a matching version.
               used_cookbooks[cb].each do |v|
@@ -226,7 +228,7 @@ class Chef
                 end
               end
               result = check_cookbook_list(cb_list, cb, version)
-              used_cookbooks[cb].push(result[0]) if result
+              used_cookbooks[cb].push(result[0]) if result && !used_cookbooks[cb].include?(result[0])
             else
               # No cookbook version for that pin, look through the full cookbook list for a match
               result = check_cookbook_list(cb_list, cb, version)
