@@ -3,7 +3,6 @@ require 'chef/knife/tidy_base'
 class Chef
   class Knife
     class TidyServerClean < Knife
-
       include Knife::TidyBase
 
       deps do
@@ -12,6 +11,10 @@ class Chef
       end
 
       banner "knife tidy server clean (options)"
+
+      option :backup_path,
+        :long => '--backup-path path/to/backup',
+        :description => 'The path to the knife-ec-backup backup directory'
 
       option :concurrency,
         :long => '--concurrency THREADS',
@@ -39,6 +42,16 @@ class Chef
 
         if config[:only_cookbooks] && config[:only_nodes]
           ui.error 'Cannot use --only-cookbooks AND --only-nodes'
+          exit 1
+        end
+
+        while config[:backup_path].nil?
+          user_value = ui.ask_question("It is not recommended to run this command without specifying a current backup directory.\nPlease set a backup directory.\n")
+          config[:backup_path] = user_value == '' ? nil : user_value
+        end
+
+        unless ::File.directory?(config[:backup_path])
+          ui.error 'Must specify valid --backup-path'
           exit 1
         end
 

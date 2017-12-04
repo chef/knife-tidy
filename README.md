@@ -60,9 +60,16 @@ org_unused_cookbooks.json | List of cookbooks and versions that do not appear to
 ## $ knife tidy server clean --help
 Remove stale nodes that haven't checked-in to the Chef Server as defined by the `--node-threshold NUM_DAYS` option when the reports were generated.. The associated client and ACLs are also removed.
 
-Future: remove unused cookbooks - currently this feature is disabled.
-
 ## Options
+
+  * `--backup-path /path/to/an-ec-backup`
+    The location to the last backup of the target Chef Server. It is not recommended to run the clean command without first taking a current backup using [knife-ec-backup](https://github.com/chef/knife-ec-backup)
+
+  * `--only-cookbooks`
+    Only deletes the unused cookbooks from the target Chef Server. NOTE: Cannot be specified if `--only-nodes` is already specified
+
+  * `--only-nodes`
+    Only deltes the stale nodes, associated clients, and ACLs from the target Chef Server. NOTE: Cannot be specified if `--only-cookbooks` is already specified
 
   * `--dry-run`
     Do not perform any actual deletion, only report on what would have been deleted.
