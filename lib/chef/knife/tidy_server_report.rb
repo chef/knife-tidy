@@ -30,12 +30,12 @@ class Chef
                  all_orgs
                end
 
-        pre_12_3_nodes = []
-        unconverged_recent_nodes = []
         stale_orgs = []
         node_threshold = config[:node_threshold].to_i
 
         orgs.each do |org|
+          pre_12_3_nodes = []
+          unconverged_recent_nodes = []
           ui.info "  Organization: #{org}"
           cb_list = cookbook_list(org)
           version_count = cookbook_count(cb_list).sort_by(&:last).reverse.to_h
