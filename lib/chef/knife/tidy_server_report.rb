@@ -58,8 +58,9 @@ class Chef
               end
               next
             end
-            chef_version = Chef::VersionString.new(node['chef_packages']['chef']['version'])
-            if chef_version < "12.3"
+            chef_version = Gem::Version.new(node['chef_packages']['chef']['version'])
+            # If the node has checked in within the node_threshold with a client older than 12.3
+            if chef_version < Gem::Version.new("12.3") && (Time.now.to_i - node['ohai_time'].to_i) <= node_threshold * 86400
               pre_12_3_nodes << node['name']
             end
           end
