@@ -42,29 +42,6 @@ rescue LoadError => e
   puts ">>> Gem load error: #{e}, omitting spec" unless ENV['CI']
 end
 
-# Integration tests. Kitchen.ci
-namespace :integration do
-  begin
-    require 'kitchen/rake_tasks'
-
-    desc 'Run kitchen integration tests'
-    Kitchen::RakeTasks.new
-  rescue LoadError => e
-    puts ">>> Kitchen error: #{e}, omitting #{task.name}" unless ENV['CI']
-  end
-end
-
-namespace :supermarket do
-  begin
-    require 'stove/rake_task'
-
-    desc 'Publish cookbook to Supermarket with Stove'
-    Stove::RakeTask.new
-  rescue LoadError => e
-    puts ">>> Gem load error: #{e}, omitting #{task.name}" unless ENV['CI']
-  end
-end
-
 # Changelog
 namespace :changelog do
   begin
