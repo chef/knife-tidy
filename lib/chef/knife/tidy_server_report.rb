@@ -19,8 +19,9 @@ class Chef
 
       def run
         ensure_reports_dir!
+        FileUtils.rm_f(server_warnings_file_path)
 
-        ui.warn "Writing to #{tidy.reports_dir} directory"
+        ui.stdout.puts(ui.color("Writing to #{tidy.reports_dir} directory", :magenta))
         delete_existing_reports
 
         orgs = if config[:org_list]
@@ -29,12 +30,12 @@ class Chef
                  all_orgs
                end
 
-        pre_12_3_nodes = []
-        unconverged_recent_nodes = []
         stale_orgs = []
         node_threshold = config[:node_threshold].to_i
 
         orgs.each do |org|
+          pre_12_3_nodes = []
+          unconverged_recent_nodes = []
           ui.info "  Organization: #{org}"
           cb_list = cookbook_list(org)
           version_count = cookbook_count(cb_list).sort_by(&:last).reverse.to_h
@@ -42,7 +43,9 @@ class Chef
           nodes = nodes_list(org)
           db_nodes = rest.get("/organizations/#{org}/nodes")
           unless nodes.length == db_nodes.length
-            ui.error("Search index is out of date for organization #{org}. Skipping report.")
+            ood_message = "Search index is out of date! No cleanup action will be taken for #{org}."
+            ui.error(ood_message)
+            action_needed(ood_message, server_warnings_file_path)
             next
           end
 
@@ -55,8 +58,9 @@ class Chef
               end
               next
             end
-            chef_version = Chef::VersionString.new(node['chef_packages']['chef']['version'])
-            if chef_version < "12.3"
+            chef_version = Gem::Version.new(node['chef_packages']['chef']['version'])
+            # If the node has checked in within the node_threshold with a client older than 12.3
+            if chef_version < Gem::Version.new("12.3") && (Time.now.to_i - node['ohai_time'].to_i) <= node_threshold * 86400
               pre_12_3_nodes << node['name']
             end
           end
@@ -72,10 +76,8 @@ class Chef
             end
           end
 
-          Chef::Log.debug("Used cookbook list before checking environments: #{used_cookbooks}")
           pins = environment_constraints(org)
           used_cookbooks = check_environment_pins(used_cookbooks, pins, cb_list)
-          Chef::Log.debug("Used cookbook list after checking environments: #{used_cookbooks}")
 
           stale_nodes = []
           nodes.each do |n|
@@ -87,15 +89,19 @@ class Chef
           stale_nodes_hash = {'threshold_days': node_threshold, 'org_total_node_count': nodes.count, 'count': stale_nodes.count, 'list': stale_nodes}
           stale_orgs.push(org) if stale_nodes.count == nodes.count
 
-          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"))
-          tidy.write_new_file(version_count, ::File.join(tidy.reports_dir, "#{org}_cookbook_count.json"))
-          tidy.write_new_file(stale_nodes_hash, ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json"))
+          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"), backup=false)
+          tidy.write_new_file(version_count, ::File.join(tidy.reports_dir, "#{org}_cookbook_count.json"), backup=false)
+          tidy.write_new_file(stale_nodes_hash, ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json"), backup=false)
 
           if pre_12_3_nodes.length > 0
-            ui.warn "#{pre_12_3_nodes.length} nodes have been detected in the organization #{org} running chef-client versions prior to 12.3 - this means that the list of stale cookbooks for these nodes may not have been correctly calculated and your report may not be complete for this organization."
+            pre_12_3_message = "#{pre_12_3_nodes.length} nodes in organization #{org} have converged in the last #{node_threshold} days with a chef-client < 12.3. These nodes' cookbook versions WILL NOT be factored in the stale cookbooks versions report. Continuing with the server cleanup will delete cookbooks in-use by these nodes."
+            ui.warn(pre_12_3_message)
+            action_needed(pre_12_3_message, server_warnings_file_path)
           end
           if unconverged_recent_nodes.length > 0
-            ui.warn "#{unconverged_recent_nodes.length} recent nodes have been detected in the organization #{org} that haven't converged yet - this means that the list of stale cookbooks for these nodes may not have been correctly calculated and your report may not be complete for this organization."
+            unconverged_recent_message "#{unconverged_recent_nodes.length} nodes have been created in the last hour that have yet to converge in organization #{org}. These nodes WILL NOT be factored in the stale cookbook verisons report. Continuing with the server cleanup will delete cookbooks in-use by these nodes."
+            ui.warn(unconverged_recent_message)
+            action_needed(unconverged_recent_message, server_warnings_file_path)
           end
         end
 
@@ -158,10 +164,11 @@ class Chef
       def unused_cookbooks(used_list, cb_list)
         unused_list = {}
         cb_list.each do |name, versions|
+          versions.sort! {| a, b | Gem::Version.new(a) <=> Gem::Version.new(b) }
           if used_list[name].nil? # Not in the used list at all (Remove all versions)
             unused_list[name] = versions
           elsif used_list[name].sort != versions  # Is in the used cookbook list, but version arrays do not match (Find unused versions)
-            unused_list[name] = versions - used_list[name]
+            unused_list[name] = versions - used_list[name] - [versions.last]  # Don't delete the most recent version as it might not be in a run_list yet.
           end
         end
         unused_list
@@ -193,15 +200,18 @@ class Chef
       def check_cookbook_list(cb_list, cb, version)
         if cb_list[cb]
           cb_list[cb].each do |v|
+            versions_not_satisfied = []
             if Gem::Dependency.new('', version).match?('', v)
-              Chef::Log.debug("Pin of #{cb} can be satisfied by #{v}, adding to used list")
               return [v]
             else
-              Chef::Log.debug("Pin of #{cb} version #{version} not satisfied by #{v}")
+              versions_not_satisfied.push(v)
+            end
+            if v == cb_list[cb].last
+              ui.warn("Pin of #{cb} #{version} not satisfied by current versions of cookbook: [#{versions_not_satisfied.join(', ')}]")
             end
           end
         else
-          Chef::Log.info("Cookbook #{cb} version #{version} is pinned in an environment, but does not exist on the server in this org.")
+          ui.warn("Cookbook #{cb} #{version} is pinned in an environment, but does not exist on the server in this org.")
         end
         return nil
       end
@@ -209,20 +219,18 @@ class Chef
       def check_environment_pins(used_cookbooks, pins, cb_list)
         pins.each do |cb, versions|
           versions.each do |version|
+            next if version == "<= 0.0.0"
             if used_cookbooks[cb]
               # This pinned cookbook is in the used list, now check for a matching version.
               used_cookbooks[cb].each do |v|
                 if Gem::Dependency.new('', version).match?('', v)
-                  # This version in used_cookbooks satisfies the pin
-                  Chef::Log.debug("Pin of #{cb}: #{version} is satisfied by #{v}")
                   break
                 end
               end
               result = check_cookbook_list(cb_list, cb, version)
-              used_cookbooks[cb].push(result[0]) if result
+              used_cookbooks[cb].push(result[0]) if result && !used_cookbooks[cb].include?(result[0])
             else
               # No cookbook version for that pin, look through the full cookbook list for a match
-              Chef::Log.debug("No used cookbook #{cb}, checking the full cookbook list")
               result = check_cookbook_list(cb_list, cb, version)
               used_cookbooks[cb] = result if result
             end

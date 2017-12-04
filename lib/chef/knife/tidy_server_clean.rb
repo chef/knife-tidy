@@ -46,7 +46,7 @@ class Chef
         end
 
         while config[:backup_path].nil?
-          user_value = ui.ask_question("It is not recommended to run this command without specifying a current backup directory.\nPlease set a backup directory.\n")
+          user_value = ui.ask_question("It is not recommended to run this command without specifying a current backup directory.\nPlease specify a backup directory:")
           config[:backup_path] = user_value == '' ? nil : user_value
         end
 
@@ -69,10 +69,13 @@ class Chef
                  all_orgs
                end
 
+        ui.warn "This operation will affect the following Orgs on #{server.root_url}: #{orgs}"
+        if ::File.exist?(server_warnings_file_path)
+          ::File.read(::File.expand_path('reports/knife-tidy-server-warnings.txt')).each_line do |line|
+            ui.warn(line)
+          end
+        end
         ui.confirm("This command will delete #{deletions} identified by the knife-tidy reports in #{tidy.reports_dir} from the Chef Server specified in your knife configuration file. \n\n The Chef server to be used is currently #{server.root_url}.\n\n Please be sure this is the Chef server you wish to delete data from. \n\nWould you like to continue?") unless config[:unattended]
-
-        ui.warn "This operation will affect the following Orgs on #{}\n\n#{orgs}\n\n"
-
 
         orgs.each do |org|
           clean_cookbooks(org) unless config[:only_nodes]
@@ -86,7 +89,7 @@ class Chef
         queue = Chef::Util::ThreadedJobQueue.new
         unused_cookbooks_file = ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json")
         return unless ::File.exist?(unused_cookbooks_file)
-        puts "INFO: Cleaning cookbooks for Org: #{org}, using #{unused_cookbooks_file}"
+        ui.stdout.puts "INFO: Cleaning cookbooks for Org: #{org}, using #{unused_cookbooks_file}"
         unused_cookbooks = FFI_Yajl::Parser.parse(::File.read(unused_cookbooks_file), symbolize_names: true)
         unused_cookbooks.keys.each do |cookbook|
           versions = unused_cookbooks[cookbook]
@@ -112,7 +115,7 @@ class Chef
         queue = Chef::Util::ThreadedJobQueue.new
         stale_nodes_file = ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json")
         return unless ::File.exist?(stale_nodes_file)
-        puts "INFO: Cleaning stale nodes for Org: #{org}, using #{stale_nodes_file}"
+        ui.stdout.puts "INFO: Cleaning stale nodes for Org: #{org}, using #{stale_nodes_file}"
         stale_nodes = FFI_Yajl::Parser.parse(::File.read(stale_nodes_file), symbolize_names: true)
         stale_nodes[:list].each do |node|
           queue << lambda { delete_node_job(org, node) }

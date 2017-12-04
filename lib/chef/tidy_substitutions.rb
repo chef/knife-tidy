@@ -9,13 +9,14 @@ class Chef
 
     attr_accessor :file_path, :backup_path, :data
 
-    def initialize(file_path = nil, tidy_common = nil)
+    def initialize(file_path = nil, tidy_common)
       @file_path = file_path
-      @backup_path = tidy_common.backup_path if tidy_common
+      @tidy = tidy_common
+      @backup_path = tidy_common.backup_path
     end
 
     def load_data
-      puts "INFO: Loading substitutions from #{file_path}"
+      @tidy.ui.stdout.puts "INFO: Loading substitutions from #{file_path}"
       @data = FFI_Yajl::Parser.parse(::File.read(@file_path), symbolize_names: false)
     rescue Errno::ENOENT
       raise NoSubstitutionFile, file_path
@@ -23,7 +24,7 @@ class Chef
 
     def boiler_plate
       bp = ::File.join(File.dirname(__FILE__), '../../conf/substitutions.json.example')
-      puts "INFO: Creating boiler plate gsub file: 'substitutions.json'"
+      @tidy.ui.stdout.puts "INFO: Creating boiler plate gsub file: 'substitutions.json'"
       FileUtils.cp(bp, ::File.join(Dir.pwd, 'substitutions.json'))
     end
 
@@ -44,7 +45,7 @@ class Chef
           file.each_line do |line|
             if line.match(search)
               temp_file.puts replace
-              puts "INFO:  ++ #{path}"
+              @tidy.ui.stdout.puts "INFO:  ++ #{path}"
             else
               temp_file.puts line
             end
@@ -63,7 +64,7 @@ class Chef
       load_data
       @data.keys.each do |entry|
         @data[entry].keys.each do |glob|
-          puts "INFO: Running substitutions for #{entry} -> #{glob}"
+          @tidy.ui.stdout.puts "INFO: Running substitutions for #{entry} -> #{glob}"
           Dir[::File.join(@backup_path, glob)].each do |file|
             @data[entry][glob].each do |substitution|
               search = Regexp.new(substitution['pattern'])

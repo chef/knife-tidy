@@ -1,5 +1,6 @@
 require 'ffi_yajl'
 require 'fileutils'
+require "chef/knife/core/ui"
 
 class Chef
   class TidyCommon
@@ -9,6 +10,10 @@ class Chef
       Encoding.default_external = Encoding::UTF_8
       Encoding.default_internal = Encoding::UTF_8
       @backup_path = ::File.expand_path(backup_path)
+    end
+
+    def ui
+      @ui ||= Chef::Knife::UI.new(STDOUT, STDERR, STDIN, {})
     end
 
     def users_path
@@ -62,8 +67,8 @@ class Chef
       end
     end
 
-    def write_new_file(contents, path)
-      if ::File.exist?(path)
+    def write_new_file(contents, path, backup=true)
+      if ::File.exist?(path) && backup
         FileUtils.cp(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
       end
       ::File.open(path, 'w+') do |f|

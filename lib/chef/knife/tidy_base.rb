@@ -58,7 +58,21 @@ class Chef
       end
 
       def completion_message
-        puts "#{ui.color("** Finished **", :magenta)}"
+        ui.stdout.puts "#{ui.color("** Finished **", :magenta)}"
+      end
+
+      def action_needed_file_path
+        ::File.expand_path('knife-tidy-actions-needed.txt')
+      end
+
+      def server_warnings_file_path
+        ::File.expand_path('reports/knife-tidy-server-warnings.txt')
+      end
+
+      def action_needed(msg, file_path=action_needed_file_path)
+        ::File.open(file_path, 'a') do |f|
+          f.write(msg + "\n")
+        end
       end
     end
   end
