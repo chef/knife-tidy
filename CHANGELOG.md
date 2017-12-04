@@ -1,10 +1,11 @@
 # Change Log
 
-## [0.1.0](https://github.com/chef-customers/knife-tidy/tree/0.1.0) (2017-12-04)
-[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.7.0...0.1.0)
+## [1.0.0](https://github.com/chef-customers/knife-tidy/tree/1.0.0) (2017-12-04)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.7.0...1.0.0)
 
 **Merged pull requests:**
 
+- Enabled cookbook deletion [\#71](https://github.com/chef-customers/knife-tidy/pull/71) ([itmustbejj](https://github.com/itmustbejj))
 - Add option for backup path to server clean [\#70](https://github.com/chef-customers/knife-tidy/pull/70) ([TheLunaticScripter](https://github.com/TheLunaticScripter))
 - Warn the user if there are nodes created in the last hour that haven'… [\#67](https://github.com/chef-customers/knife-tidy/pull/67) ([itmustbejj](https://github.com/itmustbejj))
 - Add guard to skip generating org reports if the search index is not u… [\#66](https://github.com/chef-customers/knife-tidy/pull/66) ([itmustbejj](https://github.com/itmustbejj))
