@@ -18,26 +18,26 @@ class Chef
     end
 
     def load_users
-      ui.stdout.puts "INFO: Loading users"
+      @tidy.ui.stdout.puts "INFO: Loading users"
       Dir[::File.join(@tidy.users_path, '*.json')].each do |user|
         @users.push(FFI_Yajl::Parser.parse(::File.read(user), symbolize_names: true))
       end
     end
 
     def load_members
-      ui.stdout.puts "INFO: Loading members for #{@org}"
+      @tidy.ui.stdout.puts "INFO: Loading members for #{@org}"
       @members = FFI_Yajl::Parser.parse(::File.read(@tidy.members_path(@org)), symbolize_names: true)
     end
 
     def load_clients
-      ui.stdout.puts "INFO: Loading clients for #{@org}"
+      @tidy.ui.stdout.puts "INFO: Loading clients for #{@org}"
       Dir[::File.join(@tidy.clients_path(@org), '*.json')].each do |client|
         @clients.push(FFI_Yajl::Parser.parse(::File.read(client), symbolize_names: true))
       end
     end
 
     def load_groups
-      ui.stdout.puts "INFO: Loading groups for #{@org}"
+      @tidy.ui.stdout.puts "INFO: Loading groups for #{@org}"
       Dir[::File.join(@tidy.groups_path(@org), '*.json')].each do |group|
         @groups.push(FFI_Yajl::Parser.parse(::File.read(group), symbolize_names: true))
       end
@@ -48,7 +48,7 @@ class Chef
       load_members
       load_clients
       load_groups
-      ui.stdout.puts "INFO: #{@org} Actors loaded!"
+      @tidy.ui.stdout.puts "INFO: #{@org} Actors loaded!"
     end
 
     def acl_ops
@@ -105,41 +105,34 @@ class Chef
     end
 
     def fix_ambiguous_actor(actor)
-      ui.stdout.puts "REPAIRING: Ambiguous actor! #{actor} removing from #{@tidy.members_path(@org)}"
+      @tidy.ui.stdout.puts "REPAIRING: Ambiguous actor! #{actor} removing from #{@tidy.members_path(@org)}"
       remove_user_from_org(actor)
     end
 
     def add_client_to_org(actor)
       # TODO
-      ui.stdout.puts "ACTION NEEDED: Client referenced in acl non-existant: #{actor}"
+      @tidy.ui.stdout.puts "ACTION NEEDED: Client referenced in acl non-existant: #{actor}"
     end
 
     def add_actor_to_members(actor)
-      ui.stdout.puts "REPAIRING: Invalid actor: #{actor} adding to #{@tidy.members_path(@org)}"
+      @tidy.ui.stdout.puts "REPAIRING: Invalid actor: #{actor} adding to #{@tidy.members_path(@org)}"
       user = { user: { username: actor } }
       @members.push(user)
-      write_new_file(@members, @tidy.members_path(@org))
-    end
-
-    def write_new_file(contents, path)
-      FileUtils.cp(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
-      ::File.open(path, 'w+') do |f|
-         f.write(FFI_Yajl::Encoder.encode(contents, pretty: true))
-      end
+      @tidy.write_new_file(@members, @tidy.members_path(@org))
     end
 
     def remove_user_from_org(actor)
       @members.reject! { |user| user[:user][:username] == actor }
-      write_new_file(@members, @tidy.members_path(@org))
+      @tidy.write_new_file(@members, @tidy.members_path(@org))
     end
 
     def remove_group_from_acl(group, acl_file)
-      ui.stdout.puts "REPAIRING: Removing invalid group: #{group} from #{acl_file}"
+      @tidy.ui.stdout.puts "REPAIRING: Removing invalid group: #{group} from #{acl_file}"
       acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
       acl_ops.each do |op|
         acl[op]['groups'].reject! { |the_group| the_group == group }
       end
-      write_new_file(acl, acl_file)
+      @tidy.write_new_file(acl, acl_file)
     end
 
     # Appends the proper acls for ::server-admins and the org's read access group if they are missing.
@@ -147,26 +140,26 @@ class Chef
       acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
       acl_ops.each do |op|
         unless acl[op]['groups'].include? '::server-admins'
-          ui.stdout.puts "REPAIRING: Adding #{op} acl for ::server-admins in #{acl_file}"
+          @tidy.ui.stdout.puts "REPAIRING: Adding #{op} acl for ::server-admins in #{acl_file}"
           acl[op]['groups'].push('::server-admins')
         end
         if op == 'read' && !acl[op]['groups'].include?("::#{@org}_read_access_group")
-          ui.stdout.puts "REPAIRING: Adding #{op} acl for ::#{@org}_read_access_group in #{acl_file}"
+          @tidy.ui.stdout.puts "REPAIRING: Adding #{op} acl for ::#{@org}_read_access_group in #{acl_file}"
           acl[op]['groups'].push("::#{@org}_read_access_group")
         end
       end
-      write_new_file(acl, acl_file)
+      @tidy.write_new_file(acl, acl_file)
     end
 
     def ensure_client_read_acls(acl_file)
       acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
       %w(users admins).each do | group |
         unless acl['read']['groups'].include? group
-          ui.stdout.puts "REPAIRING: Adding read acl for #{group} in #{acl_file}"
+          @tidy.ui.stdout.puts "REPAIRING: Adding read acl for #{group} in #{acl_file}"
           acl['read']['groups'].push(group)
         end
       end
-      write_new_file(acl, acl_file)
+      @tidy.write_new_file(acl, acl_file)
     end
 
     def validate_acls

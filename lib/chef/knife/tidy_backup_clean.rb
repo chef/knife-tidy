@@ -36,7 +36,7 @@ class Chef
         FileUtils.rm_f(action_needed_file_path)
 
         if config[:gen_gsub]
-          Chef::TidySubstitutions.new().boiler_plate
+          Chef::TidySubstitutions.new(nil, tidy).boiler_plate
           exit
         end
 
@@ -193,7 +193,7 @@ class Chef
       def fix_chef_sugar_metadata
         Dir[::File.join(tidy.backup_path, 'organizations/*/cookbooks/chef-sugar*/metadata.rb')].each do |file|
           ui.stdout.puts 'INFO: Searching for known chef-sugar problems when uploading.'
-          s = Chef::TidySubstitutions.new
+          s = Chef::TidySubstitutions.new(nil, tidy)
           version = s.cookbook_version_from_path(file)
           patterns = [
             {
@@ -219,7 +219,7 @@ class Chef
             ui.stdout.puts "INFO: No metadata.rb in #{cookbook_path} - skipping"
             next
           end
-          Chef::TidySubstitutions.new.sub_in_file(
+          Chef::TidySubstitutions.new(nil, tidy).sub_in_file(
             ::File.join(cookbook_path, 'metadata.rb'),
             Regexp.new("^depends +['\"]#{name}['\"]"),
             "# depends '#{name}' # knife-tidy was here")

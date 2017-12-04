@@ -19,6 +19,7 @@ class Chef
 
       def run
         ensure_reports_dir!
+        FileUtils.rm_f(server_warnings_file_path)
 
         ui.warn "Writing to #{tidy.reports_dir} directory"
         delete_existing_reports
@@ -42,7 +43,9 @@ class Chef
           nodes = nodes_list(org)
           db_nodes = rest.get("/organizations/#{org}/nodes")
           unless nodes.length == db_nodes.length
-            ui.error("Search index is out of date for organization #{org}. Skipping report.")
+            ood_message = "Search index is out of date! No cleanup action will be taken for #{org}."
+            ui.error(ood_message)
+            action_needed(ood_message, server_warnings_file_path)
             next
           end
 
@@ -87,15 +90,19 @@ class Chef
           stale_nodes_hash = {'threshold_days': node_threshold, 'org_total_node_count': nodes.count, 'count': stale_nodes.count, 'list': stale_nodes}
           stale_orgs.push(org) if stale_nodes.count == nodes.count
 
-          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"))
-          tidy.write_new_file(version_count, ::File.join(tidy.reports_dir, "#{org}_cookbook_count.json"))
-          tidy.write_new_file(stale_nodes_hash, ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json"))
+          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"), backup=false)
+          tidy.write_new_file(version_count, ::File.join(tidy.reports_dir, "#{org}_cookbook_count.json"), backup=false)
+          tidy.write_new_file(stale_nodes_hash, ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json"), backup=false)
 
           if pre_12_3_nodes.length > 0
-            ui.warn "#{pre_12_3_nodes.length} nodes have been detected in the organization #{org} running chef-client versions prior to 12.3 - this means that the list of stale cookbooks for these nodes may not have been correctly calculated and your report may not be complete for this organization."
+            pre_12_3_message = "#{pre_12_3_nodes.length} nodes in organization #{org} have converged in the last #{node_threshold} days with a chef-client < 12.3. These nodes' cookbook versions WILL NOT be factored in the stale cookbooks versions report. Continuing with the server cleanup will delete cookbooks in-use by these nodes."
+            ui.warn(pre_12_3_message)
+            action_needed(pre_12_3_message, server_warnings_file_path)
           end
           if unconverged_recent_nodes.length > 0
-            ui.warn "#{unconverged_recent_nodes.length} recent nodes have been detected in the organization #{org} that haven't converged yet - this means that the list of stale cookbooks for these nodes may not have been correctly calculated and your report may not be complete for this organization."
+            unconverged_recent_message "#{unconverged_recent_nodes.length} nodes have been created in the last hour that have yet to converge in organization #{org}. These nodes WILL NOT be factored in the stale cookbook verisons report. Continuing with the server cleanup will delete cookbooks in-use by these nodes."
+            ui.warn(unconverged_recent_message)
+            action_needed(unconverged_recent_message, server_warnings_file_path)
           end
         end
 
