@@ -21,7 +21,7 @@ class Chef
         ensure_reports_dir!
         FileUtils.rm_f(server_warnings_file_path)
 
-        ui.warn "Writing to #{tidy.reports_dir} directory"
+        ui.stdout.puts(ui.color("Writing to #{tidy.reports_dir} directory", :magenta))
         delete_existing_reports
 
         orgs = if config[:org_list]
@@ -75,10 +75,8 @@ class Chef
             end
           end
 
-          ui.stdout.puts("Used cookbook list before checking environments: #{used_cookbooks}")
           pins = environment_constraints(org)
           used_cookbooks = check_environment_pins(used_cookbooks, pins, cb_list)
-          ui.stdout.puts("Used cookbook list after checking environments: #{used_cookbooks}")
 
           stale_nodes = []
           nodes.each do |n|
@@ -200,15 +198,18 @@ class Chef
       def check_cookbook_list(cb_list, cb, version)
         if cb_list[cb]
           cb_list[cb].each do |v|
+            versions_not_satisfied = []
             if Gem::Dependency.new('', version).match?('', v)
-              ui.stdout.puts("Pin of #{cb} can be satisfied by #{v}, adding to used list")
               return [v]
             else
-              ui.stdout.puts("Pin of #{cb} version #{version} not satisfied by #{v}")
+              versions_not_satisfied.push(v)
+            end
+            if v == cb_list[cb].last
+              ui.warn("Pin of #{cb} #{version} not satisfied by current versions of cookbook: [#{versions_not_satisfied.join(', ')}]")
             end
           end
         else
-          ui.stdout.puts("Cookbook #{cb} version #{version} is pinned in an environment, but does not exist on the server in this org.")
+          ui.warn("Cookbook #{cb} #{version} is pinned in an environment, but does not exist on the server in this org.")
         end
         return nil
       end
@@ -220,8 +221,6 @@ class Chef
               # This pinned cookbook is in the used list, now check for a matching version.
               used_cookbooks[cb].each do |v|
                 if Gem::Dependency.new('', version).match?('', v)
-                  # This version in used_cookbooks satisfies the pin
-                  ui.stdout.puts("Pin of #{cb}: #{version} is satisfied by #{v}")
                   break
                 end
               end
@@ -229,7 +228,6 @@ class Chef
               used_cookbooks[cb].push(result[0]) if result
             else
               # No cookbook version for that pin, look through the full cookbook list for a match
-              ui.stdout.puts("No used cookbook #{cb}, checking the full cookbook list")
               result = check_cookbook_list(cb_list, cb, version)
               used_cookbooks[cb] = result if result
             end
