@@ -1,5 +1,17 @@
 # Change Log
 
+## [1.0.1](https://github.com/chef-customers/knife-tidy/tree/1.0.1) (2017-12-12)
+[Full Changelog](https://github.com/chef-customers/knife-tidy/compare/1.0.0...1.0.1)
+
+**Closed issues:**
+
+- Clean up references to tidy methods [\#68](https://github.com/chef-customers/knife-tidy/issues/68)
+- A stale search index can generate inaccurate tidy reports [\#62](https://github.com/chef-customers/knife-tidy/issues/62)
+
+**Merged pull requests:**
+
+- Fix validate\_user\_acls and default\_user\_acl methods [\#73](https://github.com/chef-customers/knife-tidy/pull/73) ([itmustbejj](https://github.com/itmustbejj))
+
 ## [1.0.0](https://github.com/chef-customers/knife-tidy/tree/1.0.0) (2017-12-04)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/0.7.0...1.0.0)
 
