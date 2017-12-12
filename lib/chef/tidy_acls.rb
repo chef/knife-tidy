@@ -184,7 +184,7 @@ class Chef
       end
     end
 
-    def default_user_acl
+    def default_user_acl(client)
       return {:create=>{:actors=>["pivotal", client], :groups=>["::server-admins"]},
               :read=>{:actors=>["pivotal", client], :groups=>["::server-admins", "::#{@org}_read_access_group"]},
               :update=>{:actors=>["pivotal", client], :groups=>["::server-admins"]},
@@ -207,7 +207,7 @@ class Chef
           user_acl = FFI_Yajl::Parser.parse(::File.read(user_acl_path), symbolize_names: false)
         rescue Errno::ENOENT
           @tidy.ui.stdout.puts "REPAIRING: Replacing missing user acl for #{member[:user][:username]}."
-          @tidy.write_new_file(default_user_acl, client_acl_path, backup=false)
+          @tidy.write_new_file(default_user_acl(member), user_acl_path, backup=false)
           user_acl = FFI_Yajl::Parser.parse(::File.read(user_acl_path), symbolize_names: false)
         end
         ensure_global_group_acls(user_acl_path)
