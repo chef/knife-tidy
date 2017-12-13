@@ -7,10 +7,12 @@ bundler_args: --frozen
 # Early warning system to catch if Rubygems breaks something
 before_install:
   - gem update --system
+  - gem --version
   - rvm @global do gem uninstall bundler -a -x
   - gem install bundler -V -v 1.15.4
   - rm -f .bundle/config
   - which bundle
+  - bundle --version
 
 
 rvm:
