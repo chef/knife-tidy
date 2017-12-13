@@ -9,10 +9,11 @@ before_install:
   - gem update --system
   - gem --version
   - rvm @global do gem uninstall bundler -a -x -V
-  - gem install bundler -V -v 1.15.4
+  - gem install bundler -V
   - rm -f .bundle/config
   - which bundle
   - bundle --version
+  - ls -la $BUNDLE_PATH
 
 
 rvm:
