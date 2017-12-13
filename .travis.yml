@@ -12,8 +12,8 @@ before_install:
   - gem install bundler -V
   - rm -f .bundle/config
   - which bundle
-  - bundle --version
   - ls -la $BUNDLE_PATH
+  - bundle --version
 
 
 rvm:
