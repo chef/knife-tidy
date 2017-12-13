@@ -12,7 +12,7 @@ before_install:
   - gem install bundler -V
   - rm -f .bundle/config
   - which bundle
-  - ls -la $BUNDLE_PATH
+  - ls -la /home/travis/.rvm/rubies/ruby-2.4.2/lib/ruby/gems/2.4.0/gems/
   - bundle --version
 
 
