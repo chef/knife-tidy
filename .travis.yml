@@ -7,7 +7,7 @@ sudo: false
 before_install:
   - gem update --system
   - rvm @global do gem uninstall bundler -a -x
-  - gem install bundler
+  - gem install bundler -V
   - rm -f .bundle/config
 
 rvm:
