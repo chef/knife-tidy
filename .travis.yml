@@ -2,6 +2,7 @@ language: ruby
 cache: bundler
 dist: trusty
 sudo: false
+bundler_args: --frozen
 
 # Early warning system to catch if Rubygems breaks something
 before_install:
@@ -9,6 +10,7 @@ before_install:
   - rvm @global do gem uninstall bundler -a -x
   - gem install bundler -V
   - rm -f .bundle/config
+
 
 rvm:
   - 2.3.5
