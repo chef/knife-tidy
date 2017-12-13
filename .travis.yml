@@ -10,6 +10,7 @@ before_install:
   - rvm @global do gem uninstall bundler -a -x
   - gem install bundler -V -v 1.15.4
   - rm -f .bundle/config
+  - which bundle
 
 
 rvm:
