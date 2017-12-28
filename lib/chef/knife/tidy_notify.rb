@@ -140,8 +140,8 @@ MESSAGE_END
             message += <<MESSAGE_END
 --#{mime_boundary}
 Content-Transfer-Encoding:base64
-Content-Type: application/json;name="#{reports_dir}/#{organization}#{suffix}"
-Content-Disposition: attachment;filename="#{reports_dir}/#{organization}#{suffix}"
+Content-Type: application/json;name="#{organization}#{suffix}"
+Content-Disposition: attachment;filename="#{organization}#{suffix}"
 
 #{report_data[organization][suffix].to_json}
 
