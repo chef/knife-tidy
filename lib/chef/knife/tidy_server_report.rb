@@ -168,7 +168,8 @@ class Chef
           if used_list[name].nil? # Not in the used list at all (Remove all versions)
             unused_list[name] = versions
           elsif used_list[name].sort != versions  # Is in the used cookbook list, but version arrays do not match (Find unused versions)
-            unused_list[name] = versions - used_list[name] - [versions.last]  # Don't delete the most recent version as it might not be in a run_list yet.
+            unused = unused_list[name] = versions - used_list[name] - [versions.last]  # Don't delete the most recent version as it might not be in a run_list yet.
+            unused_list[name] = unused unless unused.empty?
           end
         end
         unused_list
