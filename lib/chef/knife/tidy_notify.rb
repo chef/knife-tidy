@@ -137,8 +137,8 @@ MESSAGE_END
         report_file_suffixes.each do |suffix|
           message += <<MESSAGE_END
 --#{mime_boundary}
-Content-Transfer-Encoding:base64
-Content-Type: application/json;name="#{organization}#{suffix}"
+Content-Transfer-Encoding:7bit
+Content-Type: plain/text;name="#{organization}#{suffix}";charset="UTF-8"
 Content-Disposition: attachment;filename="#{organization}#{suffix}"
 
 #{report_data[organization][suffix].to_json}
