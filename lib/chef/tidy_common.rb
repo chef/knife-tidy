@@ -1,6 +1,6 @@
 require 'ffi_yajl'
 require 'fileutils'
-require "chef/knife/core/ui"
+require 'chef/knife/core/ui'
 
 class Chef
   class TidyCommon
@@ -67,12 +67,12 @@ class Chef
       end
     end
 
-    def write_new_file(contents, path, backup=true)
+    def write_new_file(contents, path, backup = true)
       if ::File.exist?(path) && backup
         FileUtils.cp(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
       end
       ::File.open(path, 'w+') do |f|
-         f.write(FFI_Yajl::Encoder.encode(contents, pretty: true))
+        f.write(FFI_Yajl::Encoder.encode(contents, pretty: true))
       end
     end
 

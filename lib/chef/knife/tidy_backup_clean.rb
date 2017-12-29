@@ -3,7 +3,6 @@ require 'chef/knife/tidy_base'
 class Chef
   class Knife
     class TidyBackupClean < Knife
-
       deps do
         require 'chef/cookbook_loader'
         require 'chef/cookbook/metadata'
@@ -16,21 +15,21 @@ class Chef
         require 'securerandom'
       end
 
-      banner "knife tidy backup clean (options)"
+      banner 'knife tidy backup clean (options)'
 
       include Knife::TidyBase
 
       option :backup_path,
-        :long => '--backup-path path/to/backup',
-        :description => 'The path to the knife-ec-backup backup directory'
+        long: '--backup-path path/to/backup',
+        description: 'The path to the knife-ec-backup backup directory'
 
       option :gsub_file,
-        :long => '--gsub-file path/to/gsub/file',
-        :description => 'The path to the file used for substitutions. If non-existant, a boiler plate one will be created.'
+        long: '--gsub-file path/to/gsub/file',
+        description: 'The path to the file used for substitutions. If non-existant, a boiler plate one will be created.'
 
       option :gen_gsub,
-        :long => '--gen-gsub',
-        :description => 'Generate a new boiler plate global substitutions file: \'substitutions.json\'.'
+        long: '--gen-gsub',
+        description: 'Generate a new boiler plate global substitutions file: \'substitutions.json\'.'
 
       def run
         FileUtils.rm_f(action_needed_file_path)
@@ -76,7 +75,7 @@ class Chef
           email = ''
           ui.stdout.puts "INFO: Validating #{user}"
           the_user = FFI_Yajl::Parser.parse(::File.read(::File.join(tidy.users_path, "#{user}.json")), symbolize_names: false)
-          if the_user.has_key?('email') && the_user['email'].match(/\A[^@\s]+@[^@\s]+\z/)
+          if the_user.key?('email') && the_user['email'].match(/\A[^@\s]+@[^@\s]+\z/)
             if emails_seen.include?(the_user['email'])
               ui.stdout.puts "REPAIRING: Already saw #{user}'s email, creating a unique one."
               email = tidy.unique_email
@@ -105,12 +104,12 @@ class Chef
         ui.stdout.puts "INFO: Validating org object for #{org}"
         org_object = load_org_object(org)
 
-        unless org_object.keys.count == 3  # cheapo, maybe expect the exact names?
+        unless org_object.keys.count == 3 # cheapo, maybe expect the exact names?
           ui.stdout.puts "REPAIRING: org object for #{org} contains extra/missing fields. Fixing that for you"
           # quick/dirty attempt at fixing any of the required fields in case they're nil
           good_name = org_object['name'] || org
           good_full_name = org_object['full_name'] || org
-          good_guid = org_object['guid'] || SecureRandom.uuid.gsub('-','')
+          good_guid = org_object['guid'] || SecureRandom.uuid.delete('-')
           fixed_org_object = { name: good_name, full_name: good_full_name, guid: good_guid }
 
           write_org_object(org, fixed_org_object)
@@ -121,11 +120,11 @@ class Chef
         JSON.parse(File.read(File.join(tidy.org_path(org), 'org.json')))
       rescue Errno::ENOENT, JSON::ParserError
         ui.stdout.puts "REPAIRING: org object for organization #{org} is missing or corrupt. Generating a new one"
-        return { name: org, full_name: org, guid: SecureRandom.uuid.gsub('-','') }
+        return { name: org, full_name: org, guid: SecureRandom.uuid.delete('-') }
       end
 
       def write_org_object(org, org_object)
-        File.write(File.join(tidy.org_path(org), 'org.json') , JSON.pretty_generate(org_object))
+        File.write(File.join(tidy.org_path(org), 'org.json'), JSON.pretty_generate(org_object))
       end
 
       def add_cookbook_name_to_metadata(cookbook_name, rb_path)
@@ -179,7 +178,7 @@ class Chef
         broken_path = ::File.join(tidy.org_path(org), 'cookbooks.broken')
         FileUtils.mkdir(broken_path) unless ::File.directory?(broken_path)
         Dir[::File.join(tidy.cookbooks_path(org), "#{cookbook}*")].each do |cb|
-          FileUtils.mv(cb, broken_path, :verbose => true, :force => true)
+          FileUtils.mv(cb, broken_path, verbose: true, force: true)
         end
       end
 
@@ -198,12 +197,12 @@ class Chef
           patterns = [
             {
               search: '^require .*/lib/chef/sugar/version',
-              replace: "# require          File.expand_path('../lib/chef/sugar/version', *__FILE__)"
+              replace: "# require          File.expand_path('../lib/chef/sugar/version', *__FILE__)",
             },
             {
               search: '^version *Chef::Sugar::VERSION',
-              replace: "version '#{version}'"
-            }
+              replace: "version '#{version}'",
+            },
           ]
           patterns.each do |p|
             s.sub_in_file(file, Regexp.new(p[:search]), p[:replace])
@@ -236,11 +235,11 @@ class Chef
             md[key] = 'default value'
           end
         end
-        if metadata.has_key?('platforms')
+        if metadata.key?('platforms')
           metadata['platforms'].each_pair do |key, value|
             # platform key cannot contain comma delimited values
             md['platforms'].delete(key) if key =~ /,/
-            if value.kind_of?(Array) && value.empty?
+            if value.is_a?(Array) && value.empty?
               ui.stdout.puts "REPAIRING: Fixing empty platform key for for key #{key} in #{json_path}"
               md['platforms'][key] = '>= 0.0.0'
             end
@@ -280,7 +279,7 @@ class Chef
       def create_minimal_metadata(cookbook_path)
         name = tidy.cookbook_name_from_path(cookbook_path)
         components = cookbook_path.split(File::SEPARATOR)
-        name_version = components[components.index('cookbooks')+1]
+        name_version = components[components.index('cookbooks') + 1]
         version = name_version.match(/\d+\.\d+\.\d+/).to_s
         metadata = {}
         metadata['name'] = name
@@ -352,7 +351,6 @@ class Chef
       end
 
       def repair_role_run_lists(role_path)
-        # rubocop:disable MethodLength
         the_role = FFI_Yajl::Parser.parse(::File.read(role_path), symbolize_names: false)
         new_role = the_role.clone
         rl = Chef::RunList.new
@@ -365,7 +363,7 @@ class Chef
             ui.stdout.puts "REPAIRING: Invalid Recipe Item: #{item} in run_list from #{role_path}"
           end
         end
-        if the_role.has_key?('env_run_lists')
+        if the_role.key?('env_run_lists')
           the_role['env_run_lists'].each_pair do |key, value|
             new_role['env_run_lists'][key] = []
             value.each do |item|

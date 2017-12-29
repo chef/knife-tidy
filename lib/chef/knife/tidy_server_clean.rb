@@ -10,28 +10,28 @@ class Chef
         require 'chef/util/threaded_job_queue'
       end
 
-      banner "knife tidy server clean (options)"
+      banner 'knife tidy server clean (options)'
 
       option :backup_path,
-        :long => '--backup-path path/to/backup',
-        :description => 'The path to the knife-ec-backup backup directory'
+        long: '--backup-path path/to/backup',
+        description: 'The path to the knife-ec-backup backup directory'
 
       option :concurrency,
-        :long => '--concurrency THREADS',
-        :default => 1,
-        :description => 'Maximum number of simultaneous requests to send (default: 1)'
+        long: '--concurrency THREADS',
+        default: 1,
+        description: 'Maximum number of simultaneous requests to send (default: 1)'
 
       option :only_cookbooks,
-        :long => '--only-cookbooks',
-        :description => 'Only delete unused cookbooks from Chef Server.'
+        long: '--only-cookbooks',
+        description: 'Only delete unused cookbooks from Chef Server.'
 
       option :only_nodes,
-        :long => '--only-nodes',
-        :description => 'Only delete stale nodes (and associated clients and ACLs) from Chef Server.'
+        long: '--only-nodes',
+        description: 'Only delete stale nodes (and associated clients and ACLs) from Chef Server.'
 
       option :dry_run,
-        :long => '--dry-run',
-        :description => 'Do not perform any actual deletion, only report on what would have been deleted.'
+        long: '--dry-run',
+        description: 'Do not perform any actual deletion, only report on what would have been deleted.'
 
       def run
         STDOUT.sync = true
@@ -56,11 +56,11 @@ class Chef
         end
 
         deletions = if config[:only_cookbooks]
-                      "cookbooks"
+                      'cookbooks'
                     elsif config[:only_nodes]
-                      "nodes (and associated clients and ACLs)"
+                      'nodes (and associated clients and ACLs)'
                     else
-                      "cookbooks and nodes (and associated clients and ACLs)"
+                      'cookbooks and nodes (and associated clients and ACLs)'
                     end
 
         orgs = if config[:org_list]
@@ -94,7 +94,7 @@ class Chef
         unused_cookbooks.keys.each do |cookbook|
           versions = unused_cookbooks[cookbook]
           versions.each do |version|
-            queue << lambda { delete_cookbook_job(org, cookbook, version) }
+            queue << -> { delete_cookbook_job(org, cookbook, version) }
           end
         end
         queue.process(config[:concurrency].to_i)
@@ -118,7 +118,7 @@ class Chef
         ui.stdout.puts "INFO: Cleaning stale nodes for Org: #{org}, using #{stale_nodes_file}"
         stale_nodes = FFI_Yajl::Parser.parse(::File.read(stale_nodes_file), symbolize_names: true)
         stale_nodes[:list].each do |node|
-          queue << lambda { delete_node_job(org, node) }
+          queue << -> { delete_node_job(org, node) }
         end
         queue.process(config[:concurrency].to_i)
       end

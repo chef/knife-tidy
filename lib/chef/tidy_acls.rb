@@ -18,7 +18,7 @@ class Chef
     end
 
     def load_users
-      @tidy.ui.stdout.puts "INFO: Loading users"
+      @tidy.ui.stdout.puts 'INFO: Loading users'
       Dir[::File.join(@tidy.users_path, '*.json')].each do |user|
         @users.push(FFI_Yajl::Parser.parse(::File.read(user), symbolize_names: true))
       end
@@ -70,15 +70,15 @@ class Chef
     end
 
     def valid_org_member?(actor)
-      ! @members.select { |user| user[:user][:username] == actor }.empty?
+      !@members.select { |user| user[:user][:username] == actor }.empty?
     end
 
     def valid_org_client?(actor)
-      ! @clients.select { |client| client[:name] == actor }.empty?
+      !@clients.select { |client| client[:name] == actor }.empty?
     end
 
     def valid_global_user?(actor)
-      ! @users.select { |user| user[:username] == actor }.empty?
+      !@users.select { |user| user[:username] == actor }.empty?
     end
 
     def invalid_group?(actor)
@@ -101,7 +101,7 @@ class Chef
 
     def org_acls
       @org_acls ||= Dir[::File.join(@tidy.org_acls_path(@org), '**.json')] +
-        Dir[::File.join(@tidy.org_acls_path(@org), '**', '*.json')]
+                    Dir[::File.join(@tidy.org_acls_path(@org), '**', '*.json')]
     end
 
     def fix_ambiguous_actor(actor)
@@ -153,7 +153,7 @@ class Chef
 
     def ensure_client_read_acls(acl_file)
       acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
-      %w(users admins).each do | group |
+      %w(users admins).each do |group|
         unless acl['read']['groups'].include? group
           @tidy.ui.stdout.puts "REPAIRING: Adding read acl for #{group} in #{acl_file}"
           acl['read']['groups'].push(group)
@@ -177,27 +177,25 @@ class Chef
           end
         end
         actors_groups[:groups].each do |group|
-          if invalid_group?(group)
-            remove_group_from_acl(group, acl_file)
-          end
+          remove_group_from_acl(group, acl_file) if invalid_group?(group)
         end
       end
     end
 
     def default_user_acl(client)
-      return {:create=>{:actors=>["pivotal", client], :groups=>["::server-admins"]},
-              :read=>{:actors=>["pivotal", client], :groups=>["::server-admins", "::#{@org}_read_access_group"]},
-              :update=>{:actors=>["pivotal", client], :groups=>["::server-admins"]},
-              :delete=>{:actors=>["pivotal", client], :groups=>["::server-admins"]},
-              :grant=>{:actors=>["pivotal", client], :groups=>["::server-admins"]}}
+      { create: { actors: ['pivotal', client], groups: ['::server-admins'] },
+        read: { actors: ['pivotal', client], groups: ['::server-admins', "::#{@org}_read_access_group"] },
+        update: { actors: ['pivotal', client], groups: ['::server-admins'] },
+        delete: { actors: ['pivotal', client], groups: ['::server-admins'] },
+        grant: { actors: ['pivotal', client], groups: ['::server-admins'] } }
     end
 
     def default_client_acl(client_name)
-      return {:create=>{:actors=>["pivotal", "#{@org}-validator", client_name], :groups=>["admins"]},
-              :read=>{:actors=>["pivotal", "#{@org}-validator", client_name], :groups=>["admins", "users"]},
-              :update=>{:actors=>["pivotal", client_name], :groups=>["admins"]},
-              :delete=>{:actors=>["pivotal", client_name], :groups=>["admins", "users"]},
-              :grant=>{:actors=>["pivotal", client_name], :groups=>["admins"]}}
+      { create: { actors: ['pivotal', "#{@org}-validator", client_name], groups: ['admins'] },
+        read: { actors: ['pivotal', "#{@org}-validator", client_name], groups: %w(admins users) },
+        update: { actors: ['pivotal', client_name], groups: ['admins'] },
+        delete: { actors: ['pivotal', client_name], groups: %w(admins users) },
+        grant: { actors: ['pivotal', client_name], groups: ['admins'] } }
     end
 
     def validate_user_acls
@@ -207,15 +205,13 @@ class Chef
           user_acl = FFI_Yajl::Parser.parse(::File.read(user_acl_path), symbolize_names: false)
         rescue Errno::ENOENT
           @tidy.ui.stdout.puts "REPAIRING: Replacing missing user acl for #{member[:user][:username]}."
-          @tidy.write_new_file(default_user_acl(member), user_acl_path, backup=false)
+          @tidy.write_new_file(default_user_acl(member), user_acl_path, backup = false)
           user_acl = FFI_Yajl::Parser.parse(::File.read(user_acl_path), symbolize_names: false)
         end
         ensure_global_group_acls(user_acl_path)
         actors_groups = acl_actors_groups(user_acl)
         actors_groups[:groups].each do |group|
-          if invalid_group?(group)
-            remove_group_from_acl(group, user_acl_path)
-          end
+          remove_group_from_acl(group, user_acl_path) if invalid_group?(group)
         end
       end
     end
@@ -227,7 +223,7 @@ class Chef
           client_acl = FFI_Yajl::Parser.parse(::File.read(client_acl_path), symbolize_names: false)
         rescue Errno::ENOENT
           @tidy.ui.stdout.puts "REPAIRING: Replacing missing client acl for #{client[:name]} in #{client_acl_path}."
-          @tidy.write_new_file(default_client_acl(client[:name]), client_acl_path, backup=false)
+          @tidy.write_new_file(default_client_acl(client[:name]), client_acl_path, backup = false)
           client_acl = FFI_Yajl::Parser.parse(::File.read(client_acl_path), symbolize_names: false)
         end
         ensure_client_read_acls(client_acl_path)
