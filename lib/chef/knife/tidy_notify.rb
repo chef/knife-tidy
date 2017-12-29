@@ -158,10 +158,10 @@ MESSAGE_END
         table_start = "<h2>Total Versions by Cookbook</h2><p>This table contains the count of versions of each cookbook stored on the Chef Server.<p><table border='1' cellpadding='1' cellspacing='0'>"
         table_end = '</table><br/>'
         header_string = '<tr><th>Cookbook Name</th><th>Total Version Count</th></tr>'
-        table_body = if !report_data[organization]['_cookbook_count.json'].empty? && report_data[organization]['_cookbook_count.json']['count'] > 0
-                       report_data[organization]['_cookbook_count.json'].map { |cookbook_name, cookbook_count| "<tr><td>#{cookbook_name}</td><td>#{cookbook_count}</td></tr>" }.join("\n")
-                     else
+        table_body = if report_data[organization]['_cookbook_count.json'].empty?
                        "<tr><td colspan='2'>No cookbook versions</td></tr>"
+                     else
+                       report_data[organization]['_cookbook_count.json'].map { |cookbook_name, cookbook_count| "<tr><td>#{cookbook_name}</td><td>#{cookbook_count}</td></tr>" }.join("\n")
                      end
         table_start + header_string + table_body + table_end
       end
@@ -170,10 +170,10 @@ MESSAGE_END
         table_start = "<h2>Unused Cookbooks</h2><p>This table contains cookbook names and the count of their versions that are not currently in the runlists of any nodes.<p><table border='1' cellpadding='1' cellspacing='0'>"
         table_end = '</table><br/>'
         header_string = '<tr><th>Cookbook Name</th><th>Unused Versions</th></tr>'
-        table_body = if !report_data[organization]['_unused_cookbooks.json'].empty? && report_data[organization]['_unused_cookbooks.json']['count'] > 0
-                       report_data[organization]['_unused_cookbooks.json'].map { |cookbook_name, cookbook_versions| "<tr><td>#{cookbook_name}</td><td>#{cookbook_versions.join('<br>')}</td></tr>" }.join("\n")
-                     else
+        table_body = if report_data[organization]['_unused_cookbooks.json'].empty?
                        "<tr><td colspan='2'>No unused cookbook versions</td></tr>"
+                     else
+                       report_data[organization]['_unused_cookbooks.json'].map { |cookbook_name, cookbook_versions| "<tr><td>#{cookbook_name}</td><td>#{cookbook_versions.join('<br>')}</td></tr>" }.join("\n")
                      end
         table_start + header_string + table_body + table_end
       end
@@ -182,10 +182,10 @@ MESSAGE_END
         table_start = "<h2>Stale Nodes</h2><p>This table contains nodes that have not checked in to the Chef Server in #{report_data[organization]['_stale_nodes.json']['threshold_days']} days.<p><table border='1' cellpadding='1' cellspacing='0'>"
         table_end = '</table>'
         header_string = '<tr><th>Node Name</th></tr>'
-        table_body = if !report_data[organization]['_stale_nodes.json'].empty? && report_data[organization]['_stale_nodes.json']['count'] > 0
-                       report_data[organization]['_stale_nodes.json']['list'].map { |node_name| "<tr><td>#{node_name}</td></tr>" }.join("\n")
-                     else
+        table_body = if report_data[organization]['_stale_nodes.json'].empty? || report_data[organization]['_stale_nodes.json']['count'] == 0
                        "<tr><td colspan='2'>No stale nodes</td></tr>"
+                     else
+                       report_data[organization]['_stale_nodes.json']['list'].map { |node_name| "<tr><td>#{node_name}</td></tr>" }.join("\n")
                      end
         table_start + header_string + table_body + table_end
       end
