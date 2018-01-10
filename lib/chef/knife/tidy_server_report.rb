@@ -68,8 +68,8 @@ class Chef
           nodes.select{|node| !node['cookbooks'].nil?}.each do |node|
             node['cookbooks'].each do |name, version_hash|
               version = Gem::Version.new(version_hash['version']).to_s
-              if used_cookbooks[name] && !used_cookbooks[name].include?(version)
-                used_cookbooks[name].push(version)
+              if used_cookbooks[name]
+                used_cookbooks[name].push(version) unless used_cookbooks[name].include?(version)
               else
                 used_cookbooks[name] = [version]
               end
