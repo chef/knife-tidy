@@ -48,8 +48,8 @@ namespace :changelog do
     require 'github_changelog_generator/task'
 
     GitHubChangelogGenerator::RakeTask.new :changelog do |config|
-      config.since_tag = '0.1.1'
-      config.future_release = '0.1.0'
+      config.since_tag = '1.0.1'
+      config.future_release = '1.1.0'
     end
   end
 end
