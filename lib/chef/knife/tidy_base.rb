@@ -21,24 +21,22 @@ require 'chef/server_api'
 class Chef
   class Knife
     module TidyBase
-
       def self.included(includer)
         includer.class_eval do
-
           deps do
             require 'chef/tidy_server'
             require 'chef/tidy_common'
           end
 
           option :org_list,
-            :long => "--orgs ORG1,ORG2",
-            :description => "Only apply to objects in the named organizations"
-          end
+            long: '--orgs ORG1,ORG2',
+            description: 'Only apply to objects in the named organizations'
+        end
       end
 
       def server
         @server ||= if Chef::Config.chef_server_root.nil?
-                      ui.warn("chef_server_root not found in knife configuration; using chef_server_url")
+                      ui.warn('chef_server_root not found in knife configuration; using chef_server_url')
                       Chef::TidyServer.from_chef_server_url(Chef::Config.chef_server_url)
                     else
                       Chef::TidyServer.new(Chef::Config.chef_server_root)
@@ -58,7 +56,7 @@ class Chef
       end
 
       def completion_message
-        ui.stdout.puts "#{ui.color("** Finished **", :magenta)}"
+        ui.stdout.puts ui.color('** Finished **', :magenta).to_s
       end
 
       def action_needed_file_path
@@ -69,7 +67,7 @@ class Chef
         ::File.expand_path('reports/knife-tidy-server-warnings.txt')
       end
 
-      def action_needed(msg, file_path=action_needed_file_path)
+      def action_needed(msg, file_path = action_needed_file_path)
         ::File.open(file_path, 'a') do |f|
           f.write(msg + "\n")
         end

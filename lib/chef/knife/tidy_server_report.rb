@@ -68,8 +68,8 @@ class Chef
           nodes.select{|node| !node['cookbooks'].nil?}.each do |node|
             node['cookbooks'].each do |name, version_hash|
               version = Gem::Version.new(version_hash['version']).to_s
-              if used_cookbooks[name] && !used_cookbooks[name].include?(version)
-                used_cookbooks[name].push(version)
+              if used_cookbooks[name]
+                used_cookbooks[name].push(version) unless used_cookbooks[name].include?(version)
               else
                 used_cookbooks[name] = [version]
               end
@@ -168,7 +168,8 @@ class Chef
           if used_list[name].nil? # Not in the used list at all (Remove all versions)
             unused_list[name] = versions
           elsif used_list[name].sort != versions  # Is in the used cookbook list, but version arrays do not match (Find unused versions)
-            unused_list[name] = versions - used_list[name] - [versions.last]  # Don't delete the most recent version as it might not be in a run_list yet.
+            unused = versions - used_list[name] - [versions.last]  # Don't delete the most recent version as it might not be in a run_list yet.
+            unused_list[name] = unused unless unused.empty?
           end
         end
         unused_list
