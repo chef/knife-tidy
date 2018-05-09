@@ -2,6 +2,8 @@
 
 # Summary
 
+NOTE: If you're a first-time or inexperienced knife-tidy user, we recommend you read through this blogpost before proceeding with the rest of this documentation: https://blog.chef.io/2017/10/16/migrating-chef-server-knife-ec-backup-knife-tidy/
+
 This Chef Knife plugin provides:
  * Reports on the state of Chef Server objects that can be tidied up
  * Removal of stale nodes (and associated clients and ACLs) identified by the above Reports
