@@ -53,6 +53,7 @@ class Chef
         orgs.each do |org|
           fix_org_object(org)
           validate_invitations(org)
+          validate_clients_group(org)
           validate_roles(org)
           org_acls = Chef::TidyOrgAcls.new(tidy, org)
           org_acls.validate_acls
@@ -387,6 +388,20 @@ class Chef
             Chef::Role.from_hash(FFI_Yajl::Parser.parse(::File.read(role_path), symbolize_names: false))
           rescue ArgumentError
             repair_role_run_lists(role_path)
+          end
+        end
+      end
+
+      def validate_clients_group(org)
+        ui.stdout.puts "INFO: validating all clients for org #{org} exist in clients group"
+        clients_group_path = ::File.join(tidy.groups_path(org), 'clients.json')
+        existing_group_data = FFI_Yajl::Parser.parse(::File.read(clients_group_path), symbolize_names: false)
+        existing_group_data['clients'] = [] unless existing_group_data.key?('clients')
+        if existing_group_data['clients'].length != tidy.client_names(org).length
+          ui.stdout.puts "REPAIRING: Adding #{(existing_group_data['clients'].length - tidy.client_names(org).length).abs} missing clients into #{org}'s client group file #{clients_group_path}"
+          existing_group_data['clients'] = (existing_group_data['clients'] + tidy.client_names(org)).uniq
+          ::File.open(clients_group_path, 'w') do |f|
+            f.write(Chef::JSONCompat.to_json_pretty(existing_group_data))
           end
         end
       end
