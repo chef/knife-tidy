@@ -32,6 +32,10 @@ class Chef
       ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'clients'))
     end
 
+    def client_names(org)
+      Dir[::File.join(clients_path(org), '*')].map { |dir| ::File.basename(dir, '.json') }
+    end
+
     def groups_path(org)
       ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'groups'))
     end
