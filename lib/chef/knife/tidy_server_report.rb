@@ -43,7 +43,7 @@ class Chef
           nodes = nodes_list(org)
           db_nodes = rest.get("/organizations/#{org}/nodes")
           unless nodes.length == db_nodes.length
-            ood_message = "Search index is out of date! No cleanup action will be taken for #{org}."
+            ood_message = "Search index is out of date (search returned #{nodes.length} nodes while the database indicates there are #{db_nodes.length} nodes! No action will be taken for #{org}. Perhaps a 'chef-server-ctl reindex' is in order?"
             ui.error(ood_message)
             action_needed(ood_message, server_warnings_file_path)
             next
