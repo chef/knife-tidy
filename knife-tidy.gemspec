@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.summary          = "Report on stale Chef Server nodes and cookbooks and clean up data integrity issues in a knife-ec-backup object based backup"
   s.description      = s.summary
   s.homepage         = "https://github.com/chef-customers/knife-tidy"
-  s.license          = "Apache License, v2.0"
-  s.files            = `git ls-files`.split("\n")
+  s.license          = "Apache-2.0"
+  s.files            = %w{LICENSE} + Dir.glob("lib/**/*")
   s.require_paths    = ["lib"]
 
   s.required_ruby_version = ">= 2.0.0"
