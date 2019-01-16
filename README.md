@@ -1,4 +1,6 @@
 # knife tidy
+[![Gem Version](https://badge.fury.io/rb/knife-tidy.svg)](https://rubygems.org/gems/knife-tidy)
+[![Build Status](https://travis-ci.org/chef/knife-tidy.svg?branch=master)](https://travis-ci.org/chef/knife-tidy)
 
 # Summary
 
