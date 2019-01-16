@@ -1,15 +1,8 @@
 language: ruby
 cache: bundler
 dist: xenial
-sudo: false
 
-# Early warning system to catch if Rubygems breaks something
-before_install:
-  - gem --version
-  - rvm @global do gem uninstall bundler -a -x -I || true
-  - gem install bundler --no-document
-  - bundle --version
-  - rm -f .bundle/config
+bundler_args: --jobs 7 --without docs debug
 
 matrix:
   include:
@@ -17,6 +10,7 @@ matrix:
     - rvm: 2.3.8
     - rvm: 2.4.5
     - rvm: 2.5.3
+    - rvm: 2.6.0
     - rvm: ruby-head
   allow_failures:
     - rvm: ruby-head
