@@ -2,6 +2,12 @@ source "https://rubygems.org"
 
 gemspec
 
+group :debug do
+  gem "pry"
+  gem "pry-byebug"
+  gem "pry-stack_explorer"
+end
+
 if vsn = ENV['TRAVIS_CHEF_VERSION']
   if m = /branch:(?<branch>.*)$/.match(vsn)
     gem 'chef', git: 'https://github.com/chef/chef', branch: m[:branch]
@@ -19,20 +25,14 @@ group :development do
   gem "chef-zero"
 end
 
-group :changelog do
-  gem "github_changelog_generator", git: "https://github.com/chef/github-changelog-generator"
+group :docs do
+  gem "github-markup"
+  gem "redcarpet"
+  gem "yard"
 end
 
-# This is here instead of gemspec so that we can
-# override which Chef gem to use when we do testing
-# Possibilities in the future include using environmental
-# variables, thus allowing us to to have Travis support
-
-# Examples you can use in Gemfile.local
-# gem 'chef', '~> 10.28'
-# gem 'chef' # latest
-# gem 'chef', git: 'git://github.com/mal/chef.git', branch: 'CHEF-3307'
+instance_eval(ENV["GEMFILE_MOD"]) if ENV["GEMFILE_MOD"]
 
 # If you want to load debugging tools into the bundle exec sandbox,
-# # add these additional dependencies into Gemfile.local
-eval(IO.read(__FILE__ + '.local'), binding) if File.exists?(__FILE__ + '.local')
+# add these additional dependencies into Gemfile.local
+eval_gemfile(__FILE__ + ".local") if File.exist?(__FILE__ + ".local")
