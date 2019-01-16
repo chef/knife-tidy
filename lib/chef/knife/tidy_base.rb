@@ -21,6 +21,26 @@ require "chef/server_api"
 class Chef
   class Knife
     module TidyBase
+      # of all the ways Net::HTTP could fail, at least try to keep exception
+      # handling DRY and code clearer
+      NET_HTTP_RESCUES = [
+        Errno::EINVAL,
+        Errno::ECONNRESET,
+        EOFError,
+        Net::HTTPBadResponse,
+        Net::HTTPHeaderSyntaxError,
+        Net::ProtocolError,
+        Net::OpenTimeout,
+        Net::HTTPServerException,
+        Net::HTTPFatalError,
+        Mechanize::ResponseCodeError,
+        OpenSSL::SSL::SSLError,
+        Errno::EHOSTUNREACH,
+        Mechanize::Error,
+        Net::HTTP::Persistent::Error,
+        Net::HTTPRetriableError,
+      ].freeze
+
       def self.included(includer)
         includer.class_eval do
           deps do

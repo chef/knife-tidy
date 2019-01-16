@@ -5,26 +5,6 @@ class Chef
     class TidyServerClean < Knife
       include Knife::TidyBase
 
-      # of all the ways Net::HTTP could fail, at least try to keep exception
-      # handling DRY and code clearer
-      NET_HTTP_RESCUES = [
-        Errno::EINVAL,
-        Errno::ECONNRESET,
-        EOFError,
-        Net::HTTPBadResponse,
-        Net::HTTPHeaderSyntaxError,
-        Net::ProtocolError,
-        Net::OpenTimeout,
-        Net::HTTPServerException,
-        Net::HTTPFatalError,
-        Mechanize::ResponseCodeError,
-        OpenSSL::SSL::SSLError,
-        Errno::EHOSTUNREACH,
-        Mechanize::Error,
-        Net::HTTP::Persistent::Error,
-        Net::HTTPRetriableError,
-      ].freeze
-
       deps do
         require "ffi_yajl"
         require "chef/util/threaded_job_queue"
@@ -128,7 +108,8 @@ class Chef
         end
         printf("INFO: Deleting #{path}\n")
         rest.delete(path)
-      rescue Net::HTTPServerException
+      rescue *NET_HTTP_RESCUES => exception
+        printf exception
       end
 
       def clean_nodes(org)
@@ -153,7 +134,8 @@ class Chef
             begin
               printf("INFO: Deleting #{path}\n")
               rest.delete(path)
-            rescue Net::HTTPServerException
+            rescue *NET_HTTP_RESCUES => exception
+              printf exception
             end
           end
         end
