@@ -1,9 +1,10 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release unreleased -->
-## Unreleased
+<!-- latest_release 1.2.1 -->
+## [v1.2.1](https://github.com/chef/knife-tidy/tree/v1.2.1) (2019-01-16)
 
 #### Merged Pull Requests
+- Add gem and travis badges to the readme [#95](https://github.com/chef/knife-tidy/pull/95) ([tas50](https://github.com/tas50))
 - Wire up Expeditor [#94](https://github.com/chef/knife-tidy/pull/94) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
@@ -11,6 +12,7 @@
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Add gem and travis badges to the readme [#95](https://github.com/chef/knife-tidy/pull/95) ([tas50](https://github.com/tas50)) <!-- 1.2.1 -->
 - Wire up Expeditor [#94](https://github.com/chef/knife-tidy/pull/94) ([tas50](https://github.com/tas50)) <!-- 1.2.0 -->
 <!-- release_rollup -->
 
