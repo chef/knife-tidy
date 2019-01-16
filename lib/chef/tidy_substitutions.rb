@@ -1,7 +1,7 @@
-require 'ffi_yajl'
-require 'tempfile'
-require 'fileutils'
-require 'chef/log'
+require "ffi_yajl"
+require "tempfile"
+require "fileutils"
+require "chef/log"
 
 class Chef
   class TidySubstitutions
@@ -23,14 +23,14 @@ class Chef
     end
 
     def boiler_plate
-      bp = ::File.join(File.dirname(__FILE__), '../../conf/substitutions.json.example')
+      bp = ::File.join(File.dirname(__FILE__), "../../conf/substitutions.json.example")
       @tidy.ui.stdout.puts "INFO: Creating boiler plate gsub file: 'substitutions.json'"
-      FileUtils.cp(bp, ::File.join(Dir.pwd, 'substitutions.json'))
+      FileUtils.cp(bp, ::File.join(Dir.pwd, "substitutions.json"))
     end
 
     def cookbook_version_from_path(path)
       components = path.split(File::SEPARATOR)
-      name_version = components[components.index('cookbooks') + 1]
+      name_version = components[components.index("cookbooks") + 1]
       name_version.match(/\d+\.\d+\.\d+/).to_s
     end
 
@@ -38,9 +38,9 @@ class Chef
     end
 
     def sub_in_file(path, search, replace)
-      temp_file = Tempfile.new('tidy')
+      temp_file = Tempfile.new("tidy")
       begin
-        File.open(path, 'r') do |file|
+        File.open(path, "r") do |file|
           file.each_line do |line|
             if line.match(search)
               temp_file.puts replace
@@ -66,8 +66,8 @@ class Chef
           @tidy.ui.stdout.puts "INFO: Running substitutions for #{entry} -> #{glob}"
           Dir[::File.join(@backup_path, glob)].each do |file|
             @data[entry][glob].each do |substitution|
-              search = Regexp.new(substitution['pattern'])
-              replace = substitution['replace'].dup
+              search = Regexp.new(substitution["pattern"])
+              replace = substitution["replace"].dup
               replace.gsub!(/\!COOKBOOK_VERSION\!/) { |_m| "'" + cookbook_version_from_path(file) + "'" }
               sub_in_file(file, search, replace)
             end

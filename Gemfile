@@ -8,21 +8,16 @@ group :debug do
   gem "pry-stack_explorer"
 end
 
-if vsn = ENV['TRAVIS_CHEF_VERSION']
-  if m = /branch:(?<branch>.*)$/.match(vsn)
-    gem 'chef', git: 'https://github.com/chef/chef', branch: m[:branch]
-  else
-    gem 'chef', vsn
-  end
-end
-
 group :development do
-  gem 'rspec'
-  gem 'rake'
-  gem 'simplecov'
-  gem 'fakefs'
-  gem "chefstyle", git: "https://github.com/chef/chefstyle.git"
+  gem "aruba"
+  gem "chef"
   gem "chef-zero"
+  gem "chefstyle", git: "https://github.com/chef/chefstyle.git"
+  gem "fakefs"
+  gem "rake"
+  gem "rspec"
+  gem "simplecov"
+  gem "simplecov-console"
 end
 
 group :docs do

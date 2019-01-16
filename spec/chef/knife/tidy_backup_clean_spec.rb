@@ -1,8 +1,8 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_helper"))
-require 'chef/knife/tidy_backup_clean'
-require 'chef/knife'
-require 'chef/config'
-require 'stringio'
+require "chef/knife/tidy_backup_clean"
+require "chef/knife"
+require "chef/config"
+require "stringio"
 
 class Tester < Chef::Knife
 end
@@ -10,7 +10,7 @@ end
 describe Chef::Knife::TidyBackupClean do
   let(:t) { Tester.new }
   before(:each) do
-    @rest = double('rest')
+    @rest = double("rest")
     @stderr = StringIO.new
     allow(t.ui).to receive(:stderr).and_return(@stderr)
     allow(Chef::ServerAPI).to receive(:new).and_return(@rest)
@@ -18,7 +18,7 @@ describe Chef::Knife::TidyBackupClean do
 
   context "completion_message" do
     it "lets the user know we're Finished" do
-      expect{t.completion_message}.to output("** Finished **\n").to_stdout
+      expect { t.completion_message }.to output("** Finished **\n").to_stdout
     end
   end
 end

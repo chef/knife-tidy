@@ -7,7 +7,7 @@ class Chef
     end
 
     def self.from_chef_server_url(url)
-      url = url.gsub(/\/organizations\/+[^\/]+\/*$/, '')
+      url = url.gsub(/\/organizations\/+[^\/]+\/*$/, "")
       Chef::Server.new(url)
     end
   end

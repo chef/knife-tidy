@@ -1,4 +1,4 @@
-require 'chef/knife/tidy_base'
+require "chef/knife/tidy_base"
 
 class Chef
   class Knife
@@ -6,32 +6,32 @@ class Chef
       include Knife::TidyBase
 
       deps do
-        require 'ffi_yajl'
-        require 'chef/util/threaded_job_queue'
+        require "ffi_yajl"
+        require "chef/util/threaded_job_queue"
       end
 
-      banner 'knife tidy server clean (options)'
+      banner "knife tidy server clean (options)"
 
       option :backup_path,
-        long: '--backup-path path/to/backup',
-        description: 'The path to the knife-ec-backup backup directory'
+        long: "--backup-path path/to/backup",
+        description: "The path to the knife-ec-backup backup directory"
 
       option :concurrency,
-        long: '--concurrency THREADS',
+        long: "--concurrency THREADS",
         default: 1,
-        description: 'Maximum number of simultaneous requests to send (default: 1)'
+        description: "Maximum number of simultaneous requests to send (default: 1)"
 
       option :only_cookbooks,
-        long: '--only-cookbooks',
-        description: 'Only delete unused cookbooks from Chef Server.'
+        long: "--only-cookbooks",
+        description: "Only delete unused cookbooks from Chef Server."
 
       option :only_nodes,
-        long: '--only-nodes',
-        description: 'Only delete stale nodes (and associated clients and ACLs) from Chef Server.'
+        long: "--only-nodes",
+        description: "Only delete stale nodes (and associated clients and ACLs) from Chef Server."
 
       option :dry_run,
-        long: '--dry-run',
-        description: 'Do not perform any actual deletion, only report on what would have been deleted.'
+        long: "--dry-run",
+        description: "Do not perform any actual deletion, only report on what would have been deleted."
 
       def run
         STDOUT.sync = true
@@ -41,37 +41,37 @@ class Chef
         configure_chef
 
         if config[:only_cookbooks] && config[:only_nodes]
-          ui.error 'Cannot use --only-cookbooks AND --only-nodes'
+          ui.error "Cannot use --only-cookbooks AND --only-nodes"
           exit 1
         end
 
         while config[:backup_path].nil?
           user_value = ui.ask_question("It is not recommended to run this command without specifying a current backup directory.\nPlease specify a backup directory:")
-          config[:backup_path] = user_value == '' ? nil : user_value
+          config[:backup_path] = user_value == "" ? nil : user_value
         end
 
         unless ::File.directory?(config[:backup_path])
-          ui.error 'Must specify valid --backup-path'
+          ui.error "Must specify valid --backup-path"
           exit 1
         end
 
         deletions = if config[:only_cookbooks]
-                      'cookbooks'
+                      "cookbooks"
                     elsif config[:only_nodes]
-                      'nodes (and associated clients and ACLs)'
+                      "nodes (and associated clients and ACLs)"
                     else
-                      'cookbooks and nodes (and associated clients and ACLs)'
+                      "cookbooks and nodes (and associated clients and ACLs)"
                     end
 
         orgs = if config[:org_list]
-                 config[:org_list].split(',')
+                 config[:org_list].split(",")
                else
                  all_orgs
                end
 
         ui.warn "This operation will affect the following Orgs on #{server.root_url}: #{orgs}"
         if ::File.exist?(server_warnings_file_path)
-          ::File.read(::File.expand_path('reports/knife-tidy-server-warnings.txt')).each_line do |line|
+          ::File.read(::File.expand_path("reports/knife-tidy-server-warnings.txt")).each_line do |line|
             ui.warn(line)
           end
         end
@@ -147,7 +147,7 @@ class Chef
       end
 
       def report_files
-        Dir[::File.join(tidy.reports_dir, '**.json')]
+        Dir[::File.join(tidy.reports_dir, "**.json")]
       end
 
       def all_orgs
