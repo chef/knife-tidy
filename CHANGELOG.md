@@ -7,18 +7,21 @@
 - Require Ruby 2.3+ and resolve all chefstyle warnings [#99](https://github.com/chef/knife-tidy/pull/99) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup since=1.2.0 -->
+<!-- release_rollup since=2.0.0 -->
 ### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Require Ruby 2.3+ and resolve all chefstyle warnings [#99](https://github.com/chef/knife-tidy/pull/99) ([tas50](https://github.com/tas50)) <!-- 2.0.0 -->
-- Add Ruby 2.6 testing and use our standard gemfile groups [#98](https://github.com/chef/knife-tidy/pull/98) ([tas50](https://github.com/tas50)) <!-- 1.2.4 -->
-- Add contributing doc [#96](https://github.com/chef/knife-tidy/pull/96) ([tas50](https://github.com/tas50)) <!-- 1.2.2 -->
-- Add gem and travis badges to the readme [#95](https://github.com/chef/knife-tidy/pull/95) ([tas50](https://github.com/tas50)) <!-- 1.2.1 -->
-- Wire up Expeditor [#94](https://github.com/chef/knife-tidy/pull/94) ([tas50](https://github.com/tas50)) <!-- 1.2.0 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v2.0.0](https://github.com/chef/knife-tidy/tree/v2.0.0) (2019-01-16)
+
+#### Merged Pull Requests
+- Wire up Expeditor [#94](https://github.com/chef/knife-tidy/pull/94) ([tas50](https://github.com/tas50))
+- Add gem and travis badges to the readme [#95](https://github.com/chef/knife-tidy/pull/95) ([tas50](https://github.com/tas50))
+- Add contributing doc [#96](https://github.com/chef/knife-tidy/pull/96) ([tas50](https://github.com/tas50))
+- Add Ruby 2.6 testing and use our standard gemfile groups [#98](https://github.com/chef/knife-tidy/pull/98) ([tas50](https://github.com/tas50))
+- Require Ruby 2.3+ and resolve all chefstyle warnings [#99](https://github.com/chef/knife-tidy/pull/99) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [1.2.0](https://github.com/chef-customers/knife-tidy/tree/1.2.0) (2018-05-17)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/1.1.0...1.2.0)
 
@@ -31,7 +34,6 @@
 
 - bump to 1.2.0 [\#85](https://github.com/chef-customers/knife-tidy/pull/85) ([jeremymv2](https://github.com/jeremymv2))
 - fix empty clients group [\#84](https://github.com/chef-customers/knife-tidy/pull/84) ([jeremymv2](https://github.com/jeremymv2))
-<!-- latest_stable_release -->
 
 ## [1.1.0](https://github.com/chef-customers/knife-tidy/tree/1.1.0) (2018-01-11)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/1.0.1...1.1.0)
