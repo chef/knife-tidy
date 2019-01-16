@@ -1,6 +1,6 @@
-require 'ffi_yajl'
-require 'fileutils'
-require 'chef/knife/core/ui'
+require "ffi_yajl"
+require "fileutils"
+require "chef/knife/core/ui"
 
 class Chef
   class TidyCommon
@@ -17,56 +17,56 @@ class Chef
     end
 
     def users_path
-      @users_path ||= ::File.expand_path(::File.join(@backup_path, 'users'))
+      @users_path ||= ::File.expand_path(::File.join(@backup_path, "users"))
     end
 
     def members_path(org)
-      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'members.json'))
+      ::File.expand_path(::File.join(@backup_path, "organizations", org, "members.json"))
     end
 
     def invitations_path(org)
-      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'invitations.json'))
+      ::File.expand_path(::File.join(@backup_path, "organizations", org, "invitations.json"))
     end
 
     def clients_path(org)
-      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'clients'))
+      ::File.expand_path(::File.join(@backup_path, "organizations", org, "clients"))
     end
 
     def client_names(org)
-      Dir[::File.join(clients_path(org), '*')].map { |dir| ::File.basename(dir, '.json') }
+      Dir[::File.join(clients_path(org), "*")].map { |dir| ::File.basename(dir, ".json") }
     end
 
     def groups_path(org)
-      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'groups'))
+      ::File.expand_path(::File.join(@backup_path, "organizations", org, "groups"))
     end
 
     def org_acls_path(org)
-      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'acls'))
+      ::File.expand_path(::File.join(@backup_path, "organizations", org, "acls"))
     end
 
     def user_acls_path
-      @user_acls_path ||= ::File.expand_path(::File.join(@backup_path, 'user_acls'))
+      @user_acls_path ||= ::File.expand_path(::File.join(@backup_path, "user_acls"))
     end
 
     def cookbooks_path(org)
-      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'cookbooks'))
+      ::File.expand_path(::File.join(@backup_path, "organizations", org, "cookbooks"))
     end
 
     def roles_path(org)
-      ::File.expand_path(::File.join(@backup_path, 'organizations', org, 'roles'))
+      ::File.expand_path(::File.join(@backup_path, "organizations", org, "roles"))
     end
 
     def org_path(org)
-      ::File.expand_path(::File.join(@backup_path, 'organizations', org))
+      ::File.expand_path(::File.join(@backup_path, "organizations", org))
     end
 
     def unique_email
       (0...8).map { (65 + rand(26)).chr }.join.downcase +
-        '@' + (0...8).map { (65 + rand(26)).chr }.join.downcase + '.com'
+        "@" + (0...8).map { (65 + rand(26)).chr }.join.downcase + ".com"
     end
 
     def save_user(user)
-      ::File.open(::File.join(users_path, "#{user['username']}.json"), 'w+') do |f|
+      ::File.open(::File.join(users_path, "#{user['username']}.json"), "w+") do |f|
         f.write(FFI_Yajl::Encoder.encode(user, pretty: true))
       end
     end
@@ -75,21 +75,21 @@ class Chef
       if ::File.exist?(path) && backup
         FileUtils.cp(path, "#{path}.orig") unless ::File.exist?("#{path}.orig")
       end
-      ::File.open(path, 'w+') do |f|
+      ::File.open(path, "w+") do |f|
         f.write(FFI_Yajl::Encoder.encode(contents, pretty: true))
       end
     end
 
     def cookbook_name_from_path(path)
-      ::File.basename(path, '-*')
+      ::File.basename(path, "-*")
     end
 
     def global_user_names
-      @global_user_names ||= Dir[::File.join(@backup_path, 'users', '*')].map { |dir| ::File.basename(dir, '.json') }
+      @global_user_names ||= Dir[::File.join(@backup_path, "users", "*")].map { |dir| ::File.basename(dir, ".json") }
     end
 
     def reports_dir
-      @reports_dir ||= ::File.join(Dir.pwd, 'reports')
+      @reports_dir ||= ::File.join(Dir.pwd, "reports")
     end
   end
 end

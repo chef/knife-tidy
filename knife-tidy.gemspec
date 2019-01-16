@@ -1,5 +1,5 @@
 $:.push File.expand_path("../lib", __FILE__)
-require 'knife-tidy/version'
+require "knife-tidy/version"
 
 Gem::Specification.new do |s|
   s.name             = "knife-tidy"
@@ -15,15 +15,5 @@ Gem::Specification.new do |s|
   s.files            = %w{LICENSE} + Dir.glob("lib/**/*")
   s.require_paths    = ["lib"]
 
-  s.required_ruby_version = ">= 2.0.0"
-
-  s.add_development_dependency "aruba", "~> 0.6"
-  s.add_development_dependency "simplecov-console", "~> 0.2"
-  if ENV.key?("TRAVIS_BUILD") && RUBY_VERSION == "2.1.9"
-    # Test version of Chef with Chef Zero before
-    # /orgs/org/users/user/keys endpoint was added.
-    s.add_development_dependency "chef", "12.8.1"
-  else # Test most current version of Chef on 2.2.2
-    s.add_development_dependency :chef
-  end
+  s.required_ruby_version = ">= 2.3.0"
 end

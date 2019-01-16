@@ -1,0 +1,9 @@
+Lint/UselessAssignment:
+  Exclude:
+    - 'lib/chef/knife/tidy_backup_clean.rb'
+    - 'lib/chef/knife/tidy_server_report.rb'
+    - 'lib/chef/tidy_acls.rb'
+
+Style/OptionalArguments:
+  Exclude:
+    - 'lib/chef/tidy_substitutions.rb'
