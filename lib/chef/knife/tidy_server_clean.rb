@@ -5,6 +5,26 @@ class Chef
     class TidyServerClean < Knife
       include Knife::TidyBase
 
+      # of all the ways Net::HTTP could fail, at least try to keep exception
+      # handling DRY and code clearer
+      NET_HTTP_RESCUES = [
+        Errno::EINVAL,
+        Errno::ECONNRESET,
+        EOFError,
+        Net::HTTPBadResponse,
+        Net::HTTPHeaderSyntaxError,
+        Net::ProtocolError,
+        Net::OpenTimeout,
+        Net::HTTPServerException,
+        Net::HTTPFatalError,
+        Mechanize::ResponseCodeError,
+        OpenSSL::SSL::SSLError,
+        Errno::EHOSTUNREACH,
+        Mechanize::Error,
+        Net::HTTP::Persistent::Error,
+        Net::HTTPRetriableError,
+      ].freeze
+
       deps do
         require "ffi_yajl"
         require "chef/util/threaded_job_queue"
@@ -147,7 +167,8 @@ class Chef
       end
 
       def report_files
-        Dir[::File.join(tidy.reports_dir, "**.json")]
+        whitelist_regex = /^(.*?)_(cookbook_count|unused_cookbooks|stale_nodes)\.json/
+        Dir[::File.join(tidy.reports_dir, '*.json')].select {|x| x.match(whitelist_regex) }
       end
 
       def all_orgs
