@@ -1,5 +1,12 @@
+<!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
+<!-- latest_release -->
+<!-- latest_release -->
 
+<!-- release_rollup -->
+<!-- release_rollup -->
+
+<!-- latest_stable_release -->
 ## [1.2.0](https://github.com/chef-customers/knife-tidy/tree/1.2.0) (2018-05-17)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/1.1.0...1.2.0)
 
@@ -12,6 +19,7 @@
 
 - bump to 1.2.0 [\#85](https://github.com/chef-customers/knife-tidy/pull/85) ([jeremymv2](https://github.com/jeremymv2))
 - fix empty clients group [\#84](https://github.com/chef-customers/knife-tidy/pull/84) ([jeremymv2](https://github.com/jeremymv2))
+<!-- latest_stable_release -->
 
 ## [1.1.0](https://github.com/chef-customers/knife-tidy/tree/1.1.0) (2018-01-11)
 [Full Changelog](https://github.com/chef-customers/knife-tidy/compare/1.0.1...1.1.0)
