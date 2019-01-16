@@ -1,16 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 1.2.4 -->
-## [v1.2.4](https://github.com/chef/knife-tidy/tree/v1.2.4) (2019-01-16)
+<!-- latest_release unreleased -->
+## Unreleased
 
 #### Merged Pull Requests
-- Add Ruby 2.6 testing and use our standard gemfile groups [#98](https://github.com/chef/knife-tidy/pull/98) ([tas50](https://github.com/tas50))
+- Require Ruby 2.3+ and resolve all chefstyle warnings [#99](https://github.com/chef/knife-tidy/pull/99) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=1.2.0 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Require Ruby 2.3+ and resolve all chefstyle warnings [#99](https://github.com/chef/knife-tidy/pull/99) ([tas50](https://github.com/tas50)) <!-- 2.0.0 -->
 - Add Ruby 2.6 testing and use our standard gemfile groups [#98](https://github.com/chef/knife-tidy/pull/98) ([tas50](https://github.com/tas50)) <!-- 1.2.4 -->
 - Add contributing doc [#96](https://github.com/chef/knife-tidy/pull/96) ([tas50](https://github.com/tas50)) <!-- 1.2.2 -->
 - Add gem and travis badges to the readme [#95](https://github.com/chef/knife-tidy/pull/95) ([tas50](https://github.com/tas50)) <!-- 1.2.1 -->
