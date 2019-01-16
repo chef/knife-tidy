@@ -1,58 +1,41 @@
 #!/usr/bin/env rake
 
-# require_relative 'tasks/maintainers'
-
-# Style tests. cookstyle (rubocop) and Foodcritic
-namespace :style do
-  begin
-    require 'cookstyle'
-    require 'rubocop/rake_task'
-
-    desc 'Run Ruby style checks'
-    RuboCop::RakeTask.new(:ruby)
-  rescue LoadError => e
-    puts ">>> Gem load error: #{e}, omitting style:ruby" unless ENV['CI']
-  end
-
-  begin
-    require 'foodcritic'
-
-    desc 'Run Chef style checks'
-    FoodCritic::Rake::LintTask.new(:chef) do |t|
-      t.options = {
-        fail_tags: ['any'],
-        progress: true,
-      }
-    end
-  rescue LoadError
-    puts ">>> Gem load error: #{e}, omitting style:chef" unless ENV['CI']
-  end
-end
-
-desc 'Run all style checks'
-task style: ['style:chef', 'style:ruby']
-
-# ChefSpec
 begin
-  require 'rspec/core/rake_task'
+  require "rspec/core/rake_task"
 
-  desc 'Run ChefSpec examples'
-  RSpec::Core::RakeTask.new(:spec)
-rescue LoadError => e
-  puts ">>> Gem load error: #{e}, omitting spec" unless ENV['CI']
-end
-
-# Changelog
-namespace :changelog do
-  begin
-    require 'github_changelog_generator/task'
-
-    GitHubChangelogGenerator::RakeTask.new :changelog do |config|
-      config.since_tag = '1.0.1'
-      config.future_release = '1.1.0'
-    end
+  RSpec::Core::RakeTask.new do |t|
+    t.pattern = "spec/**/*_spec.rb"
+  end
+rescue LoadError
+  desc "rspec is not installed, this task is disabled"
+  task :spec do
+    abort "rspec is not installed. bundle install first to make sure all dependencies are installed."
   end
 end
 
-# Default
-task default: %w(style spec)
+begin
+  require "chefstyle"
+  require "rubocop/rake_task"
+  desc "Run Chefstyle tests"
+  RuboCop::RakeTask.new(:style) do |task|
+    task.options += ["--display-cop-names", "--no-color"]
+  end
+rescue LoadError
+  puts "chefstyle gem is not installed. bundle install first to make sure all dependencies are installed."
+end
+
+begin
+  require "yard"
+  YARD::Rake::YardocTask.new(:docs)
+rescue LoadError
+  puts "yard is not available. bundle install first to make sure all dependencies are installed."
+end
+
+task :console do
+  require "irb"
+  require "irb/completion"
+  ARGV.clear
+  IRB.start
+end
+
+task default: [:style, :spec]

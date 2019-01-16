@@ -17,10 +17,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.0.0"
 
-  s.add_development_dependency "rake", "~> 11.0"
-  s.add_development_dependency "rspec", "~> 3.4"
   s.add_development_dependency "aruba", "~> 0.6"
-  s.add_development_dependency "simplecov", "~> 0.9"
   s.add_development_dependency "simplecov-console", "~> 0.2"
   if ENV.key?("TRAVIS_BUILD") && RUBY_VERSION == "2.1.9"
     # Test version of Chef with Chef Zero before
