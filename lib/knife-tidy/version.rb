@@ -1,4 +1,4 @@
 module KnifeTidy
-  VERSION = "1.2.3".freeze
+  VERSION = "1.2.4".freeze
   MAJOR, MINOR, TINY = VERSION.split('.')
 end
