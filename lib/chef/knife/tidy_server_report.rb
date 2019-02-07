@@ -99,7 +99,7 @@ class Chef
             action_needed(pre_12_3_message, server_warnings_file_path)
           end
           if unconverged_recent_nodes.length > 0
-            unconverged_recent_message "#{unconverged_recent_nodes.length} nodes have been created in the last hour that have yet to converge in organization #{org}. These nodes WILL NOT be factored in the stale cookbook verisons report. Continuing with the server cleanup will delete cookbooks in-use by these nodes."
+            unconverged_recent_message = "#{unconverged_recent_nodes.length} nodes have been created in the last hour that have yet to converge in organization #{org}. These nodes WILL NOT be factored in the stale cookbook verisons report. Continuing with the server cleanup will delete cookbooks in-use by these nodes."
             ui.warn(unconverged_recent_message)
             action_needed(unconverged_recent_message, server_warnings_file_path)
           end
