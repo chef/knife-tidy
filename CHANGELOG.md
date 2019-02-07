@@ -1,14 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release unreleased -->
-## Unreleased
+<!-- latest_release 2.0.1 -->
+## [v2.0.1](https://github.com/chef/knife-tidy/tree/v2.0.1) (2019-02-07)
 
 #### Merged Pull Requests
+- adding missing assignment operator [#101](https://github.com/chef/knife-tidy/pull/101) ([jeremymv2](https://github.com/jeremymv2))
 - Require Ruby 2.3+ and resolve all chefstyle warnings [#99](https://github.com/chef/knife-tidy/pull/99) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.0.0 -->
 ### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- adding missing assignment operator [#101](https://github.com/chef/knife-tidy/pull/101) ([jeremymv2](https://github.com/jeremymv2)) <!-- 2.0.1 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
