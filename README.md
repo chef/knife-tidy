@@ -2,6 +2,14 @@
 [![Gem Version](https://badge.fury.io/rb/knife-tidy.svg)](https://rubygems.org/gems/knife-tidy)
 [![Build Status](https://travis-ci.org/chef/knife-tidy.svg?branch=master)](https://travis-ci.org/chef/knife-tidy)
 
+**Umbrella Project**: [Knife](https://github.com/chef/chef-oss-practices/blob/master/projects/knife.md)
+
+**Project State**: [Active](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md#active)
+
+**Issues [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md)**: 14 days
+
+**Pull Request [Response Time Maximum](https://github.com/chef/chef-oss-practices/blob/master/repo-management/repo-states.md)**: 14 days
+
 # Summary
 
 NOTE: If you're a first-time or inexperienced knife-tidy user, we recommend you read through this blogpost before proceeding with the rest of this documentation: https://blog.chef.io/2017/10/16/migrating-chef-server-knife-ec-backup-knife-tidy/
