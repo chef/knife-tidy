@@ -12,11 +12,15 @@ class Chef
       @backup_path = ::File.expand_path(backup_path)
     end
 
+    #
+    # @return [Chef::Knife::UI]
+    #
     def ui
       @ui ||= Chef::Knife::UI.new(STDOUT, STDERR, STDIN, {})
     end
 
     # The path to the users directory in the backup
+    #
     # @return [String]
     #
     def users_path
@@ -121,6 +125,7 @@ class Chef
       ::File.expand_path(::File.join(@backup_path, "organizations", org))
     end
 
+    # generate a bogus, but valid email
     #
     # @return [String]
     #
