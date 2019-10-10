@@ -28,12 +28,6 @@ class Chef
       FileUtils.cp(bp, ::File.join(Dir.pwd, "substitutions.json"))
     end
 
-    def cookbook_version_from_path(path)
-      components = path.split(File::SEPARATOR)
-      name_version = components[components.index("cookbooks") + 1]
-      name_version.match(/\d+\.\d+\.\d+/).to_s
-    end
-
     def revert
     end
 
@@ -68,7 +62,7 @@ class Chef
             @data[entry][glob].each do |substitution|
               search = Regexp.new(substitution["pattern"])
               replace = substitution["replace"].dup
-              replace.gsub!(/\!COOKBOOK_VERSION\!/) { |_m| "'" + cookbook_version_from_path(file) + "'" }
+              replace.gsub!(/\!COOKBOOK_VERSION\!/) { |_m| "'" + @tidy.cookbook_version_from_path(file) + "'" }
               sub_in_file(file, search, replace)
             end
           end

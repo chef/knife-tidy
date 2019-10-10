@@ -158,6 +158,21 @@ class Chef
       ::File.basename(path, "-*")
     end
 
+    #
+    # Determine the cookbook version from a path.
+    #
+    # @param [String] path The path of the cookbook.
+    #
+    # @return [String] The version of the cookbook.
+    #
+    # @example
+    # cookbook_version_from_path('/data/chef_backup/snapshots/20191008040001/organizations/myorg/cookbooks/chef-sugar-5.0.4') => '5.0.4'
+    #
+    def cookbook_version_from_path(path)
+      ::File.basename(path).match(/\d+\.\d+\.\d+/).to_s
+      name_version.match(/\d+\.\d+\.\d+/).to_s
+    end
+
     def global_user_names
       @global_user_names ||= Dir[::File.join(@backup_path, "users", "*")].map { |dir| ::File.basename(dir, ".json") }
     end
