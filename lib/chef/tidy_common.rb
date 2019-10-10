@@ -175,7 +175,6 @@ class Chef
     #
     def cookbook_version_from_path(path)
       ::File.basename(path).match(/\d+\.\d+\.\d+/).to_s
-      name_version.match(/\d+\.\d+\.\d+/).to_s
     end
 
     def global_user_names
