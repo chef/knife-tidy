@@ -194,7 +194,7 @@ class Chef
         Dir[::File.join(tidy.backup_path, "organizations/*/cookbooks/chef-sugar*/metadata.rb")].each do |file|
           ui.stdout.puts "INFO: Searching for known chef-sugar problems when uploading."
           s = Chef::TidySubstitutions.new(nil, tidy)
-          version = s.cookbook_version_from_path(file)
+          version = tidy.cookbook_version_from_path(file)
           patterns = [
             {
               search: "^require .*/lib/chef/sugar/version",
@@ -279,9 +279,7 @@ class Chef
 
       def create_minimal_metadata(cookbook_path)
         name = tidy.cookbook_name_from_path(cookbook_path)
-        components = cookbook_path.split(File::SEPARATOR)
-        name_version = components[components.index("cookbooks") + 1]
-        version = name_version.match(/\d+\.\d+\.\d+/).to_s
+        version = tidy.cookbook_version_from_path(cookbook_path)
         metadata = {}
         metadata["name"] = name
         metadata["version"] = version
