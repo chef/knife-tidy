@@ -263,7 +263,6 @@ class Chef
         # If both file does not exist it will create minimal metadata and generates metadata.rb
         if !::File.exist?(md_path) && !::File.exist?(json_path)
           create_minimal_metadata(path)
-          return
         end
 
         # create metadata.json if only metadata.rb exist
