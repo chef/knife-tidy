@@ -172,9 +172,20 @@ class Chef
     #
     # @example
     # cookbook_version_from_path('/data/chef_backup/snapshots/20191008040001/organizations/myorg/cookbooks/chef-sugar-5.0.4') => '5.0.4'
+    # cookbook_version_from_path('/data/chef_backup/snapshots/20191008040001/organizations/myorg/cookbooks/chef-sugar-5.0.4/recipe/default.rb') => '5.0.4'
+    # cookbook_version_from_path('/data/chef_backup/snapshots/20191008040001/organizations/myorg/cookbooks/chef-sugar-5.0.4/files/cookbooks/default.rb') => '5.0.4'
     #
     def cookbook_version_from_path(path)
-      ::File.basename(path).match(/\d+\.\d+\.\d+/).to_s
+      dirs = path.split(File::SEPARATOR)
+
+      until dirs.empty?
+        version_match = dirs[-1].match(/\d+\.\d+\.\d+/)
+        if dirs[-2] == "cookbooks" && version_match # we found the cookbook version not something that looks like one inside a cookbook path
+          return version_match.to_s
+        else
+          dirs.pop
+        end
+      end
     end
 
     def global_user_names
