@@ -4,7 +4,7 @@ require "knife-tidy/version"
 Gem::Specification.new do |s|
   s.name             = "knife-tidy"
   s.version          = KnifeTidy::VERSION
-  s.version          = "#{s.version}-pre#{ENV['TRAVIS_BUILD_NUMBER']}" if ENV["TRAVIS"]
+  s.version          = "#{s.version}-pre#{ENV["TRAVIS_BUILD_NUMBER"]}" if ENV["TRAVIS"]
   s.authors          = ["Jeremy Miller"]
   s.email            = ["jmiller@chef.io"]
   s.summary          = "Report on stale Chef Server nodes and cookbooks and clean up data integrity issues in a knife-ec-backup object based backup"

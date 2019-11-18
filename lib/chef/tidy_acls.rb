@@ -168,6 +168,7 @@ class Chef
         actors_groups = acl_actors_groups(acl)
         actors_groups[:actors].each do |actor|
           next if actor == "pivotal"
+
           if ambiguous_actor?(actor)
             fix_ambiguous_actor(actor)
           elsif missing_from_members?(actor)
