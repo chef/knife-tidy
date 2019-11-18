@@ -1,16 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 2.0.3 -->
-## [v2.0.3](https://github.com/chef/knife-tidy/tree/v2.0.3) (2019-08-08)
+<!-- latest_release 2.0.4 -->
+## [v2.0.4](https://github.com/chef/knife-tidy/tree/v2.0.4) (2019-11-18)
 
 #### Merged Pull Requests
-- Update README for OSS Best Practices [#104](https://github.com/chef/knife-tidy/pull/104) ([dheerajd-msys](https://github.com/dheerajd-msys))
+- Fix cookbook_version_from_path failing when the org is named &quot;cookbooks&quot; [#106](https://github.com/chef/knife-tidy/pull/106) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.0.1 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Fix cookbook_version_from_path failing when the org is named &quot;cookbooks&quot; [#106](https://github.com/chef/knife-tidy/pull/106) ([tas50](https://github.com/tas50)) <!-- 2.0.4 -->
 - Update README for OSS Best Practices [#104](https://github.com/chef/knife-tidy/pull/104) ([dheerajd-msys](https://github.com/dheerajd-msys)) <!-- 2.0.3 -->
 - adding some clarifications and spelling corrections to the README [#102](https://github.com/chef/knife-tidy/pull/102) ([jeremymv2](https://github.com/jeremymv2)) <!-- 2.0.2 -->
 <!-- release_rollup -->
