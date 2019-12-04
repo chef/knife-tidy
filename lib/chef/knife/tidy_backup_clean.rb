@@ -222,7 +222,8 @@ class Chef
           Chef::TidySubstitutions.new(nil, tidy).sub_in_file(
             ::File.join(cookbook_path, "metadata.rb"),
             Regexp.new("^depends +['\"]#{name}['\"]"),
-            "# depends '#{name}' # knife-tidy was here")
+            "# depends '#{name}' # knife-tidy was here"
+          )
         end
       end
 
@@ -396,7 +397,7 @@ class Chef
         existing_group_data = FFI_Yajl::Parser.parse(::File.read(clients_group_path), symbolize_names: false)
         existing_group_data["clients"] = [] unless existing_group_data.key?("clients")
         if existing_group_data["clients"].length != tidy.client_names(org).length
-          ui.stdout.puts "REPAIRING: Adding #{(existing_group_data['clients'].length - tidy.client_names(org).length).abs} missing clients into #{org}'s client group file #{clients_group_path}"
+          ui.stdout.puts "REPAIRING: Adding #{(existing_group_data["clients"].length - tidy.client_names(org).length).abs} missing clients into #{org}'s client group file #{clients_group_path}"
           existing_group_data["clients"] = (existing_group_data["clients"] + tidy.client_names(org)).uniq
           ::File.open(clients_group_path, "w") do |f|
             f.write(Chef::JSONCompat.to_json_pretty(existing_group_data))

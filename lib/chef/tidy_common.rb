@@ -135,7 +135,7 @@ class Chef
     end
 
     def save_user(user)
-      ::File.open(::File.join(users_path, "#{user['username']}.json"), "w+") do |f|
+      ::File.open(::File.join(users_path, "#{user["username"]}.json"), "w+") do |f|
         f.write(FFI_Yajl::Encoder.encode(user, pretty: true))
       end
     end

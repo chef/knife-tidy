@@ -28,8 +28,7 @@ class Chef
       FileUtils.cp(bp, ::File.join(Dir.pwd, "substitutions.json"))
     end
 
-    def revert
-    end
+    def revert; end
 
     def sub_in_file(path, search, replace)
       temp_file = Tempfile.new("tidy")

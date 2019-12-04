@@ -11,42 +11,42 @@ class Chef
       banner "knife tidy notify (options)"
 
       option :smtp_server,
-             short: "-s SERVER_NAME",
-             long: "--smtp_server SERVER_NAME",
-             default: "localhost",
-             description: "SMTP Server to be used for emailling reports to organization admins (defaults to localhost)"
+        short: "-s SERVER_NAME",
+        long: "--smtp_server SERVER_NAME",
+        default: "localhost",
+        description: "SMTP Server to be used for emailling reports to organization admins (defaults to localhost)"
 
       option :smtp_port,
-             short: "-p SMTP_PORT",
-             long: "--smtp_port SMTP_PORT",
-             default: 25,
-             description: "SMTP port to be used for emailling reports to organization admins (defaults to 25)"
+        short: "-p SMTP_PORT",
+        long: "--smtp_port SMTP_PORT",
+        default: 25,
+        description: "SMTP port to be used for emailling reports to organization admins (defaults to 25)"
 
       option :smtp_helo,
-             short: "-h SMTP_HELO",
-             long: "--smtp_helo SMTP_HELO",
-             default: "localhost",
-             description: "SMTP HELO to be used for emailling reports to organization admins (defaults to localhost)"
+        short: "-h SMTP_HELO",
+        long: "--smtp_helo SMTP_HELO",
+        default: "localhost",
+        description: "SMTP HELO to be used for emailling reports to organization admins (defaults to localhost)"
 
       option :smtp_username,
-             short: "-u SMTP_USERNAME",
-             long: "--smtp_username SMTP_USERNAME",
-             description: "SMTP Username to be used for emailling reports to organization admins"
+        short: "-u SMTP_USERNAME",
+        long: "--smtp_username SMTP_USERNAME",
+        description: "SMTP Username to be used for emailling reports to organization admins"
 
       option :smtp_password,
-             long: "--smtp_password SMTP_PASSWORD",
-             description: "SMTP Password to be used for emailling reports to organization admins"
+        long: "--smtp_password SMTP_PASSWORD",
+        description: "SMTP Password to be used for emailling reports to organization admins"
 
       option :smtp_from,
-             long: "--smtp_from SMTP_FROM",
-             description: "SMTP From address to be used for emailling reports to organization admins"
+        long: "--smtp_from SMTP_FROM",
+        description: "SMTP From address to be used for emailling reports to organization admins"
 
       option :smtp_use_tls,
-             long: "--smtp_use_tls",
-             short: "-t",
-             default: false,
-             boolean: true | false,
-             description: "Whether TLS should be used for emailling reports to organization admins (defaults to false if omitted)"
+        long: "--smtp_use_tls",
+        short: "-t",
+        default: false,
+        boolean: true | false,
+        description: "Whether TLS should be used for emailling reports to organization admins (defaults to false if omitted)"
 
       include Knife::TidyBase
 
@@ -54,13 +54,13 @@ class Chef
         reports_dir = tidy.reports_dir
         report_file_suffixes = ["_unused_cookbooks.json", "_cookbook_count.json", "_stale_nodes.json"]
         # Only grab the files matching the report_file_suffixes
-        report_files = Dir["#{reports_dir}/*{#{report_file_suffixes.join(',')}}"]
+        report_files = Dir["#{reports_dir}/*{#{report_file_suffixes.join(",")}}"]
 
         ui.info "Reading from #{tidy.reports_dir} directory"
 
         # Fetch list of organization names from reports directory
         begin
-          org_names = report_files.map { |r_file| r_file.match("#{reports_dir}\/(.*)(#{report_file_suffixes.join('|')})").captures.first }.uniq
+          org_names = report_files.map { |r_file| r_file.match("#{reports_dir}\/(.*)(#{report_file_suffixes.join("|")})").captures.first }.uniq
         rescue NoMethodError
           ui.stderr.puts "Failed to parse json reports files. Please ensure your reports are valid."
           return
@@ -120,7 +120,7 @@ class Chef
         mime_boundary = "==Multipart_Boundary_x#{srand}x"
         message = <<~MESSAGE_END
           From: Knife Tidy <#{config[:smtp_from]}>
-          To: #{recipients.map { |recipient| "#{recipient[:name]} <#{recipient[:email]}>" }.join(', ')}
+          To: #{recipients.map { |recipient| "#{recipient[:name]} <#{recipient[:email]}>" }.join(", ")}
           MIME-Version: 1.0
           Subject: Knife Tidy Cleanup Report for Organization "#{organization}"
           Content-Type: multipart/mixed; boundary="#{mime_boundary}";
@@ -172,13 +172,13 @@ class Chef
         table_body = if report_data[organization]["_unused_cookbooks.json"].empty?
                        "<tr><td colspan='2'>No unused cookbook versions</td></tr>"
                      else
-                       report_data[organization]["_unused_cookbooks.json"].map { |cookbook_name, cookbook_versions| "<tr><td>#{cookbook_name}</td><td>#{cookbook_versions.join('<br>')}</td></tr>" }.join("\n")
+                       report_data[organization]["_unused_cookbooks.json"].map { |cookbook_name, cookbook_versions| "<tr><td>#{cookbook_name}</td><td>#{cookbook_versions.join("<br>")}</td></tr>" }.join("\n")
                      end
         table_start + header_string + table_body + table_end
       end
 
       def generate_node_table(report_data, organization)
-        table_start = "<h2>Stale Nodes</h2><p>This table contains nodes that have not checked in to the Chef Server in #{report_data[organization]['_stale_nodes.json']['threshold_days']} days.<p><table border='1' cellpadding='1' cellspacing='0'>"
+        table_start = "<h2>Stale Nodes</h2><p>This table contains nodes that have not checked in to the Chef Server in #{report_data[organization]["_stale_nodes.json"]["threshold_days"]} days.<p><table border='1' cellpadding='1' cellspacing='0'>"
         table_end = "</table>"
         header_string = "<tr><th>Node Name</th></tr>"
         table_body = if report_data[organization]["_stale_nodes.json"].empty? || report_data[organization]["_stale_nodes.json"]["count"] == 0

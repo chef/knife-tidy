@@ -51,7 +51,7 @@ class Chef
 
           nodes.each do |node|
             # If the node hasn't checked in.
-            if !node["chef_packages"]
+            unless node["chef_packages"]
               # If the node is under an hour old.
               if (Time.now.to_i - node["ohai_time"].to_i) < 3600
                 unconverged_recent_nodes << node["name"]
@@ -207,8 +207,9 @@ class Chef
             else
               versions_not_satisfied.push(v)
             end
+
             if v == cb_list[cb].last
-              ui.warn("Pin of #{cb} #{version} not satisfied by current versions of cookbook: [#{versions_not_satisfied.join(', ')}]")
+              ui.warn("Pin of #{cb} #{version} not satisfied by current versions of cookbook: [#{versions_not_satisfied.join(", ")}]")
             end
           end
         else
@@ -221,6 +222,7 @@ class Chef
         pins.each do |cb, versions|
           versions.each do |version|
             next if version == "<= 0.0.0"
+
             if used_cookbooks[cb]
               # This pinned cookbook is in the used list, now check for a matching version.
               used_cookbooks[cb].each do |v|
