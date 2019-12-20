@@ -24,8 +24,8 @@ class Chef
       def self.included(includer)
         includer.class_eval do
           deps do
-            require "chef/tidy_server"
-            require "chef/tidy_common"
+            require_relative "../tidy_server"
+            require_relative "../tidy_common"
           end
 
           option :org_list,

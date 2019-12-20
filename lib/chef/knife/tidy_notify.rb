@@ -1,4 +1,4 @@
-require "chef/knife/tidy_base"
+require_relative "tidy_base"
 
 class Chef
   class Knife
