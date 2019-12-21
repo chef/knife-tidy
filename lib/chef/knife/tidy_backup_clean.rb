@@ -377,7 +377,7 @@ class Chef
           end
         end
         write_role(role_path, new_role)
-        # rubocop:enable MethodLength
+        # rubocop:enable Metrics/MethodLength
       end
 
       def validate_roles(org)
