@@ -1,4 +1,4 @@
-require "chef/knife/tidy_base"
+require_relative "tidy_base"
 
 class Chef
   class Knife
@@ -8,8 +8,8 @@ class Chef
         require "chef/cookbook/metadata"
         require "chef/role"
         require "chef/run_list"
-        require "chef/tidy_substitutions"
-        require "chef/tidy_acls"
+        require_relative "../tidy_substitutions"
+        require_relative "../tidy_acls"
         require "ffi_yajl"
         require "fileutils"
         require "securerandom"
