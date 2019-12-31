@@ -256,13 +256,12 @@ class Chef
 
         # Skipping generation of any new file as both metadata.json and metadata.rb exist
         if ::File.exist?(md_path) && ::File.exist?(json_path)
-          ui.stdout.puts "INFO: Skipping generating new metadata as metadata.json and metadata.rb both exist."
           return
         end
 
-        # If both file does not exist it will create minimal metadata and generates metadata.rb
+        # If both file does not exist raise the error.
         if !::File.exist?(md_path) && !::File.exist?(json_path)
-          create_minimal_metadata(path)
+          raise Chef::Exceptions::MetadataNotFound.new(path, cookbook)
         end
 
         # create metadata.json if only metadata.rb exist
