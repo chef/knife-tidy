@@ -17,6 +17,11 @@ class Chef
         default: 30,
         description: "Maximum number of days since last checkin before node is considered stale (default: 30)"
 
+      option :keep_versions,
+        long: "--keep-versions MIN",
+        default: 0,
+        description: "Keep a minimum of this many versions of each cookbook (default: 0)"
+
       def run
         ensure_reports_dir!
         FileUtils.rm_f(server_warnings_file_path)
@@ -32,6 +37,7 @@ class Chef
 
         stale_orgs = []
         node_threshold = config[:node_threshold].to_i
+        keep_versions  = config[:keep_versions].to_i
 
         orgs.each do |org|
           pre_12_3_nodes = []
@@ -76,6 +82,9 @@ class Chef
             end
           end
 
+          used_cookbooks = keep_cookbook_versions(cb_list, keep_versions)
+
+          Chef::Log.debug("Used cookbook list before checking environments: #{used_cookbooks}")
           pins = environment_constraints(org)
           used_cookbooks = check_environment_pins(used_cookbooks, pins, cb_list)
 
@@ -151,6 +160,15 @@ class Chef
           end
         end
         cb_list
+      end
+
+      def keep_cookbook_versions(cb_list, min)
+        retain = {}
+        cb_list.each do |name, versions|
+          keep = versions.sort { |a, b| Gem::Version.new(a) <=> Gem::Version.new(b) }.last(min)
+          retain[name] = keep
+        end
+        retain
       end
 
       def cookbook_count(cb_list)

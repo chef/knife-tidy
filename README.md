@@ -55,6 +55,9 @@ tidy these unused objects up!
   * `--node-threshold NUM_DAYS`
     Maximum number of days since last checkin before node is considered stale (default: 30)
 
+  * `--keep_versions MIN`
+    Minimum number of versions of each cookbook to keep (default: 0)
+
 Example:
 ```bash
 knife tidy server report --orgs brewinc,acmeinc --node-threshold 50

@@ -8,6 +8,10 @@ group :debug do
   gem "pry-stack_explorer"
 end
 
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.6")
+  gem "chef-zero", "~> 14"
+end
+
 group :development do
   gem "aruba"
 
