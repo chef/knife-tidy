@@ -149,6 +149,23 @@ class Chef
       end
     end
 
+    # Read a json file and return a hash of parsed content with symbolized keys
+    #
+    # @param [String] path to file
+    # @param [Bool] symbolize keys true or false, defaults to false
+    #
+    # @return [Hash]
+    #
+    # @example
+    # json_file_to_hash('/path/to/file.json', true) => { foo: "bar" }
+    #
+    def json_file_to_hash(file_path, symbolize = false)
+      FFI_Yajl::Parser.parse(File.read(file_path), symbolize_names: symbolize)
+    rescue Errno::ENOENT, Errno::EACCES, FFI_Yajl::ParseError => e
+      puts "ERROR: unable to parse file: '#{file_path}' #{e}"
+      exit
+    end
+
     #
     # Determine the cookbook name from path
     #

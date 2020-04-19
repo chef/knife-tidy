@@ -91,7 +91,7 @@ class Chef
         return unless ::File.exist?(unused_cookbooks_file)
 
         ui.stdout.puts "INFO: Cleaning cookbooks for Org: #{org}, using #{unused_cookbooks_file}"
-        unused_cookbooks = FFI_Yajl::Parser.parse(::File.read(unused_cookbooks_file), symbolize_names: true)
+        unused_cookbooks = tidy.json_file_to_hash(unused_cookbooks_file, true)
         unused_cookbooks.keys.each do |cookbook|
           versions = unused_cookbooks[cookbook]
           versions.each do |version|
@@ -118,7 +118,7 @@ class Chef
         return unless ::File.exist?(stale_nodes_file)
 
         ui.stdout.puts "INFO: Cleaning stale nodes for Org: #{org}, using #{stale_nodes_file}"
-        stale_nodes = FFI_Yajl::Parser.parse(::File.read(stale_nodes_file), symbolize_names: true)
+        stale_nodes = tidy.json_file_to_hash(stale_nodes_file, true)
         stale_nodes[:list].each do |node|
           queue << -> { delete_node_job(org, node) }
         end

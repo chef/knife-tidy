@@ -17,7 +17,7 @@ class Chef
 
     def load_data
       @tidy.ui.stdout.puts "INFO: Loading substitutions from #{file_path}"
-      @data = FFI_Yajl::Parser.parse(::File.read(@file_path), symbolize_names: false)
+      @data = @tidy.json_file_to_hash(@file_path)
     rescue Errno::ENOENT
       raise NoSubstitutionFile, file_path
     end
