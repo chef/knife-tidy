@@ -1,16 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 2.0.10 -->
-## [v2.0.10](https://github.com/chef/knife-tidy/tree/v2.0.10) (2020-04-19)
+<!-- latest_release 2.0.11 -->
+## [v2.0.11](https://github.com/chef/knife-tidy/tree/v2.0.11) (2020-04-19)
 
 #### Merged Pull Requests
-- fixes cookbook loading so that it works with newer chef client [#118](https://github.com/chef/knife-tidy/pull/118) ([jeremymv2](https://github.com/jeremymv2))
+- Use native Expeditor gem caching [#119](https://github.com/chef/knife-tidy/pull/119) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.0.9 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Use native Expeditor gem caching [#119](https://github.com/chef/knife-tidy/pull/119) ([tas50](https://github.com/tas50)) <!-- 2.0.11 -->
 - fixes cookbook loading so that it works with newer chef client [#118](https://github.com/chef/knife-tidy/pull/118) ([jeremymv2](https://github.com/jeremymv2)) <!-- 2.0.10 -->
 <!-- release_rollup -->
 
