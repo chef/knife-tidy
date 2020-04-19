@@ -4,7 +4,7 @@ class Chef
   class Knife
     class TidyBackupClean < Knife
       deps do
-        require "chef/cookbook_loader"
+        require "chef/cookbook/cookbook_version_loader"
         require "chef/cookbook/metadata"
         require "chef/role"
         require "chef/run_list"
@@ -161,26 +161,24 @@ class Chef
       end
 
       def load_cookbooks(org)
-        cl = Chef::CookbookLoader.new(tidy.cookbooks_path(org))
-        for_each_cookbook_basename(org) do |cookbook|
+        for_each_cookbook_path(org) do |cookbook|
+          cl = Chef::Cookbook::CookbookVersionLoader.new(cookbook)
           ui.stdout.puts "INFO: Loading #{cookbook}"
-          ret = cl.load_cookbook(cookbook)
+          ret = cl.load!
           if ret.nil?
             action_needed("ACTION NEEDED: Something's wrong with the #{cookbook} cookbook in org #{org} - cannot load it! Moving to cookbooks.broken folder.")
             broken_cookooks_add(org, cookbook)
           end
         end
-      rescue LoadError => e
+      rescue LoadError, Exceptions::MetadataNotValid => e
         ui.error e
         exit 1
       end
 
-      def broken_cookooks_add(org, cookbook)
+      def broken_cookooks_add(org, cookbook_path)
         broken_path = ::File.join(tidy.org_path(org), "cookbooks.broken")
         FileUtils.mkdir(broken_path) unless ::File.directory?(broken_path)
-        Dir[::File.join(tidy.cookbooks_path(org), "#{cookbook}*")].each do |cb|
-          FileUtils.mv(cb, broken_path, verbose: true, force: true)
-        end
+        FileUtils.mv(cookbook_path, broken_path, verbose: true, force: true)
       end
 
       def generate_new_metadata(org)
