@@ -149,10 +149,10 @@ class Chef
       end
     end
 
-    # Read a json file and return a hash of parsed content with symbolized keys
+    # Read a json file and return a hash of parsed content with optional symbolized keys
     #
     # @param [String] path to file
-    # @param [Bool] symbolize keys true or false, defaults to false
+    # @param [Bool] symbolize keys, defaults to false
     #
     # @return [Hash]
     #
