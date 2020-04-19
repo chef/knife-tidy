@@ -1,6 +1,6 @@
 # knife tidy
 [![Gem Version](https://badge.fury.io/rb/knife-tidy.svg)](https://rubygems.org/gems/knife-tidy)
-[![Build Status](https://travis-ci.org/chef/knife-tidy.svg?branch=master)](https://travis-ci.org/chef/knife-tidy)
+[![Build status](https://badge.buildkite.com/de3ab60102adc59bcc5e301f18dab3f5d081191b69cefbe411.svg?branch=master)](https://buildkite.com/chef-oss/chef-knife-tidy-master-verify)
 
 **Umbrella Project**: [Knife](https://github.com/chef/chef-oss-practices/blob/master/projects/knife.md)
 
