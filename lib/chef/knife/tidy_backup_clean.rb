@@ -75,7 +75,7 @@ class Chef
         tidy.global_user_names.each do |user|
           email = ""
           ui.stdout.puts "INFO: Validating #{user}"
-          the_user = tidy.json_file_to_hash(File.join(tidy.users_path, "#{user}.json"))
+          the_user = tidy.json_file_to_hash(File.join(tidy.users_path, "#{user}.json"), symbolize_names: false)
           if the_user.key?("email") && the_user["email"].match(/\A[^@\s]+@[^@\s]+\z/)
             if emails_seen.include?(the_user["email"])
               ui.stdout.puts "REPAIRING: Already saw #{user}'s email, creating a unique one."
@@ -147,7 +147,7 @@ class Chef
             add_cookbook_name_to_metadata(cookbook_name, rb_path) if lines.empty?
           else
             if ::File.exist?(json_path)
-              metadata = tidy.json_file_to_hash(json_path)
+              metadata = tidy.json_file_to_hash(json_path, symbolize_names: false)
               if metadata["name"] != cookbook_name
                 metadata["name"] = cookbook_name
                 ui.stdout.puts "REPAIRING: Correcting `name` in #{json_path}`"
@@ -227,7 +227,7 @@ class Chef
 
       def fix_metadata_fields(cookbook_path)
         json_path = ::File.join(cookbook_path, "metadata.json")
-        metadata = tidy.json_file_to_hash(json_path)
+        metadata = tidy.json_file_to_hash(json_path, symbolize_names: false)
         md = metadata.dup
         metadata.each_pair do |key, value|
           if value.nil?
@@ -349,7 +349,7 @@ class Chef
       end
 
       def repair_role_run_lists(role_path)
-        the_role = tidy.json_file_to_hash(role_path)
+        the_role = tidy.json_file_to_hash(role_path, symbolize_names: false)
         new_role = the_role.clone
         rl = Chef::RunList.new
         new_role["run_list"] = []
@@ -382,7 +382,7 @@ class Chef
         for_each_role(org) do |role_path|
           ui.stdout.puts "INFO: Validating Role at #{role_path}"
           begin
-            Chef::Role.from_hash(tidy.json_file_to_hash(role_path))
+            Chef::Role.from_hash(tidy.json_file_to_hash(role_path, symbolize_names: false))
           rescue ArgumentError
             repair_role_run_lists(role_path)
           end
@@ -392,7 +392,7 @@ class Chef
       def validate_clients_group(org)
         ui.stdout.puts "INFO: validating all clients for org #{org} exist in clients group"
         clients_group_path = ::File.join(tidy.groups_path(org), "clients.json")
-        existing_group_data = tidy.json_file_to_hash(clients_group_path)
+        existing_group_data = tidy.json_file_to_hash(clients_group_path, symbolize_names: false)
         existing_group_data["clients"] = [] unless existing_group_data.key?("clients")
         if existing_group_data["clients"].length != tidy.client_names(org).length
           ui.stdout.puts "REPAIRING: Adding #{(existing_group_data["clients"].length - tidy.client_names(org).length).abs} missing clients into #{org}'s client group file #{clients_group_path}"
@@ -406,7 +406,7 @@ class Chef
       def validate_invitations(org)
         invite_file = tidy.invitations_path(org)
         ui.stdout.puts "INFO: validating org #{org} invites in #{invite_file}"
-        invitations = tidy.json_file_to_hash(invite_file)
+        invitations = tidy.json_file_to_hash(invite_file, symbolize_names: false)
         invitations_new = []
         invitations.each do |invite|
           if invite["username"].nil?

@@ -88,7 +88,7 @@ class Chef
               file_name = "#{reports_dir}/#{org}#{report}"
               ui.info("  Parsing file #{file_name}")
               json_string = File.read(file_name)
-              reports[org][report] = tidy.json_file_to_hash(json_string)
+              reports[org][report] = tidy.json_file_to_hash(json_string, symbolize_names: false)
             rescue Errno::ENOENT
               ui.info("    Skipping file #{file_name} - not found for organization #{org}")
               reports[org][report] = {}

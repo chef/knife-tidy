@@ -17,7 +17,7 @@ class Chef
 
     def load_data
       @tidy.ui.stdout.puts "INFO: Loading substitutions from #{file_path}"
-      @data = @tidy.json_file_to_hash(@file_path)
+      @data = @tidy.json_file_to_hash(@file_path, symbolize_names: false)
     rescue Errno::ENOENT
       raise NoSubstitutionFile, file_path
     end

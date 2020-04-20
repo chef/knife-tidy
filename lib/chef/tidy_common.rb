@@ -152,18 +152,18 @@ class Chef
     # Read a json file and return a hash of parsed content with optional symbolized keys
     #
     # @param [String] path to file
-    # @param [Bool] symbolize keys, defaults to false
+    # @param [double splat] options to pass FFI_Yajl::Parser.parse()
     #
-    # @return [Hash]
+    # @return [Hash] original json content as hash
     #
     # @example
-    # json_file_to_hash('/path/to/file.json', true) => { foo: "bar" }
+    # json_file_to_hash('/path/to/file.json', symbolize_names: true) => { foo: "bar" }
     #
-    def json_file_to_hash(file_path, symbolize = false)
-      FFI_Yajl::Parser.parse(File.read(file_path), symbolize_names: symbolize)
-    rescue Errno::ENOENT, Errno::EACCES, FFI_Yajl::ParseError => e
-      puts "ERROR: unable to parse file: '#{file_path}' #{e}"
-      exit
+    def json_file_to_hash(file_path, **options)
+      FFI_Yajl::Parser.parse(File.read(file_path), options)
+    rescue Errno::ENOENT, Errno::EACCES, FFI_Yajl::ParseError
+      puts "ERROR: unable to parse file: '#{file_path}'"
+      raise
     end
 
     #
