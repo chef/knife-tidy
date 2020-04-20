@@ -18,7 +18,7 @@ describe Chef::Knife::TidyBackupClean do
 
   context "completion_message" do
     it "lets the user know we're Finished" do
-      expect { t.completion_message }.to output("** Finished **\n").to_stdout
+      expect { t.completion_message }.to output("** Finished **\n").to_stdout_from_any_process
     end
   end
 end
