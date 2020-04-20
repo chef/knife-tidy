@@ -20,26 +20,26 @@ class Chef
     def load_users
       @tidy.ui.stdout.puts "INFO: Loading users"
       Dir[::File.join(@tidy.users_path, "*.json")].each do |user|
-        @users.push(FFI_Yajl::Parser.parse(::File.read(user), symbolize_names: true))
+        @users.push(@tidy.json_file_to_hash(user, symbolize_names: true))
       end
     end
 
     def load_members
       @tidy.ui.stdout.puts "INFO: Loading members for #{@org}"
-      @members = FFI_Yajl::Parser.parse(::File.read(@tidy.members_path(@org)), symbolize_names: true)
+      @members = @tidy.json_file_to_hash(@tidy.members_path(@org), symbolize_names: true)
     end
 
     def load_clients
       @tidy.ui.stdout.puts "INFO: Loading clients for #{@org}"
       Dir[::File.join(@tidy.clients_path(@org), "*.json")].each do |client|
-        @clients.push(FFI_Yajl::Parser.parse(::File.read(client), symbolize_names: true))
+        @clients.push(@tidy.json_file_to_hash(client, symbolize_names: true))
       end
     end
 
     def load_groups
       @tidy.ui.stdout.puts "INFO: Loading groups for #{@org}"
       Dir[::File.join(@tidy.groups_path(@org), "*.json")].each do |group|
-        @groups.push(FFI_Yajl::Parser.parse(::File.read(group), symbolize_names: true))
+        @groups.push(@tidy.json_file_to_hash(group, symbolize_names: true))
       end
     end
 
@@ -128,7 +128,7 @@ class Chef
 
     def remove_group_from_acl(group, acl_file)
       @tidy.ui.stdout.puts "REPAIRING: Removing invalid group: #{group} from #{acl_file}"
-      acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
+      acl = @tidy.json_file_to_hash(acl_file, symbolize_names: false)
       acl_ops.each do |op|
         acl[op]["groups"].reject! { |the_group| the_group == group }
       end
@@ -137,7 +137,7 @@ class Chef
 
     # Appends the proper acls for ::server-admins and the org's read access group if they are missing.
     def ensure_global_group_acls(acl_file)
-      acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
+      acl = @tidy.json_file_to_hash(acl_file, symbolize_names: false)
       acl_ops.each do |op|
         unless acl[op]["groups"].include? "::server-admins"
           @tidy.ui.stdout.puts "REPAIRING: Adding #{op} acl for ::server-admins in #{acl_file}"
@@ -152,7 +152,7 @@ class Chef
     end
 
     def ensure_client_read_acls(acl_file)
-      acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
+      acl = @tidy.json_file_to_hash(acl_file, symbolize_names: false)
       %w{users admins}.each do |group|
         unless acl["read"]["groups"].include? group
           @tidy.ui.stdout.puts "REPAIRING: Adding read acl for #{group} in #{acl_file}"
@@ -164,7 +164,7 @@ class Chef
 
     def validate_acls
       org_acls.each do |acl_file|
-        acl = FFI_Yajl::Parser.parse(::File.read(acl_file), symbolize_names: false)
+        acl = @tidy.json_file_to_hash(acl_file, symbolize_names: false)
         actors_groups = acl_actors_groups(acl)
         actors_groups[:actors].each do |actor|
           next if actor == "pivotal"
@@ -203,11 +203,11 @@ class Chef
       @members.each do |member|
         user_acl_path = ::File.join(@tidy.user_acls_path, "#{member[:user][:username]}.json")
         begin
-          user_acl = FFI_Yajl::Parser.parse(::File.read(user_acl_path), symbolize_names: false)
+          user_acl = @tidy.json_file_to_hash(user_acl_path, symbolize_names: false)
         rescue Errno::ENOENT
           @tidy.ui.stdout.puts "REPAIRING: Replacing missing user acl for #{member[:user][:username]}."
           @tidy.write_new_file(default_user_acl(member), user_acl_path, backup = false)
-          user_acl = FFI_Yajl::Parser.parse(::File.read(user_acl_path), symbolize_names: false)
+          user_acl = @tidy.json_file_to_hash(user_acl_path, symbolize_names: false)
         end
         ensure_global_group_acls(user_acl_path)
         actors_groups = acl_actors_groups(user_acl)
@@ -221,11 +221,11 @@ class Chef
       @clients.each do |client|
         client_acl_path = ::File.join(@tidy.org_acls_path(@org), "clients", "#{client[:name]}.json")
         begin
-          client_acl = FFI_Yajl::Parser.parse(::File.read(client_acl_path), symbolize_names: false)
+          client_acl = @tidy.json_file_to_hash(client_acl_path, symbolize_names: false)
         rescue Errno::ENOENT
           @tidy.ui.stdout.puts "REPAIRING: Replacing missing client acl for #{client[:name]} in #{client_acl_path}."
           @tidy.write_new_file(default_client_acl(client[:name]), client_acl_path, backup = false)
-          client_acl = FFI_Yajl::Parser.parse(::File.read(client_acl_path), symbolize_names: false)
+          client_acl = @tidy.json_file_to_hash(client_acl_path, symbolize_names: false)
         end
         ensure_client_read_acls(client_acl_path)
       end

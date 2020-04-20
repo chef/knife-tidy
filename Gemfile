@@ -17,7 +17,11 @@ group :development do
   else
     gem "chef"
   end
-  gem "chef-zero"
+  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.6")
+    gem "chef-zero", "~> 14"
+  else
+    gem "chef-zero"
+  end
   gem "chefstyle", git: "https://github.com/chef/chefstyle.git"
   gem "fakefs"
   gem "rake"
