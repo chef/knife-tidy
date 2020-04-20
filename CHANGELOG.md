@@ -1,9 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release -->
+<!-- latest_release 2.0.12 -->
+## [v2.0.12](https://github.com/chef/knife-tidy/tree/v2.0.12) (2020-04-20)
+
+#### Merged Pull Requests
+- FFI_Yajl shared parsing API with exception handling [#121](https://github.com/chef/knife-tidy/pull/121) ([jeremymv2](https://github.com/jeremymv2))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.0.11 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- FFI_Yajl shared parsing API with exception handling [#121](https://github.com/chef/knife-tidy/pull/121) ([jeremymv2](https://github.com/jeremymv2)) <!-- 2.0.12 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
