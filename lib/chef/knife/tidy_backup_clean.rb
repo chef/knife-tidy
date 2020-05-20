@@ -270,7 +270,6 @@ class Chef
         end
       end
 
-
       def generate_metadata_from_file(cookbook, file)
         ui.stdout.puts "Generating new metadata.json for #{cookbook} from #{file}"
         md = Chef::Cookbook::Metadata.new
