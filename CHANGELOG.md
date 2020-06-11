@@ -1,27 +1,24 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 2.0.15 -->
-## [v2.0.15](https://github.com/chef/knife-tidy/tree/v2.0.15) (2020-06-11)
-
-#### Merged Pull Requests
-- Pin pry-stack-explorer to fix Ruby &lt; 2.6 tests [#126](https://github.com/chef/knife-tidy/pull/126) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=2.0.12 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Pin pry-stack-explorer to fix Ruby &lt; 2.6 tests [#126](https://github.com/chef/knife-tidy/pull/126) ([tas50](https://github.com/tas50)) <!-- 2.0.15 -->
-- Add an option to retain a minimum number of versions of a cookbook [#117](https://github.com/chef/knife-tidy/pull/117) ([MarkGibbons](https://github.com/MarkGibbons)) <!-- 2.0.14 -->
-- fix #124 by adding conf dir to gemspec [#125](https://github.com/chef/knife-tidy/pull/125) ([mskdenigma](https://github.com/mskdenigma)) <!-- 2.0.13 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v2.0.15](https://github.com/chef/knife-tidy/tree/v2.0.15) (2020-06-11)
+
+#### Merged Pull Requests
+- fix #124 by adding conf dir to gemspec [#125](https://github.com/chef/knife-tidy/pull/125) ([mskdenigma](https://github.com/mskdenigma))
+- Add an option to retain a minimum number of versions of a cookbook [#117](https://github.com/chef/knife-tidy/pull/117) ([MarkGibbons](https://github.com/MarkGibbons))
+- Pin pry-stack-explorer to fix Ruby &lt; 2.6 tests [#126](https://github.com/chef/knife-tidy/pull/126) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v2.0.12](https://github.com/chef/knife-tidy/tree/v2.0.12) (2020-04-20)
 
 #### Merged Pull Requests
 - FFI_Yajl shared parsing API with exception handling [#121](https://github.com/chef/knife-tidy/pull/121) ([jeremymv2](https://github.com/jeremymv2))
-<!-- latest_stable_release -->
 
 ## [v2.0.11](https://github.com/chef/knife-tidy/tree/v2.0.11) (2020-04-19)
 
