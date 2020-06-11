@@ -1,9 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release -->
+<!-- latest_release 2.0.13 -->
+## [v2.0.13](https://github.com/chef/knife-tidy/tree/v2.0.13) (2020-06-11)
+
+#### Merged Pull Requests
+- fix #124 by adding conf dir to gemspec [#125](https://github.com/chef/knife-tidy/pull/125) ([mskdenigma](https://github.com/mskdenigma))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.0.12 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- fix #124 by adding conf dir to gemspec [#125](https://github.com/chef/knife-tidy/pull/125) ([mskdenigma](https://github.com/mskdenigma)) <!-- 2.0.13 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
