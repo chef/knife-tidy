@@ -1,16 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 2.0.13 -->
-## [v2.0.13](https://github.com/chef/knife-tidy/tree/v2.0.13) (2020-06-11)
+<!-- latest_release 2.0.14 -->
+## [v2.0.14](https://github.com/chef/knife-tidy/tree/v2.0.14) (2020-06-11)
 
 #### Merged Pull Requests
-- fix #124 by adding conf dir to gemspec [#125](https://github.com/chef/knife-tidy/pull/125) ([mskdenigma](https://github.com/mskdenigma))
+- Add an option to retain a minimum number of versions of a cookbook [#117](https://github.com/chef/knife-tidy/pull/117) ([MarkGibbons](https://github.com/MarkGibbons))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.0.12 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Add an option to retain a minimum number of versions of a cookbook [#117](https://github.com/chef/knife-tidy/pull/117) ([MarkGibbons](https://github.com/MarkGibbons)) <!-- 2.0.14 -->
 - fix #124 by adding conf dir to gemspec [#125](https://github.com/chef/knife-tidy/pull/125) ([mskdenigma](https://github.com/mskdenigma)) <!-- 2.0.13 -->
 <!-- release_rollup -->
 
