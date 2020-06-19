@@ -401,6 +401,7 @@ class Chef
             f.write(Chef::JSONCompat.to_json_pretty(existing_group_data))
           end
         end
+        existing_group_data = existing_group_data.sort
       end
 
       def validate_invitations(org)
