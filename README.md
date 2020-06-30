@@ -12,6 +12,8 @@
 
 # Summary
 
+WARNING: If you use `chef-client -o RUNLIST` a lot, this tool is not compatible with that usage. The main way that knife-tidy decides whether it is safe to delete cookbooks is by reading the runlists of all nodes in the chef server. If knife-tidy does not find a certain cookbook or cookbook version in any runlist, it considers that object a deletion candidate. When you regularly use override runlists, those cookbooks are never stored in a node runlist on the chef server. Knife-tidy will never find them and exclude them from deletion.
+
 NOTE: If you're a first-time or inexperienced knife-tidy user, we recommend you read through this blogpost before proceeding with the rest of this documentation: https://blog.chef.io/2017/10/16/migrating-chef-server-knife-ec-backup-knife-tidy/
 
 This Chef Knife plugin provides:
