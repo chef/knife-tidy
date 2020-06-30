@@ -55,7 +55,7 @@ tidy these unused objects up!
   * `--node-threshold NUM_DAYS`
     Maximum number of days since last checkin before node is considered stale (default: 30)
 
-  * `--keep_versions MIN`
+  * `--keep-versions MIN`
     Minimum number of versions of each cookbook to keep (default: 0)
 
 Example:
@@ -157,7 +157,7 @@ This command assumes you have access to an SMTP server you can use for sending o
   * `--smtp_server `:
     The SMTP Server to use (defaults to localhost)
   * `--smtp_port `:
-       The SMTP Port to be used (defaults to 25)  
+       The SMTP Port to be used (defaults to 25)
   * `--smtp_username `:
        The SMTP Username to be used
   * `--smtp_password `:
@@ -165,7 +165,7 @@ This command assumes you have access to an SMTP server you can use for sending o
   * `--smtp_from `:
        The From email address to be used when sending email reports
   * `--smtp_enable_tls `:
-       Whether or not to enable TLS when sending reports via SMTP (defaults to false)            
+       Whether or not to enable TLS when sending reports via SMTP (defaults to false)
   * `--smtp_helo `:
      The SMTP HELO to be used (defaults to localhost)
 
