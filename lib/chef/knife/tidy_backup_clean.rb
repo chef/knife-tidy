@@ -401,7 +401,13 @@ class Chef
             f.write(Chef::JSONCompat.to_json_pretty(existing_group_data))
           end
         end
-        existing_group_data = existing_group_data.sort
+        if existing_group_data["clients"] != existing_group_data["clients"].sort
+          ui.stdout.puts "REPAIRING: Sorting clients into #{org}'s client group file #{clients_group_path}"
+          existing_group_data["clients"] = existing_group_data["clients"].sort
+          ::File.open(clients_group_path, "w") do |f|
+            f.write(Chef::JSONCompat.to_json_pretty(existing_group_data))
+          end
+        end
       end
 
       def validate_invitations(org)
