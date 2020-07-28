@@ -12,7 +12,7 @@
 
 # Summary
 
-NOTE: If you're a first-time or inexperienced knife-tidy user, we recommend you read through this blogpost before proceeding with the rest of this documentation: https://blog.chef.io/2017/10/16/migrating-chef-server-knife-ec-backup-knife-tidy/
+NOTE: If you're a first-time or inexperienced knife-tidy user, we recommend you read through this blog post before proceeding with the rest of this documentation: https://blog.chef.io/2017/10/16/migrating-chef-server-knife-ec-backup-knife-tidy/
 
 This Chef Knife plugin provides:
  * Reports on the state of Chef Server objects that can be tidied up
@@ -174,12 +174,12 @@ Run the following example before attempting the `knife ec backup restore` operat
 $> knife tidy notify --smtp_server smtp.myserver.com --smtp_port 587  --smtp_from myuser@myserver.com --smtp_username myuser --smtp_password mypassword --smtp_use_tls
 
 Reading from /home/myuser/knife_tidy/reports directory
-Fetching report data for organisation mytestorg
+Fetching report data for organization mytestorg
   Parsing file /home/myuser/knife_tidy/reports/mytestorg_unused_cookbooks.json
   Parsing file /home/myuser/knife_tidy/reports/mytestorg_cookbook_count.json
   Parsing file /home/myuser/knife_tidy/reports/mytestorg_stale_nodes.json
-Fetching admins users for organisation mytestorg
-Sending email reports for organisation mytestorg
+Fetching admins users for organization mytestorg
+Sending email reports for organization mytestorg
 ```
 
 ## Summary and Credits

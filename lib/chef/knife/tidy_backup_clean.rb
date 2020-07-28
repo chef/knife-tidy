@@ -25,7 +25,7 @@ class Chef
 
       option :gsub_file,
         long: "--gsub-file path/to/gsub/file",
-        description: "The path to the file used for substitutions. If non-existant, a boiler plate one will be created."
+        description: "The path to the file used for substitutions. If non-existent, a boiler plate one will be created."
 
       option :gen_gsub,
         long: "--gen-gsub",
@@ -167,7 +167,7 @@ class Chef
           ret = cl.load!
           if ret.nil?
             action_needed("ACTION NEEDED: Something's wrong with the #{cookbook} cookbook in org #{org} - cannot load it! Moving to cookbooks.broken folder.")
-            broken_cookooks_add(org, cookbook)
+            broken_cookbooks_add(org, cookbook)
           end
         end
       rescue LoadError, Exceptions::MetadataNotValid => e
@@ -175,7 +175,7 @@ class Chef
         exit 1
       end
 
-      def broken_cookooks_add(org, cookbook_path)
+      def broken_cookbooks_add(org, cookbook_path)
         broken_path = ::File.join(tidy.org_path(org), "cookbooks.broken")
         FileUtils.mkdir(broken_path) unless ::File.directory?(broken_path)
         FileUtils.mv(cookbook_path, broken_path, verbose: true, force: true)
@@ -297,7 +297,7 @@ class Chef
 
       def substitutions_file
         sub_file_path = ::File.expand_path(config[:gsub_file])
-        ui.error "Subtitutions file #{sub_file_path} does not exist!" unless ::File.exist?(sub_file_path)
+        ui.error "Substitutions file #{sub_file_path} does not exist!" unless ::File.exist?(sub_file_path)
         @substitutions_file ||= sub_file_path
       end
 
