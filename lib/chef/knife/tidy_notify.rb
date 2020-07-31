@@ -14,39 +14,39 @@ class Chef
         short: "-s SERVER_NAME",
         long: "--smtp_server SERVER_NAME",
         default: "localhost",
-        description: "SMTP Server to be used for emailling reports to organization admins (defaults to localhost)"
+        description: "SMTP Server to be used for emailing reports to organization admins (defaults to localhost)"
 
       option :smtp_port,
         short: "-p SMTP_PORT",
         long: "--smtp_port SMTP_PORT",
         default: 25,
-        description: "SMTP port to be used for emailling reports to organization admins (defaults to 25)"
+        description: "SMTP port to be used for emailing reports to organization admins (defaults to 25)"
 
       option :smtp_helo,
         short: "-h SMTP_HELO",
         long: "--smtp_helo SMTP_HELO",
         default: "localhost",
-        description: "SMTP HELO to be used for emailling reports to organization admins (defaults to localhost)"
+        description: "SMTP HELO to be used for emailing reports to organization admins (defaults to localhost)"
 
       option :smtp_username,
         short: "-u SMTP_USERNAME",
         long: "--smtp_username SMTP_USERNAME",
-        description: "SMTP Username to be used for emailling reports to organization admins"
+        description: "SMTP Username to be used for emailing reports to organization admins"
 
       option :smtp_password,
         long: "--smtp_password SMTP_PASSWORD",
-        description: "SMTP Password to be used for emailling reports to organization admins"
+        description: "SMTP Password to be used for emailing reports to organization admins"
 
       option :smtp_from,
         long: "--smtp_from SMTP_FROM",
-        description: "SMTP From address to be used for emailling reports to organization admins"
+        description: "SMTP From address to be used for emailing reports to organization admins"
 
       option :smtp_use_tls,
         long: "--smtp_use_tls",
         short: "-t",
         default: false,
         boolean: true | false,
-        description: "Whether TLS should be used for emailling reports to organization admins (defaults to false if omitted)"
+        description: "Whether TLS should be used for emailing reports to organization admins (defaults to false if omitted)"
 
       include Knife::TidyBase
 

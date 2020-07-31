@@ -111,7 +111,7 @@ class Chef
 
     def add_client_to_org(actor)
       # TODO
-      @tidy.ui.stdout.puts "ACTION NEEDED: Client referenced in acl non-existant: #{actor}"
+      @tidy.ui.stdout.puts "ACTION NEEDED: Client referenced in acl non-existent: #{actor}"
     end
 
     def add_actor_to_members(actor)
