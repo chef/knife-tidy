@@ -5,7 +5,7 @@ gemspec
 group :debug do
   gem "pry"
   gem "pry-byebug"
-  gem "pry-stack_explorer", "= 0.4.11" # remove this pin when we drop support for Ruby < 2.6
+  gem "pry-stack_explorer", "0.4.12" # remove this pin when we drop support for Ruby < 2.6
 end
 
 group :development do
