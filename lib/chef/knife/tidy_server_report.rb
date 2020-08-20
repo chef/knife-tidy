@@ -7,7 +7,7 @@ class Chef
       include Knife::TidyBase
 
       deps do
-        require "ffi_yajl"
+        require "ffi_yajl" unless defined?(FFI_Yajl)
       end
 
       banner "knife tidy server report (options)"

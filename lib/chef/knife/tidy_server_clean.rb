@@ -6,7 +6,7 @@ class Chef
       include Knife::TidyBase
 
       deps do
-        require "ffi_yajl"
+        require "ffi_yajl" unless defined?(FFI_Yajl)
         require "chef/util/threaded_job_queue"
       end
 

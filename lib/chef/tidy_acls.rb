@@ -1,5 +1,5 @@
-require "ffi_yajl"
-require "fileutils"
+require "ffi_yajl" unless defined?(FFI_Yajl)
+require "fileutils" unless defined?(FileUtils)
 require "chef/log"
 
 class Chef
