@@ -1,9 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release -->
+<!-- latest_release 2.1.1 -->
+## [v2.1.1](https://github.com/chef/knife-tidy/tree/v2.1.1) (2020-08-21)
+
+#### Merged Pull Requests
+- Optimize our requires [#133](https://github.com/chef/knife-tidy/pull/133) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.1.0 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Optimize our requires [#133](https://github.com/chef/knife-tidy/pull/133) ([tas50](https://github.com/tas50)) <!-- 2.1.1 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
