@@ -1,16 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 2.1.1 -->
-## [v2.1.1](https://github.com/chef/knife-tidy/tree/v2.1.1) (2020-08-21)
+<!-- latest_release 2.1.2 -->
+## [v2.1.2](https://github.com/chef/knife-tidy/tree/v2.1.2) (2020-08-21)
 
 #### Merged Pull Requests
-- Optimize our requires [#133](https://github.com/chef/knife-tidy/pull/133) ([tas50](https://github.com/tas50))
+- Remove unused simplecov deps [#134](https://github.com/chef/knife-tidy/pull/134) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.1.0 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Remove unused simplecov deps [#134](https://github.com/chef/knife-tidy/pull/134) ([tas50](https://github.com/tas50)) <!-- 2.1.2 -->
 - Optimize our requires [#133](https://github.com/chef/knife-tidy/pull/133) ([tas50](https://github.com/tas50)) <!-- 2.1.1 -->
 <!-- release_rollup -->
 
