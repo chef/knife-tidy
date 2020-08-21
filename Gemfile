@@ -14,8 +14,6 @@ group :development do
   gem "fakefs"
   gem "rake"
   gem "rspec"
-  gem "simplecov"
-  gem "simplecov-console"
 
   # preserve testing on older ruby releases
   if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.5")
