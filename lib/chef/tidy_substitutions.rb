@@ -1,6 +1,6 @@
-require "ffi_yajl"
-require "tempfile"
-require "fileutils"
+require "ffi_yajl" unless defined?(FFI_Yajl)
+require "tempfile" unless defined?(Tempfile)
+require "fileutils" unless defined?(FileUtils)
 require "chef/log"
 
 class Chef

@@ -10,9 +10,9 @@ class Chef
         require "chef/run_list"
         require_relative "../tidy_substitutions"
         require_relative "../tidy_acls"
-        require "ffi_yajl"
-        require "fileutils"
-        require "securerandom"
+        require "ffi_yajl" unless defined?(FFI_Yajl)
+        require "fileutils" unless defined?(FileUtils)
+        require "securerandom" unless defined?(SecureRandom)
       end
 
       banner "knife tidy backup clean (options)"

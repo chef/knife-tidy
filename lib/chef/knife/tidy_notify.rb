@@ -4,7 +4,7 @@ class Chef
   class Knife
     class TidyNotify < Knife
       deps do
-        require "ffi_yajl"
+        require "ffi_yajl" unless defined?(FFI_Yajl)
         require "net/smtp"
       end
 

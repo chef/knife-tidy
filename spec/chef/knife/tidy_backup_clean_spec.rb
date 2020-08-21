@@ -2,7 +2,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "spec_hel
 require "chef/knife/tidy_backup_clean"
 require "chef/knife"
 require "chef/config"
-require "stringio"
+require "stringio" unless defined?(StringIO)
 
 class Tester < Chef::Knife
 end
