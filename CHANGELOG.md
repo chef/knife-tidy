@@ -1,9 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release -->
+<!-- latest_release 2.1.3 -->
+## [v2.1.3](https://github.com/chef/knife-tidy/tree/v2.1.3) (2021-06-25)
+
+#### Merged Pull Requests
+- Upgrade to GitHub-native Dependabot [#135](https://github.com/chef/knife-tidy/pull/135) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.1.2 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Upgrade to GitHub-native Dependabot [#135](https://github.com/chef/knife-tidy/pull/135) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 2.1.3 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
