@@ -16,7 +16,6 @@
 #
 
 require "chef/knife"
-require "chef/server_api"
 
 class Chef
   class Knife
@@ -24,6 +23,7 @@ class Chef
       def self.included(includer)
         includer.class_eval do
           deps do
+            require "chef/server_api"
             require_relative "../tidy_server"
             require_relative "../tidy_common"
           end
