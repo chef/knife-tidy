@@ -1,3 +1,6 @@
+AllCops:
+  TargetRubyVersion: 2.3
+
 Lint/UselessAssignment:
   Exclude:
     - 'lib/chef/knife/tidy_backup_clean.rb'
