@@ -1,16 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 2.1.4 -->
-## [v2.1.4](https://github.com/chef/knife-tidy/tree/v2.1.4) (2022-02-26)
+<!-- latest_release 2.1.5 -->
+## [v2.1.5](https://github.com/chef/knife-tidy/tree/v2.1.5) (2022-03-16)
 
 #### Merged Pull Requests
-- Add Ruby 2.3/3.0 testing and pin test deps to fix testing [#140](https://github.com/chef/knife-tidy/pull/140) ([tas50](https://github.com/tas50))
+- Update code owners to workstation/ tools team [#141](https://github.com/chef/knife-tidy/pull/141) ([vkarve-chef](https://github.com/vkarve-chef))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.1.2 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Update code owners to workstation/ tools team [#141](https://github.com/chef/knife-tidy/pull/141) ([vkarve-chef](https://github.com/vkarve-chef)) <!-- 2.1.5 -->
 - Add Ruby 2.3/3.0 testing and pin test deps to fix testing [#140](https://github.com/chef/knife-tidy/pull/140) ([tas50](https://github.com/tas50)) <!-- 2.1.4 -->
 - Upgrade to GitHub-native Dependabot [#135](https://github.com/chef/knife-tidy/pull/135) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 2.1.3 -->
 <!-- release_rollup -->
