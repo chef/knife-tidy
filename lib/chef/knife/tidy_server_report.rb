@@ -19,8 +19,8 @@ class Chef
 
       option :keep_versions,
         long: "--keep-versions MIN",
-        default: 0,
-        description: "Keep a minimum of this many versions of each cookbook (default: 0)"
+        default: 1,
+        description: "Keep a minimum of this many versions of each cookbook (default: 1)"
 
       def run
         ensure_reports_dir!
@@ -82,8 +82,6 @@ class Chef
             end
           end
 
-          used_cookbooks = keep_cookbook_versions(cb_list, keep_versions)
-
           Chef::Log.debug("Used cookbook list before checking environments: #{used_cookbooks}")
           pins = environment_constraints(org)
           used_cookbooks = check_environment_pins(used_cookbooks, pins, cb_list)
@@ -98,7 +96,7 @@ class Chef
           stale_nodes_hash = { 'threshold_days': node_threshold, 'org_total_node_count': nodes.count, 'count': stale_nodes.count, 'list': stale_nodes }
           stale_orgs.push(org) if stale_nodes.count == nodes.count
 
-          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"), backup = false)
+          tidy.write_new_file(unused_cookbooks(used_cookbooks, cb_list, keep_versions), ::File.join(tidy.reports_dir, "#{org}_unused_cookbooks.json"), backup = false)
           tidy.write_new_file(version_count, ::File.join(tidy.reports_dir, "#{org}_cookbook_count.json"), backup = false)
           tidy.write_new_file(stale_nodes_hash, ::File.join(tidy.reports_dir, "#{org}_stale_nodes.json"), backup = false)
 
@@ -162,15 +160,6 @@ class Chef
         cb_list
       end
 
-      def keep_cookbook_versions(cb_list, min)
-        retain = {}
-        cb_list.each do |name, versions|
-          keep = versions.sort { |a, b| Gem::Version.new(a) <=> Gem::Version.new(b) }.last(min)
-          retain[name] = keep
-        end
-        retain
-      end
-
       def cookbook_count(cb_list)
         cb_count_list = {}
         cb_list.each do |name, versions|
@@ -179,14 +168,14 @@ class Chef
         cb_count_list
       end
 
-      def unused_cookbooks(used_list, cb_list)
+      def unused_cookbooks(used_list, cb_list, keep_versions)
         unused_list = {}
         cb_list.each do |name, versions|
           versions.sort! { |a, b| Gem::Version.new(a) <=> Gem::Version.new(b) }
           if used_list[name].nil? # Not in the used list at all (Remove all versions)
             unused_list[name] = versions
           elsif used_list[name].sort != versions # Is in the used cookbook list, but version arrays do not match (Find unused versions)
-            unused = versions - used_list[name] - [versions.last] # Don't delete the most recent version as it might not be in a run_list yet.
+            unused = versions - used_list[name] - versions.last(keep_versions) # Don't delete the X most recent version as it might not be in a run_list yet.
             unused_list[name] = unused unless unused.empty?
           end
         end
