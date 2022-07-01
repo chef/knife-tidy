@@ -22,6 +22,11 @@ class Chef
         default: 1,
         description: "Keep a minimum of this many versions of each cookbook (default: 1)"
 
+      option :without_search,
+        long: "--without-search",
+        default: false,
+        description: "Use the nodes API instead of the search API to retrieve node data. Use only upon request from Chef Support"
+
       def run
         ensure_reports_dir!
         FileUtils.rm_f(server_warnings_file_path)
@@ -46,8 +51,11 @@ class Chef
           cb_list = cookbook_list(org)
           version_count = cookbook_count(cb_list).sort_by(&:last).reverse.to_h
           used_cookbooks = {}
-          nodes = nodes_list(org)
           db_nodes = rest.get("/organizations/#{org}/nodes")
+          nodes = nodes_list(org, db_nodes)
+
+          # Note: If without_search is specified, the nodes have been loaded from the API individually instead
+          # of via a partial search. In that case, this check will always pass.
           unless nodes.length == db_nodes.length
             ood_message = "Search index is out of date (search returned #{nodes.length} nodes while the database indicates there are #{db_nodes.length} nodes! No action will be taken for #{org}. Perhaps a 'chef-server-ctl reindex' is in order?"
             ui.error(ood_message)
@@ -129,18 +137,34 @@ class Chef
 
       # Need the block here to get the search method to invoke multiple searches and
       # aggregate results for result sets over 1k.
-      def nodes_list(org)
+      def nodes_list(org, db_nodes)
         node_results = []
-        Chef::Search::Query.new("#{server.root_url}/organizations/#{org}").search(
-          :node, "*:*",
-          filter_result: {
-            "name" => ["name"],
-            "cookbooks" => ["cookbooks"],
-            "ohai_time" => ["ohai_time"],
-            "chef_packages" => ["chef_packages"],
-          }
-        ) do |node|
-          node_results << node
+        # In cases where the number of nodes exceeds the scroll size limit in search,
+        # we will bypass search and load the nodes directly from the database.  This involves
+        # making one API call per node. Using the default (search enabled) is better  isince it will
+        # get batched results for many nodes resulting in faster run time and fewer requests to the server
+        if config[:without_search]
+          db_nodes.each do |name, _data|
+            node = rest.get("organizations/#{org}/nodes/#{name}")
+            node_results << {
+              "name" => node["name"],
+              "cookbooks" => node["automatic"]["cookbooks"],
+              "ohai_time" => node["automatic"]["ohai_time"],
+              "chef_packages" => node["automatic"]["chef_packages"]
+            }
+          end
+        else
+          Chef::Search::Query.new("#{server.root_url}/organizations/#{org}").search(
+            :node, "*:*",
+              filter_result: {
+                "name" => ["name"],
+                "cookbooks" => ["cookbooks"],
+                "ohai_time" => ["ohai_time"],
+                "chef_packages" => ["chef_packages"],
+              }
+          ) do |node|
+            node_results << node
+          end
         end
         node_results
       end
