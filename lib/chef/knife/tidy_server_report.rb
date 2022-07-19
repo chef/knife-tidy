@@ -141,7 +141,7 @@ class Chef
         node_results = []
         # In cases where the number of nodes exceeds the scroll size limit in search,
         # we will bypass search and load the nodes directly from the database.  This involves
-        # making one API call per node. Using the default (search enabled) is better  isince it will
+        # making one API call per node. Using the default (search enabled) is better since it will
         # get batched results for many nodes resulting in faster run time and fewer requests to the server
         if config[:without_search]
           db_nodes.each do |name, _data|
