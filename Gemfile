@@ -9,7 +9,7 @@ end
 group :development do
 
   gem "contracts", "< 0.17" # .17 requires Ruby 3 and later. Remove this pin entirely when legacy Ruby support is dropped
-  gem "chefstyle", "< 1.0" # 1.0 drops support for Ruby 2.3/2.4 format
+  gem "chefstyle", "< 3.0" # 1.0 drops support for Ruby 2.3/2.4 format
   gem "rake"
   gem "rspec"
 
