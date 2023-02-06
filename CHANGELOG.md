@@ -1,16 +1,17 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 2.2.0 -->
-## [v2.2.0](https://github.com/chef/knife-tidy/tree/v2.2.0) (2023-02-06)
+<!-- latest_release 2.2.1 -->
+## [v2.2.1](https://github.com/chef/knife-tidy/tree/v2.2.1) (2023-02-06)
 
 #### Merged Pull Requests
-- Support for Ruby 3.1 and removed EOL versions [#144](https://github.com/chef/knife-tidy/pull/144) ([ashiqueps](https://github.com/ashiqueps))
+- Update chefstyle requirement from &lt; 1.0 to &lt; 3.0 [#145](https://github.com/chef/knife-tidy/pull/145) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.1.6 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Update chefstyle requirement from &lt; 1.0 to &lt; 3.0 [#145](https://github.com/chef/knife-tidy/pull/145) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 2.2.1 -->
 - Support for Ruby 3.1 and removed EOL versions [#144](https://github.com/chef/knife-tidy/pull/144) ([ashiqueps](https://github.com/ashiqueps)) <!-- 2.2.0 -->
 <!-- release_rollup -->
 
