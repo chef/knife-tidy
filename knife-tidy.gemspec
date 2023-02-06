@@ -1,4 +1,4 @@
-$:.push File.expand_path("../lib", __FILE__)
+$LOAD_PATH << File.expand_path("./lib", __dir__)
 require "knife-tidy/version"
 
 Gem::Specification.new do |s|

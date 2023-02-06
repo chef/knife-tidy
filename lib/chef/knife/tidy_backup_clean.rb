@@ -354,23 +354,19 @@ class Chef
         rl = Chef::RunList.new
         new_role["run_list"] = []
         the_role["run_list"].each do |item|
-          begin
-            rl << item
-            new_role["run_list"].push(item)
-          rescue ArgumentError
-            ui.stdout.puts "REPAIRING: Invalid Recipe Item: #{item} in run_list from #{role_path}"
-          end
+          rl << item
+          new_role["run_list"].push(item)
+        rescue ArgumentError
+          ui.stdout.puts "REPAIRING: Invalid Recipe Item: #{item} in run_list from #{role_path}"
         end
         if the_role.key?("env_run_lists")
           the_role["env_run_lists"].each_pair do |key, value|
             new_role["env_run_lists"][key] = []
             value.each do |item|
-              begin
-                rl << item
-                new_role["env_run_lists"][key].push(item)
-              rescue ArgumentError
-                ui.stdout.puts "REPAIRING: Invalid Recipe Item: #{item} in env_run_lists #{key} from #{role_path}"
-              end
+              rl << item
+              new_role["env_run_lists"][key].push(item)
+            rescue ArgumentError
+              ui.stdout.puts "REPAIRING: Invalid Recipe Item: #{item} in env_run_lists #{key} from #{role_path}"
             end
           end
         end

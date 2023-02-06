@@ -84,15 +84,13 @@ class Chef
           ui.info("Fetching report data for organization #{org}")
           reports[org] = {}
           report_file_suffixes.each do |report|
-            begin
-              file_name = "#{reports_dir}/#{org}#{report}"
-              ui.info("  Parsing file #{file_name}")
-              json_string = File.read(file_name)
-              reports[org][report] = tidy.json_file_to_hash(json_string, symbolize_names: false)
-            rescue Errno::ENOENT
-              ui.info("    Skipping file #{file_name} - not found for organization #{org}")
-              reports[org][report] = {}
-            end
+            file_name = "#{reports_dir}/#{org}#{report}"
+            ui.info("  Parsing file #{file_name}")
+            json_string = File.read(file_name)
+            reports[org][report] = tidy.json_file_to_hash(json_string, symbolize_names: false)
+          rescue Errno::ENOENT
+            ui.info("    Skipping file #{file_name} - not found for organization #{org}")
+            reports[org][report] = {}
           end
 
           # Fetch a list of admin users for the current organization
