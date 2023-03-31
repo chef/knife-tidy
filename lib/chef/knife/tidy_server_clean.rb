@@ -109,7 +109,8 @@ class Chef
         end
         printf("INFO: Deleting #{path}\n")
         rest.delete(path)
-      rescue Net::HTTPServerException
+      rescue *NET_HTTP_RESCUES => exception
+        printf exception
       end
 
       def clean_nodes(org)
@@ -135,7 +136,8 @@ class Chef
             begin
               printf("INFO: Deleting #{path}\n")
               rest.delete(path)
-            rescue Net::HTTPServerException
+            rescue *NET_HTTP_RESCUES => exception
+              printf exception
             end
           end
         end
@@ -149,7 +151,8 @@ class Chef
       end
 
       def report_files
-        Dir[::File.join(tidy.reports_dir, "**.json")]
+        whitelist_regex = /^(.*?)_(cookbook_count|unused_cookbooks|stale_nodes)\.json/
+        Dir[::File.join(tidy.reports_dir, '*.json')].select {|x| x.match(whitelist_regex) }
       end
 
       def all_orgs
