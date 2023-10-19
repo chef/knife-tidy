@@ -35,6 +35,11 @@ group :development do
     gem "activesupport", "~> 6.0" # 7+ requires Ruby 2.7+
     gem "chef", "~> 15"
     gem "fakefs"
+  elsif Gem::Version.new(RUBY_VERSION) > Gem::Version.new("3.0")
+    gem "chef-zero"
+    gem "chef", "~> 18" # 17 breaks out knife
+    gem "aruba"
+    gem "fakefs"
   else
     gem "chef-zero"
     gem "chef", "< 17" # 17 breaks out knife
