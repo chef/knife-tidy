@@ -16,7 +16,7 @@ group :development do
   # preserve testing on older ruby releases
   if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.5")
     gem "chef-zero", "< 14" # 14+ requires Ruby 2.4+
-    gem "chef", "~> 13" # 14+ deps on mixlib-log 2+ which requires Ruby 2.4+
+    gem "chef", "< 18" # 14+ deps on mixlib-log 2+ which requires Ruby 2.4+
     gem "mixlib-shellout", "< 3.1" # 3.1 depends on chef-utils
     gem "activesupport", "~> 5.0" # 6+ requires Ruby 2.5+
     gem "cucumber", "~> 4.0" # 5+ requires Ruby 2.5+
@@ -28,16 +28,16 @@ group :development do
     gem "fakefs", "< 1.2" # 1.2+ requires Ruby 2.4+
   elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.6")
     gem "chef-zero", "~> 14"
-    gem "chef", "~> 15"
+    gem "chef", "< 18"
     gem "activesupport", "~> 6.0" # 7+ requires Ruby 2.7+
     gem "fakefs"
   elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.7")
     gem "activesupport", "~> 6.0" # 7+ requires Ruby 2.7+
-    gem "chef", "~> 15"
+    gem "chef", "< 18"
     gem "fakefs"
   elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.1")
     gem "chef-zero"
-    gem "chef", "< 17" # 17 breaks out knife
+    gem "chef", "< 18" # 17 breaks out knife
     gem "aruba"
     gem "fakefs"
   else
