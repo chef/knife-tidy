@@ -16,7 +16,7 @@ steps:
   expeditor:
     executor:
       docker:
-        image: ruby:2.7-buster
+        image: ruby:2.7
 
 - label: run-specs-ruby-3.0
   command:
@@ -24,7 +24,7 @@ steps:
   expeditor:
     executor:
       docker:
-        image: ruby:3.0-buster
+        image: ruby:3.0
 
 - label: run-specs-ruby-3.1
   command:
@@ -32,4 +32,4 @@ steps:
   expeditor:
     executor:
       docker:
-        image: ruby:3.1-buster
+        image: ruby:3.1
