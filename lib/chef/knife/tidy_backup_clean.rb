@@ -183,7 +183,7 @@ class Chef
 
       def generate_new_metadata(org)
         for_each_cookbook_path(org) do |cookbook_path|
-          generate_metadata_from_file(tidy.cookbook_name_from_path(cookbook_path), cookbook_path)
+          generate_metadata(tidy.cookbook_name_from_path(cookbook_path), cookbook_path)
           fix_metadata_fields(cookbook_path)
         end
       end
@@ -250,21 +250,32 @@ class Chef
         end
       end
 
-      def generate_metadata_from_file(cookbook, path)
+      def generate_metadata(cookbook, path)
         md_path = ::File.join(path, "metadata.rb")
         json_path = ::File.join(path, "metadata.json")
-        if !::File.exist?(md_path) && !::File.exist?(json_path)
-          create_minimal_metadata(path)
-        end
-        unless ::File.exist?(md_path)
-          ui.stdout.puts "INFO: No metadata.rb in #{path} - skipping"
+
+        # Skipping generation of any new file as both metadata.json and metadata.rb exist
+        if ::File.exist?(md_path) && ::File.exist?(json_path)
           return
         end
-        ui.stdout.puts "INFO: Generating new metadata.json for #{path}"
+
+        # If both file does not exist raise the error.
+        if !::File.exist?(md_path) && !::File.exist?(json_path)
+          raise Chef::Exceptions::MetadataNotFound.new(path, cookbook)
+        end
+
+        # create metadata.json if only metadata.rb exist
+        if ::File.exist?(md_path)
+          generate_metadata_from_file(cookbook, md_path)
+        end
+      end
+
+      def generate_metadata_from_file(cookbook, file)
+        ui.stdout.puts "Generating new metadata.json for #{cookbook} from #{file}"
         md = Chef::Cookbook::Metadata.new
         md.name(cookbook)
-        md.from_file(md_path)
-        json_file = ::File.join(path, "metadata.json")
+        md.from_file(file)
+        json_file = File.join(File.dirname(file), "metadata.json")
         ::File.open(json_file, "w") do |f|
           f.write(Chef::JSONCompat.to_json_pretty(md))
         end
