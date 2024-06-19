@@ -43,6 +43,7 @@ group :development do
   else
     gem "chef-zero"
     gem "chef", "~> 18"
+    gem "knife", "~> 18"
     gem "aruba"
     gem "fakefs"
   end

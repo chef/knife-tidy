@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-require "knife"
+require "chef/knife"
 require "chef/server_api"
 
 class Chef
