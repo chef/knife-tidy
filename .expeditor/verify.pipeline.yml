@@ -10,22 +10,6 @@ expeditor:
       timeout_in_minutes: 30
 
 steps:
-- label: run-specs-ruby-2.7
-  command:
-    - .expeditor/run_linux_tests.sh rake
-  expeditor:
-    executor:
-      docker:
-        image: ruby:2.7
-
-- label: run-specs-ruby-3.0
-  command:
-    - .expeditor/run_linux_tests.sh rake
-  expeditor:
-    executor:
-      docker:
-        image: ruby:3.0
-
 - label: run-specs-ruby-3.1
   command:
     - .expeditor/run_linux_tests.sh rake
@@ -33,3 +17,11 @@ steps:
     executor:
       docker:
         image: ruby:3.1
+
+- label: run-specs-ruby-3.3
+  command:
+    - .expeditor/run_linux_tests.sh rake
+  expeditor:
+    executor:
+      docker:
+        image: ruby:3.3
