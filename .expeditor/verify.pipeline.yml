@@ -17,11 +17,3 @@ steps:
     executor:
       docker:
         image: ruby:3.3
-
-- label: run-specs-ruby-3.3
-  command:
-    - .expeditor/run_linux_tests.sh rake
-  expeditor:
-    executor:
-      docker:
-        image: ruby:3.3
