@@ -1,4 +1,4 @@
-require "bundler/gem_tasks"
+require "bundler"
 
 begin
   require "rspec/core/rake_task"
@@ -14,7 +14,7 @@ rescue LoadError
 end
 
 begin
-  require "chefstyle"
+  require "cookstyle/chefstyle"
   require "rubocop/rake_task"
   desc "Run Chefstyle tests"
   RuboCop::RakeTask.new(:style) do |task|
