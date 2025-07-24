@@ -6,6 +6,10 @@ group :debug do
   gem "pry"
 end
 
+group :docs do
+  gem "yard"
+end
+
 group :development do
   gem "chefstyle", "< 3.0"  # 3.0 drops support for older Ruby
   gem "rake"
