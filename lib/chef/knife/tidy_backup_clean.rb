@@ -130,10 +130,10 @@ class Chef
 
       def add_cookbook_name_to_metadata(cookbook_name, rb_path)
         ui.stdout.puts "REPAIRING: Correcting `name` in #{rb_path}"
-        content = IO.readlines(rb_path)
+        content = File.readlines(rb_path)
         new_content = content.reject { |line| line =~ /^name\s+/ }
         name_field = "name '#{cookbook_name}'\n"
-        IO.write rb_path, name_field + new_content.join("")
+        File.write(rb_path, name_field + new_content.join(""))
       end
 
       def fix_cookbook_names(org)

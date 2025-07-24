@@ -196,9 +196,9 @@ class Chef
       dirs = path.split(File::SEPARATOR)
 
       until dirs.empty?
-        version_match = dirs[-1].match(/\d+\.\d+\.\d+/)
-        if dirs[-2] == "cookbooks" && version_match # we found the cookbook version not something that looks like one inside a cookbook path
-          return version_match.to_s
+        version_match = dirs[-1][/\b\d{1,3}\.\d{1,3}\.\d{1,3}\b/]
+        if dirs.length >= 2 && dirs[-2] == "cookbooks" && version_match
+          return version_match
         else
           dirs.pop
         end
