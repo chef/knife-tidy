@@ -13,5 +13,5 @@ Gem::Specification.new do |s|
   s.files            = %w{LICENSE} + Dir.glob("lib/**/*") + Dir.glob("conf/**/*")
   s.require_paths    = ["lib"]
 
-  s.required_ruby_version = ">= 3.3"
+  s.required_ruby_version = ">= 3.1"
 end
