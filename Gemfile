@@ -3,7 +3,10 @@ source "https://rubygems.org"
 gemspec
 
 gem "yard"
-gem "cookstyle", "~> 7.0"
+
+group :test do
+  gem "cookstyle", "~> 7.0"
+end
 
 group :debug do
   gem "pry"
