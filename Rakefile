@@ -1,4 +1,4 @@
-require "bundler"
+#!/usr/bin/env rake
 
 begin
   require "rspec/core/rake_task"
@@ -13,23 +13,23 @@ rescue LoadError
   end
 end
 
-# begin
-#   require "cookstyle/chefstyle"
-#   require "rubocop/rake_task"
-#   desc "Run Chefstyle tests"
-#   RuboCop::RakeTask.new(:style) do |task|
-#     task.options += ["--display-cop-names", "--no-color"]
-#   end
-# rescue LoadError
-#   puts "chefstyle gem is not installed. bundle install first to make sure all dependencies are installed."
-# end
+begin
+  require "chefstyle"
+  require "rubocop/rake_task"
+  desc "Run Chefstyle tests"
+  RuboCop::RakeTask.new(:style) do |task|
+    task.options += ["--display-cop-names", "--no-color"]
+  end
+rescue LoadError
+  puts "chefstyle gem is not installed. bundle install first to make sure all dependencies are installed."
+end
 
-# begin
-#   require "yard" unless defined?(YARD)
-#   YARD::Rake::YardocTask.new(:docs)
-# rescue LoadError
-#   puts "yard is not available. bundle install first to make sure all dependencies are installed."
-# end
+begin
+  require "yard" unless defined?(YARD)
+  YARD::Rake::YardocTask.new(:docs)
+rescue LoadError
+  puts "yard is not available. bundle install first to make sure all dependencies are installed."
+end
 
 task :console do
   require "irb"
@@ -38,4 +38,4 @@ task :console do
   IRB.start
 end
 
-task default: %i{spec}
+task default: %i{style spec}
