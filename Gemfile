@@ -10,11 +10,12 @@ group :docs do
   gem "yard"
 end
 
+gem "ffi", ">= 1.15.5", "<= 1.16.3"
+
 group :development do
   gem "chefstyle", "< 3.0"  # 3.0 drops support for older Ruby
   gem "rake"
   gem "rspec"
-  gem "ffi", ">= 1.15.5", force_ruby_platform: true
 
   # Ruby >= 2.7 support
   if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("3.1")
