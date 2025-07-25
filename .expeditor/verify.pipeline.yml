@@ -24,4 +24,4 @@ steps:
   expeditor:
     executor:
       docker:
-        image: rubydistros/ubuntu-22.04
+        image: rubydistros/ubuntu-22.04:3.1
