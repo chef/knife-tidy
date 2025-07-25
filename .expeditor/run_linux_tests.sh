@@ -4,29 +4,36 @@ set -ue
 export USER="root"
 export LANG=C.UTF-8 LANGUAGE=C.UTF-8
 
-echo "--- bundle install"
+echo "--- STEP 0: Platform details ---"
+uname -a
+cat /etc/os-release || true
+file /bin/bash || true
+
+echo "--- STEP 1: Checking available libffi libraries ---"
+find / -type f -name "libffi.so*" 2>/dev/null | sort || true
+
+echo "--- STEP 2: Bundle install ---"
 bundle config --local path vendor/bundle
 bundle install --jobs=7 --retry=3
 
-# echo "--- fix missing libffi.so.6 if needed"
-# if ! find /usr/lib /usr/lib64 /usr/lib/x86_64-linux-gnu -name "libffi.so.6" 2>/dev/null | grep -q libffi.so.6; then
-#   ffi_so=$(find /usr/lib /usr/lib64 /usr/lib/x86_64-linux-gnu -type l \( -name 'libffi.so.7' -o -name 'libffi.so.8' \) 2>/dev/null | head -n1)
-#   if [[ -n "$ffi_so" ]]; then
-#     target_dir=$(dirname "$ffi_so")
-#     echo "Creating symlink: $target_dir/libffi.so.6 -> $ffi_so"
-#     ln -sf "$ffi_so" "$target_dir/libffi.so.6"
-#   else
-#     echo "No libffi.so.7 or .8 found, skipping symlink fix"
-#   fi
-# else
-#   echo "libffi.so.6 already exists"
-# fi
+echo "--- STEP 3: Checking installed ffi gem version ---"
+bundle list | grep ffi || true
 
-# echo "--- check libffi symlinks"
-# ls -l /usr/lib/*/libffi.so* || true
+echo "--- STEP 4: Finding and inspecting ffi_c.so ---"
+find vendor/bundle -name ffi_c.so | while read -r ffi_c; do
+  echo "Inspecting: $ffi_c"
+  ldd "$ffi_c" || echo "ldd failed for $ffi_c"
+done
 
-# echo "--- verify ffi_c.so linkage"
-# find vendor/bundle -name ffi_c.so -exec echo "ldd {}:" \; -exec ldd {} \; || true
+echo "--- STEP 4.1: Detailed shared object dependencies ---"
+find vendor/bundle -name ffi_c.so | while read -r ffi_c; do
+  echo "Dependencies for $ffi_c"
+  readelf -d "$ffi_c" | grep NEEDED || echo "readelf failed for $ffi_c"
+done
 
-echo "+++ bundle exec task"
+echo "--- STEP 5: Ruby info ---"
+ruby -v
+ruby -e 'puts RUBY_PLATFORM'
+
+echo "--- STEP 6: Run task ---"
 bundle exec "$@"

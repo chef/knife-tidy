@@ -10,8 +10,6 @@ group :docs do
   gem "yard"
 end
 
-gem "ffi", "1.15.5"
-
 group :development do
   gem "chefstyle", "< 3.0"  # 3.0 drops support for older Ruby
   gem "rake"
