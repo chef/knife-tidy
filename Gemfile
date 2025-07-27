@@ -11,7 +11,7 @@ group :docs do
 end
 
 group :development do
-  gem "chefstyle", "< 3.0"  # 3.0 drops support for older Ruby
+  gem "chefstyle"
   gem "rake"
   gem "rspec"
 
