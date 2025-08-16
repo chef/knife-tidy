@@ -196,9 +196,9 @@ class Chef
       dirs = path.split(File::SEPARATOR)
 
       until dirs.empty?
-        version_match = dirs[-1][/\b\d{1,3}\.\d{1,3}\.\d{1,3}\b/]
+        version_match = dirs[-1].match(/\A\d+\.\d+\.\d+\z/)
         if dirs.length >= 2 && dirs[-2] == "cookbooks" && version_match
-          return version_match
+          return version_match.to_s
         else
           dirs.pop
         end
