@@ -1,22 +1,20 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
-<!-- latest_release 2.3.0 -->
-## [v2.3.0](https://github.com/chef/knife-tidy/tree/v2.3.0) (2025-08-16)
-
-#### Merged Pull Requests
-- Updated ruby version and added ruby 3.1 and 3.4 pipeline and Security fixes  [#150](https://github.com/chef/knife-tidy/pull/150) ([nikhil2611](https://github.com/nikhil2611))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=2.1.6 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Updated ruby version and added ruby 3.1 and 3.4 pipeline and Security fixes  [#150](https://github.com/chef/knife-tidy/pull/150) ([nikhil2611](https://github.com/nikhil2611)) <!-- 2.3.0 -->
-- Update chefstyle requirement from &lt; 1.0 to &lt; 3.0 [#145](https://github.com/chef/knife-tidy/pull/145) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 2.2.1 -->
-- Support for Ruby 3.1 and removed EOL versions [#144](https://github.com/chef/knife-tidy/pull/144) ([ashiqueps](https://github.com/ashiqueps)) <!-- 2.2.0 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v2.3.0](https://github.com/chef/knife-tidy/tree/v2.3.0) (2025-08-18)
+
+#### Merged Pull Requests
+- Support for Ruby 3.1 and removed EOL versions [#144](https://github.com/chef/knife-tidy/pull/144) ([ashiqueps](https://github.com/ashiqueps))
+- Update chefstyle requirement from &lt; 1.0 to &lt; 3.0 [#145](https://github.com/chef/knife-tidy/pull/145) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Updated ruby version and added ruby 3.1 and 3.4 pipeline and Security fixes  [#150](https://github.com/chef/knife-tidy/pull/150) ([nikhil2611](https://github.com/nikhil2611))
+<!-- latest_stable_release -->
+
 ## [v2.1.6](https://github.com/chef/knife-tidy/tree/v2.1.6) (2022-06-15)
 
 #### Merged Pull Requests
@@ -24,7 +22,6 @@
 - Add Ruby 2.3/3.0 testing and pin test deps to fix testing [#140](https://github.com/chef/knife-tidy/pull/140) ([tas50](https://github.com/tas50))
 - Update code owners to workstation/ tools team [#141](https://github.com/chef/knife-tidy/pull/141) ([vkarve-chef](https://github.com/vkarve-chef))
 - To merge changes from PR by ecottom [#142](https://github.com/chef/knife-tidy/pull/142) ([vkarve-chef](https://github.com/vkarve-chef))
-<!-- latest_stable_release -->
 
 ## [v2.1.2](https://github.com/chef/knife-tidy/tree/v2.1.2) (2020-08-21)
 
