@@ -24,7 +24,6 @@ group :development do
     gem "fakefs"
   else
     gem "net-smtp"
-    gem "syslog"
     gem "contracts", "~> 0.17.2"
     gem "chef-zero"
     gem "chef", "~> 18"
