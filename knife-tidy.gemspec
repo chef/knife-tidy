@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.7.0"
 
-  # This gem was removed from the Ruby standard library starting with version 3.4
-  # See: https://stdgems.org/new-in/3.4
+  # syslog was removed from Ruby's standard library in 3.4; see https://stdgems.org/new-in/3.4
   s.add_dependency "syslog", "~> 0.3"
 end
