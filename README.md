@@ -1,3 +1,10 @@
+# Archived Repository
+This repository has been archived and will no longer receive updates. 
+It was archived as part of the [Repository Standardization Initiative](https://github.com/chef-boneyard/oss-repo-standardization-2025).
+If you are a Chef customer and need support for this repository, please contact your Chef account team.
+
+---
+
 # knife tidy
 [![Gem Version](https://badge.fury.io/rb/knife-tidy.svg)](https://rubygems.org/gems/knife-tidy)
 [![Build status](https://badge.buildkite.com/de3ab60102adc59bcc5e301f18dab3f5d081191b69cefbe411.svg?branch=master)](https://buildkite.com/chef-oss/chef-knife-tidy-master-verify)
